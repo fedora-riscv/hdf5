@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.4
-Release: 4%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -12,7 +12,7 @@ Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.4-testh5repack.patch
 Patch4: hdf5-1.6.4-h5diff_attr.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: krb5-devel, openssl-devel, zlib-devel
+BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -41,8 +41,8 @@ HDF5 development headers and libraries.
 
 %build
 autoconf
-# the Fortran parts are hitting GCC bug 17917, add --enable-fortran when it gets fixed.
-%configure --with-ssl --enable-cxx --enable-threadsafe --with-pthread
+%configure --with-ssl --enable-cxx --enable-fortran \
+           --enable-threadsafe --with-pthread
 make
 
 %install
@@ -91,6 +91,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 
 %changelog
+* Wed Nov 16 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-6
+- Bump for new openssl
+
+* Tue Sep 20 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-5
+- Enable fortran since the gcc bug is now fixed
+
 * Tue Jul 05 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-4
 - Make example scripts executable
 
