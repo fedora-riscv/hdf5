@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -11,6 +11,7 @@ Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.4-testh5repack.patch
 Patch4: hdf5-1.6.4-h5diff_attr.patch
+Patch5: hdf5-1.6.4-ppc.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran
 
@@ -38,6 +39,7 @@ HDF5 development headers and libraries.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 autoconf
@@ -91,6 +93,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 
 %changelog
+* Fri Nov 18 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-7
+- Add patch for fortran compilation on ppc
+
 * Wed Nov 16 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-6
 - Bump for new openssl
 
