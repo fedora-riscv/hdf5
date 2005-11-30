@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -70,15 +70,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc release_docs/HISTORY.txt doc/html
 %{_bindir}/gif2h5
 %{_bindir}/h52gif
-%{_bindir}/h5c++
-%{_bindir}/h5cc
 %{_bindir}/h5debug
 %{_bindir}/h5diff
 %{_bindir}/h5dump
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
-%{_bindir}/h5redeploy
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5unjam
@@ -86,13 +83,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,0755)
-%{_docdir}/%{name}/examples/c++
-%{_docdir}/%{name}/examples/c
+%{_bindir}/h5c++
+%{_bindir}/h5cc
+%{_bindir}/h5fc
+%{_bindir}/h5redeploy
+%{_docdir}/%{name}/examples/
 %{_includedir}/*.h
 %{_libdir}/*.a
 %{_libdir}/*.so
+%{_libdir}/*.mod
 
 %changelog
+* Wed Nov 30 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-8
+- Package fortran files properly
+- Move compiler wrappers to devel
+
 * Fri Nov 18 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-7
 - Add patch for fortran compilation on ppc
 
