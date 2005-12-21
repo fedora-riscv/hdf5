@@ -1,6 +1,6 @@
 Name: hdf5
-Version: 1.6.4
-Release: 9%{?dist}
+Version: 1.6.5
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -10,10 +10,10 @@ Patch0: hdf5-1.6.4-gcc4.patch
 Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.4-testh5repack.patch
-Patch4: hdf5-1.6.4-h5diff_attr.patch
+Patch4: hdf5-1.6.5-h5diff_attr.patch
 Patch5: hdf5-1.6.4-ppc.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran
+BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -76,6 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
+%{_bindir}/h5perf
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5unjam
@@ -94,6 +95,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.mod
 
 %changelog
+* Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.5-1
+- Update to 1.6.5
+
 * Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-9
 - Rebuild
 
