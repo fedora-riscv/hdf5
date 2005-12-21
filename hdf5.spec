@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -94,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.mod
 
 %changelog
+* Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-9
+- Rebuild
+
 * Wed Nov 30 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-8
 - Package fortran files properly
 - Move compiler wrappers to devel
