@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -53,6 +53,8 @@ find doc/html -type f | xargs chmod -x
 find doc/html -name '*.sh*' | xargs chmod +x
 %makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
+# Don't instal h5perf until h5test.so.0 issues is sorted out
+rm $RPM_BUILD_ROOT/%{_bindir}/h5perf
 
 %check
 make check
@@ -76,7 +78,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
-%{_bindir}/h5perf
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5unjam
@@ -95,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.mod
 
 %changelog
+* Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.5-2
+- Don't ship h5perf with missing library
+
 * Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.5-1
 - Update to 1.6.5
 
