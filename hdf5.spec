@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -96,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.mod
 
 %changelog
+* Mon Feb 13 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-3
+- Rebuild for gcc/glibc changes
+
 * Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.5-2
 - Don't ship h5perf with missing library
 
