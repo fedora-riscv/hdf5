@@ -1,17 +1,17 @@
---- hdf5-1.6.4/tools/lib/h5diff_attr.c.orig	2005-07-01 08:47:12.000000000 -0600
-+++ hdf5-1.6.4/tools/lib/h5diff_attr.c	2005-07-01 09:01:59.000000000 -0600
+--- hdf5-1.6.5/tools/lib/h5diff_attr.c.orig	2005-12-21 12:08:45.000000000 -0700
++++ hdf5-1.6.5/tools/lib/h5diff_attr.c	2005-12-21 12:11:17.000000000 -0700
 @@ -61,8 +61,8 @@
   int        rank2;        /* rank of dataset */
   hsize_t    dims1[H5S_MAX_RANK];/* dimensions of dataset */
   hsize_t    dims2[H5S_MAX_RANK];/* dimensions of dataset */
--	char       name1[255];
+- char       name1[255];
 - char       name2[255];
-+	char       name1[255],np1[512];
++ char       name1[255],np1[512];
 + char       name2[255],np2[512];
- 	int        n1, n2, i, j;
+  int        n1, n2, i, j;
   int        ret=0;
   hsize_t    nfound;
-@@ -191,21 +191,21 @@
+@@ -196,21 +196,21 @@
   * array compare
   *-------------------------------------------------------------------------
   */
@@ -23,9 +23,9 @@
   /* always print name */
   if (options->m_verbose)
   {
--  printf( "Attribute:   <%s> and <%s>\n",name1,name2); 
-+  printf( "Attribute:   <%s> and <%s>\n",np1,np2); 
-   nfound = diff_array(buf1, 
+-  printf( "Attribute:   <%s> and <%s>\n",name1,name2);
++  printf( "Attribute:   <%s> and <%s>\n",np1,np2);
+   nfound = diff_array(buf1,
                       buf2,
                       nelmts1,
                       rank1,
@@ -38,7 +38,7 @@
                       mtype1_id,
                       attr1_id,
                       attr2_id);
-@@ -225,8 +225,8 @@
+@@ -230,8 +230,8 @@
                       rank1,
                       dims1,
                       options,
@@ -49,13 +49,13 @@
                       mtype1_id,
                       attr1_id,
                       attr2_id);
-@@ -234,15 +234,15 @@
+@@ -239,15 +239,15 @@
     options->m_quiet=0;
-    if (nfound) 
+    if (nfound)
     {
--    printf( "Attribute:   <%s> and <%s>\n",name1,name2); 
-+    printf( "Attribute:   <%s> and <%s>\n",np1,np2); 
-     nfound = diff_array(buf1, 
+-    printf( "Attribute:   <%s> and <%s>\n",name1,name2);
++    printf( "Attribute:   <%s> and <%s>\n",np1,np2);
+     nfound = diff_array(buf1,
                       buf2,
                       nelmts1,
                       rank1,
@@ -68,7 +68,7 @@
                       mtype1_id,
                       attr1_id,
                       attr2_id);
-@@ -258,8 +258,8 @@
+@@ -263,8 +263,8 @@
                       rank1,
                       dims1,
                       options,
