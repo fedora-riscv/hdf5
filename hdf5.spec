@@ -1,6 +1,6 @@
 Name: hdf5
-Version: 1.6.4
-Release: 4%{?dist}
+Version: 1.6.5
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -10,9 +10,9 @@ Patch0: hdf5-1.6.4-gcc4.patch
 Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.4-testh5repack.patch
-Patch4: hdf5-1.6.4-h5diff_attr.patch
+Patch4: hdf5-1.6.5-h5diff_attr.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: krb5-devel, openssl-devel, zlib-devel
+BuildRequires: krb5-devel, openssl-devel, zlib-devel, time
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -51,6 +51,8 @@ find doc/html -type f | xargs chmod -x
 find doc/html -name '*.sh*' | xargs chmod +x
 %makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
+# Don't instal h5perf until h5test.so.0 issues is sorted out
+rm $RPM_BUILD_ROOT/%{_bindir}/h5perf
 
 %check
 make check
@@ -68,15 +70,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc release_docs/HISTORY.txt doc/html
 %{_bindir}/gif2h5
 %{_bindir}/h52gif
-%{_bindir}/h5c++
-%{_bindir}/h5cc
 %{_bindir}/h5debug
 %{_bindir}/h5diff
 %{_bindir}/h5dump
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
-%{_bindir}/h5redeploy
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5unjam
@@ -84,13 +83,18 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,0755)
-%{_docdir}/%{name}/examples/c++
-%{_docdir}/%{name}/examples/c
+%{_bindir}/h5c++
+%{_bindir}/h5cc
+%{_bindir}/h5redeploy
+%{_docdir}/%{name}/examples/
 %{_includedir}/*.h
 %{_libdir}/*.a
 %{_libdir}/*.so
 
 %changelog
+* Thu Mar 02 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-1
+- Update to 1.6.5
+
 * Tue Jul 05 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-4
 - Make example scripts executable
 
