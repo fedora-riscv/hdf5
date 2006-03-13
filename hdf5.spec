@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -11,6 +11,7 @@ Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.4-testh5repack.patch
 Patch4: hdf5-1.6.5-h5diff_attr.patch
+Patch5: hdf5-1.6.5-flags.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, time
 
@@ -38,6 +39,7 @@ HDF5 development headers and libraries.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1 -b .flags
 
 %build
 autoconf
@@ -92,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 
 %changelog
+* Mon Mar 13 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-2
+- Add patch to avoid HDF setting the march compiler flag
+
 * Thu Mar 02 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-1
 - Update to 1.6.5
 
