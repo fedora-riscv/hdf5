@@ -10,17 +10,6 @@
  LT_RUN=$(LT) --mode=execute
  LT_INSTALL_PROG=$(LT) --mode=install $(INSTALL_PROGRAM)
  LT_INSTALL_LIB=$(LT) --mode=install $(INSTALL_DATA)
---- hdf5-1.6.4/aclocal.m4.BAD	2005-04-03 18:53:47.000000000 -0500
-+++ hdf5-1.6.4/aclocal.m4	2005-04-03 18:54:13.000000000 -0500
-@@ -1383,7 +1383,7 @@
- 
-   if test "$ld_shlibs" = yes; then
-     runpath_var=LD_RUN_PATH
--    hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
-+    hardcode_libdir_flag_spec=''
-     export_dynamic_flag_spec='${wl}--export-dynamic'
-     case $host_os in
-     cygwin* | mingw* | pw32*)
 --- hdf5-1.6.4/c++/config/commence.in.BAD	2005-04-03 18:55:05.000000000 -0500
 +++ hdf5-1.6.4/c++/config/commence.in	2005-04-03 18:55:25.000000000 -0500
 @@ -50,8 +50,8 @@
@@ -44,3 +33,14 @@
  LT_RUN=$(LT) --mode=execute
  LT_INSTALL_PROG=$(LT) --mode=install $(INSTALL_PROGRAM)
  LT_INSTALL_LIB=$(LT) --mode=install $(INSTALL_DATA)
+--- hdf5-1.6.4/configure.norpath	2006-03-15 14:12:46.000000000 -0700
++++ hdf5-1.6.4/configure	2006-03-15 14:14:09.000000000 -0700
+@@ -5569,7 +5569,7 @@
+ 
+   if test "$ld_shlibs" = yes; then
+     runpath_var=LD_RUN_PATH
+-    hardcode_libdir_flag_spec='${wl}--rpath ${wl}$libdir'
++    hardcode_libdir_flag_spec=''
+     export_dynamic_flag_spec='${wl}--export-dynamic'
+     case $host_os in
+     cygwin* | mingw* | pw32*)
