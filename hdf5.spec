@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -12,6 +12,7 @@ Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.4-testh5repack.patch
 Patch4: hdf5-1.6.5-h5diff_attr.patch
 Patch5: hdf5-1.6.5-flags.patch
+Patch6: hdf5-1.6.5-x86_64.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, time
 
@@ -40,9 +41,9 @@ HDF5 development headers and libraries.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1 -b .flags
+%patch6 -p1 -b .x86_64
 
 %build
-autoconf
 # the Fortran parts are hitting GCC bug 17917, add --enable-fortran when it gets fixed.
 %configure --with-ssl --enable-cxx --enable-threadsafe --with-pthread
 make
@@ -50,7 +51,7 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 find doc/html -type f | xargs chmod -x
-find doc/html -name '*.sh*' | xargs chmod +x
+find doc/html -name Dependencies | xargs rm
 %makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
 # Don't instal h5perf until h5test.so.0 issues is sorted out
@@ -67,7 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,0755)
+%defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY.txt doc/html
 %{_bindir}/gif2h5
@@ -81,10 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5unjam
-%{_libdir}/*.so.*
+%attr(0755,root,root) %{_libdir}/*.so.*
 
 %files devel
-%defattr(-,root,root,0755)
+%defattr(-,root,root,-)
 %{_bindir}/h5c++
 %{_bindir}/h5cc
 %{_bindir}/h5redeploy
@@ -94,6 +95,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 
 %changelog
+* Wed Mar 15 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-3
+- Change rpath patch to not need autoconf
+- Add patch for libtool on x86_64
+- Fix shared lib permissions
+
 * Mon Mar 13 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-2
 - Add patch to avoid HDF setting the march compiler flag
 
