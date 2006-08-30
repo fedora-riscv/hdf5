@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.5
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.mod
 
 %changelog
+* Tue Aug 29 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-6
+- Rebuild for FC6
+
 * Wed Mar 15 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-5
 - Change rpath patch to not need autoconf
 - Add patch for libtool on x86_64
