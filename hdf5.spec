@@ -1,10 +1,10 @@
 Name: hdf5
 Version: 1.6.5
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
-URL: http://hdf.ncsa.uiuc.edu/HDF5/
+URL: http://www.hdfgroup.org/HDF5/
 Source0: ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/%{name}-%{version}.tar.gz
 Patch0: hdf5-1.6.4-gcc4.patch
 Patch1: hdf5-1.6.4-destdir.patch
@@ -14,6 +14,7 @@ Patch4: hdf5-1.6.5-h5diff_attr.patch
 Patch5: hdf5-1.6.4-ppc.patch
 Patch6: hdf5-1.6.5-flags.patch
 Patch7: hdf5-1.6.5-x86_64.patch
+Patch8: hdf5-1.6.5-sort.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -44,6 +45,7 @@ HDF5 development headers and libraries.
 %patch5 -p1
 %patch6 -p1 -b .flags
 %patch7 -p1 -b .x86_64
+%patch8 -p1 -b .sort
 
 %build
 %configure --with-ssl --enable-cxx --enable-fortran \
@@ -53,9 +55,8 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 find doc/html -type f | xargs chmod -x
-#find doc/html -name '*.sh*' | xargs chmod +x
-find doc/html -name Dependencies | xargs rm
 %makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
+find doc/html -name Dependencies -o -name Makefile\* | xargs rm
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
 # Don't instal h5perf until h5test.so.0 issues is sorted out
 rm $RPM_BUILD_ROOT/%{_bindir}/h5perf
@@ -93,13 +94,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5cc
 %{_bindir}/h5fc
 %{_bindir}/h5redeploy
-%{_docdir}/%{name}/examples/
+%{_docdir}/%{name}/
 %{_includedir}/*.h
 %{_libdir}/*.a
 %{_libdir}/*.so
 %{_libdir}/*.mod
 
 %changelog
+* Mon Feb 12 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-7
+- New project URL
+- Add patch to use POSIX sort key option
+- Remove useless and multilib conflicting Makefiles from html docs
+  (bug #228365)
+- Make hdf5-devel own %{_docdir}/%{name}
+
 * Tue Aug 29 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-6
 - Rebuild for FC6
 
