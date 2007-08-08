@@ -1,0 +1,11 @@
+--- hdf5-1.6.5/src/H5R.c.memset	2005-08-20 13:28:52.000000000 -0600
++++ hdf5-1.6.5/src/H5R.c	2007-08-08 09:40:01.000000000 -0600
+@@ -190,7 +190,7 @@
+             } /* end if */
+ 
+             /* Zero the heap ID out, may leak heap space if user is re-using reference and doesn't have garbage collection on */
+-            HDmemset(ref,H5R_DSET_REG_REF_BUF_SIZE,0);
++            HDmemset(ref,0,H5R_DSET_REG_REF_BUF_SIZE);
+ 
+             /* Get the amount of space required to serialize the selection */
+             if ((buf_size = H5S_SELECT_SERIAL_SIZE(space)) < 0)

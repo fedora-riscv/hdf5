@@ -5,7 +5,7 @@ Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-Source0: ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/%{name}-%{version}.tar.gz
+Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
 Patch0: hdf5-1.6.4-gcc4.patch
 Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
@@ -15,6 +15,7 @@ Patch5: hdf5-1.6.4-ppc.patch
 Patch6: hdf5-1.6.5-flags.patch
 Patch7: hdf5-1.6.5-x86_64.patch
 Patch8: hdf5-1.6.5-sort.patch
+Patch9: hdf5-1.6.5-memset.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -46,6 +47,7 @@ HDF5 development headers and libraries.
 %patch6 -p1 -b .flags
 %patch7 -p1 -b .x86_64
 %patch8 -p1 -b .sort
+%patch9 -p1 -b .memset
 
 %build
 %configure --with-ssl --enable-cxx --enable-fortran \
@@ -101,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.mod
 
 %changelog
+* Wed Aug  8 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-8
+- Fix memset typo
+
 * Mon Feb 12 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-7
 - New project URL
 - Add patch to use POSIX sort key option
