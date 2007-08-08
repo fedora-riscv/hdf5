@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.5
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD-ish
 Group: System Environment/Libraries
@@ -16,6 +16,7 @@ Patch6: hdf5-1.6.5-flags.patch
 Patch7: hdf5-1.6.5-x86_64.patch
 Patch8: hdf5-1.6.5-sort.patch
 Patch9: hdf5-1.6.5-memset.patch
+Patch10: hdf5-1.6.5-open.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -48,6 +49,7 @@ HDF5 development headers and libraries.
 %patch7 -p1 -b .x86_64
 %patch8 -p1 -b .sort
 %patch9 -p1 -b .memset
+%patch10 -p1 -b .open
 
 %build
 %configure --with-ssl --enable-cxx --enable-fortran \
@@ -105,6 +107,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Wed Aug  8 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-8
 - Fix memset typo
+- Pass mode to open with O_CREAT
 
 * Mon Feb 12 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-7
 - New project URL
