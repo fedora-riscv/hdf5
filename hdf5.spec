@@ -1,8 +1,8 @@
 Name: hdf5
 Version: 1.6.5
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A general purpose library and file format for storing scientific data
-License: BSD-ish
+License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
@@ -105,6 +105,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.mod
 
 %changelog
+* Fri Aug 24 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-9
+- Update license tag to BSD
+- Rebuild for BuildID
+
 * Wed Aug  8 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-8
 - Fix memset typo
 - Pass mode to open with O_CREAT
