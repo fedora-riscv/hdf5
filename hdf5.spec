@@ -1,21 +1,17 @@
 Name: hdf5
-Version: 1.6.5
-Release: 9%{?dist}
+Version: 1.6.6
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Patch0: hdf5-1.6.4-gcc4.patch
 Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
-Patch3: hdf5-1.6.4-testh5repack.patch
-Patch4: hdf5-1.6.5-h5diff_attr.patch
+Patch3: hdf5-1.6.6-tail.patch
 Patch5: hdf5-1.6.4-ppc.patch
-Patch6: hdf5-1.6.5-flags.patch
 Patch7: hdf5-1.6.5-x86_64.patch
 Patch8: hdf5-1.6.5-sort.patch
-Patch9: hdf5-1.6.5-memset.patch
 Patch10: hdf5-1.6.5-open.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
@@ -39,22 +35,23 @@ HDF5 development headers and libraries.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1 -b .flags
+%patch1 -p1 -b .destdir
+%patch2 -p1 -b .norpath
+%patch3 -p1 -b .tail
+%patch5 -p1 -b .ppc
 %patch7 -p1 -b .x86_64
 %patch8 -p1 -b .sort
-%patch9 -p1 -b .memset
 %patch10 -p1 -b .open
 
+
 %build
+export CC=gcc
+export CXX=g++
+export F9X=gfortran
 %configure --with-ssl --enable-cxx --enable-fortran \
            --enable-threadsafe --with-pthread
 make
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -62,18 +59,20 @@ find doc/html -type f | xargs chmod -x
 %makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
 find doc/html -name Dependencies -o -name Makefile\* | xargs rm
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
-# Don't instal h5perf until h5test.so.0 issues is sorted out
-rm $RPM_BUILD_ROOT/%{_bindir}/h5perf
+
 
 %check
 make check
 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
+
 
 %files
 %defattr(-,root,root,-)
@@ -104,7 +103,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 %{_libdir}/*.mod
 
+
 %changelog
+* Wed Oct 17 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-1
+- Update to 1.6.6, drop upstreamed patches
+- Explicitly set compilers
+
 * Fri Aug 24 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-9
 - Update license tag to BSD
 - Rebuild for BuildID
