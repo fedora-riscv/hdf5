@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -13,6 +13,7 @@ Patch5: hdf5-1.6.4-ppc.patch
 Patch7: hdf5-1.6.5-x86_64.patch
 Patch8: hdf5-1.6.5-sort.patch
 Patch10: hdf5-1.6.5-open.patch
+Patch11: hdf5-1.6.6-alpha.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -42,6 +43,7 @@ HDF5 development headers and libraries.
 %patch7 -p1 -b .x86_64
 %patch8 -p1 -b .sort
 %patch10 -p1 -b .open
+%patch11 -p1 -b .alpha
 
 
 %build
@@ -105,6 +107,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Nov 23 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-2
+- Add patch to build on alpha
+
 * Wed Oct 17 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-1
 - Update to 1.6.6, drop upstreamed patches
 - Explicitly set compilers
