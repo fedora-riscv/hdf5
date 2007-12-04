@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.6
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -107,8 +107,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec  4 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-3
+- Rebuild against new openssl
+
 * Fri Nov 23 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-2
-- Add patch to build on alpha
+- Add patch to build on alpha (bug #396391)
 
 * Wed Oct 17 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-1
 - Update to 1.6.6, drop upstreamed patches
