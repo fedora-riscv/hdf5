@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.6
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -9,7 +9,9 @@ Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
 Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.6-tail.patch
+Patch4: hdf5-1.6.6-signal.patch
 Patch5: hdf5-1.6.4-ppc.patch
+Patch6: hdf5-1.6.6-sparc.patch
 Patch7: hdf5-1.6.5-x86_64.patch
 Patch8: hdf5-1.6.5-sort.patch
 Patch10: hdf5-1.6.5-open.patch
@@ -39,7 +41,9 @@ HDF5 development headers and libraries.
 %patch1 -p1 -b .destdir
 %patch2 -p1 -b .norpath
 %patch3 -p1 -b .tail
+%patch4 -p1 -b .signal
 %patch5 -p1 -b .ppc
+%patch6 -p1 -b .sparc
 %patch7 -p1 -b .x86_64
 %patch8 -p1 -b .sort
 %patch10 -p1 -b .open
@@ -107,6 +111,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan  7 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-4
+- Add patches to support sparc (bug #427651)
+
 * Tue Dec  4 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-3
 - Rebuild against new openssl
 

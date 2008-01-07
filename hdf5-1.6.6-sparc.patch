@@ -1,0 +1,18 @@
+--- hdf5-1.6.6.orig/fortran/src/H5f90i.h	2008-01-06 11:51:45.000000000 +0200
++++ hdf5-1.6.6/fortran/src/H5f90i.h	2008-01-06 12:15:59.000000000 +0200
+@@ -116,6 +116,15 @@
+ typedef int               size_t_f;
+ #define FNAME_POST_UNDERSCORE
+ 
++/* sparc32/64 specific definitions */
++#elif (defined __sparc__ || defined __sparc64__)
++
++typedef long long         haddr_t_f;
++typedef long long         hsize_t_f;
++typedef long long         hssize_t_f;
++typedef int               size_t_f;
++#define FNAME_POST_UNDERSCORE
++
+ /* IA64 specific definitions */
+ #elif defined __ia64
+ 
