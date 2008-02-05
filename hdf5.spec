@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.6
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -17,6 +17,7 @@ Patch8: hdf5-1.6.5-sort.patch
 Patch10: hdf5-1.6.5-open.patch
 Patch11: hdf5-1.6.6-alpha.patch
 Patch12: hdf5-1.6.6-s390.patch
+Patch13: hdf5-1.6.6-free.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -50,6 +51,7 @@ HDF5 development headers and libraries.
 %patch10 -p1 -b .open
 %patch11 -p1 -b .alpha
 %patch12 -p1 -b .s390
+%patch13 -p1 -b .free
 
 
 %build
@@ -113,6 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb  5 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-6
+- Add patch to fix calling free() in H5PropList.cpp
+
 * Tue Feb  5 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-5
 - Add patch to support s390 (bug #431510)
 
