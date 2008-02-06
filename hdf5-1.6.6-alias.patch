@@ -1,0 +1,42 @@
+--- hdf5-1.6.6/test/dtypes.c.alias	2007-08-16 10:12:05.000000000 -0600
++++ hdf5-1.6.6/test/dtypes.c	2008-02-06 10:14:42.000000000 -0700
+@@ -5645,24 +5645,33 @@
+ 	    for (j=0; j<nelmts; j++) {
+ 		/* Do it this way for alignment reasons */
+ #if H5_SIZEOF_LONG_DOUBLE!=H5_SIZEOF_DOUBLE
+-		long double temp[1];
++		union {
++		    long double ld[1];
++		    double d[1];
++		    float f[1];
++		    unsigned char uc[1];
++		} temp;
+ #else
+-		double temp[1];
++		union {
++		    double d[1];
++		    float f[1];
++		    unsigned char uc[1];
++		} temp;
+ #endif
+ 		if (src_size<=dst_size) {
+ 		    for (k=0; k<dst_size; k++) buf[j*src_size+k] = HDrand();
+ 		} else {
+ 		    for (k=0; k<dst_size; k++)
+-			((unsigned char*)temp)[k] = HDrand();
++			temp.uc[k] = HDrand();
+ 		    if (FLT_DOUBLE==src_type && FLT_FLOAT==dst_type) {
+-			hw_d = *((float*)temp);
++			hw_d = *(temp.f);
+ 			HDmemcpy(buf+j*src_size, &hw_d, src_size);
+ #if H5_SIZEOF_LONG_DOUBLE!=H5_SIZEOF_DOUBLE
+ 		    } else if (FLT_LDOUBLE==src_type && FLT_FLOAT==dst_type) {
+-			hw_ld = *((float*)temp);
++			hw_ld = *(temp.f);
+ 			HDmemcpy(buf+j*src_size, &hw_ld, src_size);
+ 		    } else if (FLT_LDOUBLE==src_type && FLT_DOUBLE==dst_type) {
+-			hw_ld = *((double*)temp);
++			hw_ld = *(temp.d);
+ 			HDmemcpy(buf+j*src_size, &hw_ld, src_size);
+ #endif
+ 		    }

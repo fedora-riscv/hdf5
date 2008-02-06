@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.6
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -18,6 +18,7 @@ Patch10: hdf5-1.6.5-open.patch
 Patch11: hdf5-1.6.6-alpha.patch
 Patch12: hdf5-1.6.6-s390.patch
 Patch13: hdf5-1.6.6-free.patch
+Patch14: hdf5-1.6.6-alias.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -52,14 +53,17 @@ HDF5 development headers and libraries.
 %patch11 -p1 -b .alpha
 %patch12 -p1 -b .s390
 %patch13 -p1 -b .free
+%patch14 -p1 -b .alias
 
 
 %build
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
-%configure --with-ssl --enable-cxx --enable-fortran \
-           --enable-threadsafe --with-pthread
+# Must turn of production mode to preserve -g during compile
+%configure --enable-production=no --enable-debug=no \
+           --enable-cxx --enable-fortran --enable-threadsafe \
+           --with-pthread --with-ssl
 make
 
 
@@ -115,6 +119,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb  6 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-7
+- Add patch to fix strict-aliasing
+- Disable production mode to enable debuginfo
+
 * Tue Feb  5 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-6
 - Add patch to fix calling free() in H5PropList.cpp
 
