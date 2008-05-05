@@ -1,15 +1,17 @@
 Name: hdf5
-Version: 1.8.0
+Version: 1.8.0.snap5
 Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
+#Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
+Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.0-snap5.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.0-signal.patch
 Patch2: hdf5-1.8.0-destdir.patch
 Patch3: hdf5-1.8.0-multiarch.patch
+Patch4: hdf5-1.8.0-scaleoffset.patch
 Patch10: hdf5-1.6.5-open.patch
 Patch13: hdf5-1.6.6-free.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -44,10 +46,11 @@ HDF5 static libraries.
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-1.8.0-snap5
 %patch1 -p1 -b .signal
 %patch2 -p1 -b .destdir
 %patch3 -p1 -b .multiarch
+%patch4 -p1 -b .scaleoffset
 %patch10 -p1 -b .open
 %patch13 -p1 -b .free
 
@@ -102,8 +105,7 @@ done
 
 
 %check
-# XXX - we need to get the checks working
-make check || exit 0
+make check
 
 
 %clean
@@ -155,6 +157,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-1
+- Update to 1.8.0-snap5
+
+* Tue Mar 4 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0-2
+- Remove failing test for now
+
 * Fri Feb 29 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0-1
 - Update to 1.8.0, drop upstreamed patches
 - Update signal patch
