@@ -61,8 +61,8 @@ export CXX=g++
 export F9X=gfortran
 # Must turn of production mode to preserve -g during compile
 %configure --enable-production=no --enable-debug=no \
-           --enable-cxx --enable-fortran --enable-threadsafe \
-           --with-pthread --with-ssl
+           --enable-cxx --enable-fortran \
+           --with-ssl
 #Multiarch header
 %ifarch x86_64 ppc64 ia64 s390
 cp src/H5pubconf.h \
@@ -159,6 +159,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon May 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-1
 - Update to 1.8.0-snap5
+- Remove --enable-threadsafe, incompatible with --enable-cxx and 
+  --enable-fortran
 
 * Tue Mar 4 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0-2
 - Remove failing test for now
