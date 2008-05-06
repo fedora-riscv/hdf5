@@ -16,6 +16,7 @@ Patch10: hdf5-1.6.5-open.patch
 Patch13: hdf5-1.6.6-free.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
+ExcludeArch: ppc64
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -161,6 +162,7 @@ rm -rf $RPM_BUILD_ROOT
 - Update to 1.8.0-snap5
 - Remove --enable-threadsafe, incompatible with --enable-cxx and 
   --enable-fortran
+- ExcludeArch ppc64 until we can get it to build (bug #445423)
 
 * Tue Mar 4 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0-2
 - Remove failing test for now
