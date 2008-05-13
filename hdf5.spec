@@ -153,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5redeploy
 %{_includedir}/*.h
 %{_libdir}/*.so
-%{_fmoddir}*.mod
+%{_fmoddir}/*.mod
 
 %files static
 %defattr(-,root,root,-)
