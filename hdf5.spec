@@ -1,12 +1,12 @@
 Name: hdf5
-Version: 1.8.0.snap6
-Release: 1%{?dist}
+Version: 1.8.0.snap5
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 #Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.0-snap6.tar.bz2
+Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.0-snap5.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.0-signal.patch
 Patch2: hdf5-1.8.0-destdir.patch
@@ -47,7 +47,7 @@ HDF5 static libraries.
 
 
 %prep
-%setup -q -n %{name}-1.8.0-snap6
+%setup -q -n %{name}-1.8.0-snap5
 %patch1 -p1 -b .signal
 %patch2 -p1 -b .destdir
 %patch3 -p1 -b .multiarch
@@ -161,8 +161,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Tue May 13 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap6-1
-- Update to 1.8.0-snap6
+* Tue May 13 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-2
 - Use new %%{_fmoddir} macro
 - Re-enable ppc64, disable failing tests.  Failing tests are for 
   experimental long double support.
