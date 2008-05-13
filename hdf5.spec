@@ -1,22 +1,22 @@
 Name: hdf5
-Version: 1.8.0.snap5
+Version: 1.8.0.snap6
 Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 #Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.0-snap5.tar.bz2
+Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.0-snap6.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.0-signal.patch
 Patch2: hdf5-1.8.0-destdir.patch
 Patch3: hdf5-1.8.0-multiarch.patch
 Patch4: hdf5-1.8.0-scaleoffset.patch
+Patch5: hdf5-1.8.0-longdouble.patch
 Patch10: hdf5-1.6.5-open.patch
 Patch13: hdf5-1.6.6-free.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
-ExcludeArch: ppc64
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -47,11 +47,14 @@ HDF5 static libraries.
 
 
 %prep
-%setup -q -n %{name}-1.8.0-snap5
+%setup -q -n %{name}-1.8.0-snap6
 %patch1 -p1 -b .signal
 %patch2 -p1 -b .destdir
 %patch3 -p1 -b .multiarch
 %patch4 -p1 -b .scaleoffset
+%ifarch ppc64
+%patch5 -p1 -b .longdouble
+%endif
 %patch10 -p1 -b .open
 %patch13 -p1 -b .free
 
@@ -80,8 +83,8 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=${RPM_BUILD_ROOT}
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
 #Fortran modules
-mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/gfortran/modules
-mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_libdir}/gfortran/modules/
+mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
+mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
 
 #Fixup headers and scripts for multiarch
 %ifarch x86_64 ppc64 ia64 s390
@@ -150,7 +153,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5redeploy
 %{_includedir}/*.h
 %{_libdir}/*.so
-%{_libdir}/gfortran/modules/*.mod
+%{_fmoddir}*.mod
 
 %files static
 %defattr(-,root,root,-)
@@ -158,6 +161,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 13 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap6-1
+- Update to 1.8.0-snap6
+- Use new %%{_fmoddir} macro
+- Re-enable ppc64, disable failing tests.  Failing tests are for 
+  experimental long double support.
+
 * Mon May 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-1
 - Update to 1.8.0-snap5
 - Remove --enable-threadsafe, incompatible with --enable-cxx and 
