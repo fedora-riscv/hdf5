@@ -1,12 +1,12 @@
 Name: hdf5
-Version: 1.8.0.snap5
-Release: 2%{?dist}
+Version: 1.8.1
+Release: 0.rc1.1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 #Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.0-snap5.tar.bz2
+Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.1-rc1.tar.gz
 Source1: h5comp
 Patch1: hdf5-1.8.0-signal.patch
 Patch2: hdf5-1.8.0-destdir.patch
@@ -14,7 +14,6 @@ Patch3: hdf5-1.8.0-multiarch.patch
 Patch4: hdf5-1.8.0-scaleoffset.patch
 Patch5: hdf5-1.8.0-longdouble.patch
 Patch10: hdf5-1.6.5-open.patch
-Patch13: hdf5-1.6.6-free.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -47,7 +46,7 @@ HDF5 static libraries.
 
 
 %prep
-%setup -q -n %{name}-1.8.0-snap5
+%setup -q -n %{name}-1.8.1-rc1
 %patch1 -p1 -b .signal
 %patch2 -p1 -b .destdir
 %patch3 -p1 -b .multiarch
@@ -56,7 +55,6 @@ HDF5 static libraries.
 %patch5 -p1 -b .longdouble
 %endif
 %patch10 -p1 -b .open
-%patch13 -p1 -b .free
 
 
 %build
@@ -127,7 +125,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc release_docs/HISTORY*.txt
 %{_bindir}/gif2h5
 %{_bindir}/h52gif
-%{_bindir}/h52gifgentst
 %{_bindir}/h5copy
 %{_bindir}/h5debug
 %{_bindir}/h5diff
@@ -136,6 +133,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5jam
 %{_bindir}/h5ls
 %{_bindir}/h5mkgrp
+%{_bindir}/h5perf
+%{_bindir}/h5perf_serial
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5stat
@@ -161,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 27 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-0.rc1.1
+- Update to 1.8.1-rc1
+
 * Tue May 13 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-2
 - Use new %%{_fmoddir} macro
 - Re-enable ppc64, disable failing tests.  Failing tests are for 
