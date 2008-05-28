@@ -1,0 +1,65 @@
+--- hdf5-1.8.0/src/H5detect.c.signal	2008-02-12 19:38:32.000000000 -0700
++++ hdf5-1.8.0/src/H5detect.c	2008-02-27 20:35:03.000000000 -0700
+@@ -109,7 +109,7 @@
+ static void detect_C99_integers64(void);
+ static void detect_alignments(void);
+ static size_t align_g[] = {1, 2, 4, 8, 16};
+-static jmp_buf jbuf_g;
++static sigjmp_buf jbuf_g;
+ 
+ 
+ /*-------------------------------------------------------------------------
+@@ -366,7 +366,7 @@
+     void		(*_handler2)(int) = signal(SIGSEGV, sigsegv_handler);	\
+ 									      \
+     _buf = (char*)malloc(sizeof(TYPE)+align_g[NELMTS(align_g)-1]);		      \
+-    if (setjmp(jbuf_g)) _ano++;						      \
++    if (sigsetjmp(jbuf_g, 1)) _ano++;						      \
+     if (_ano<NELMTS(align_g)) {						      \
+ 	*((TYPE*)(_buf+align_g[_ano])) = _val; /*possible SIGBUS or SEGSEGV*/	\
+ 	_val2 = *((TYPE*)(_buf+align_g[_ano]));	/*possible SIGBUS or SEGSEGV*/	\
+@@ -383,7 +383,7 @@
+ 	    memcpy(_buf+align_g[_ano]+(INFO.offset/8),((char *)&_val)+(INFO.offset/8),(size_t)(INFO.precision/8)); \
+ 	_val2 = *((TYPE*)(_buf+align_g[_ano]));				      \
+ 	if(_val!=_val2)							      \
+-	    longjmp(jbuf_g, 1);			        		      \
++	    siglongjmp(jbuf_g, 1);			        		      \
+ 	/* End Cray Check */						      \
+ 	(INFO.align)=align_g[_ano];					      \
+     } else {								      \
+@@ -454,7 +454,7 @@
+  *		it's not nearly as nice to work with, it does the job for
+  *		this simple stuff.
+  *
+- * Return:	Returns via longjmp to jbuf_g.
++ * Return:	Returns via siglongjmp to jbuf_g.
+  *
+  * Programmer:	Robb Matzke
+  *		Thursday, March 18, 1999
+@@ -467,7 +467,7 @@
+ sigsegv_handler(int UNUSED signo)
+ {
+     signal(SIGSEGV, sigsegv_handler);
+-    longjmp(jbuf_g, 1);
++    siglongjmp(jbuf_g, 1);
+ }
+ 
+ 
+@@ -479,7 +479,7 @@
+  *		it's not nearly as nice to work with, it does the job for
+  *		this simple stuff.
+  *
+- * Return:	Returns via longjmp to jbuf_g.
++ * Return:	Returns via siglongjmp to jbuf_g.
+  *
+  * Programmer:	Robb Matzke
+  *		Thursday, March 18, 1999
+@@ -492,7 +492,7 @@
+ sigbus_handler(int UNUSED signo)
+ {
+     signal(SIGBUS, sigbus_handler);
+-    longjmp(jbuf_g, 1);
++    siglongjmp(jbuf_g, 1);
+ #ifdef H5_HAVE_SIGLONGJMP
+     siglongjmp(jbuf_g, 1);
+ #endif /* H5_HAVE_SIGLONGJMP */

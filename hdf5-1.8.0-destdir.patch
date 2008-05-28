@@ -1,0 +1,61 @@
+--- hdf5-1.8.0/tools/misc/Makefile.in.destdir	2008-02-12 19:38:48.000000000 -0700
++++ hdf5-1.8.0/tools/misc/Makefile.in	2008-02-28 14:19:35.000000000 -0700
+@@ -731,9 +731,9 @@
+ 	@$(top_srcdir)/bin/makehelp
+ 
+ install-exec-local:
+-	@$(INSTALL) h5cc $(bindir)/$(H5CC_NAME)
++	@$(INSTALL) h5cc $(DESTDIR)$(bindir)/$(H5CC_NAME)
+ uninstall-local:
+-	@$(RM) $(bindir)/$(H5CC_NAME)
++	@$(RM) $(DESTDIR)$(bindir)/$(H5CC_NAME)
+ 
+ # How to build h5redeploy script
+ h5redeploy: h5redeploy.in
+--- hdf5-1.8.0/fortran/src/Makefile.in.destdir	2008-02-12 19:39:01.000000000 -0700
++++ hdf5-1.8.0/fortran/src/Makefile.in	2008-02-28 15:02:08.000000000 -0700
+@@ -821,20 +821,20 @@
+ 
+ install-data-local:
+ 	@if test -n "$(F9XMODEXT)" && test "X$(F9XMODEXT)" != "Xo"; then \
+-	  $(CP) $(top_builddir)/$(subdir)/*.$(F9XMODEXT) $(includedir)/. ; \
++	  $(CP) $(top_builddir)/$(subdir)/*.$(F9XMODEXT) $(DESTDIR)$(includedir)/. ; \
+ 	fi
+ 
+ uninstall-local:
+ 	@if test -n "$(F9XMODEXT)" -a "X$(F9XMODEXT)" != "Xo"; then      \
+-	  if test -f "$(includedir)/hdf5.$(F9XMODEXT)" -o -f "$(includedir)/HDF5.$(F9XMODEXT)"; then \
+-	    set -x; $(RM) $(includedir)/*.$(F9XMODEXT);                 \
++	  if test -f "$(includedir)/hdf5.$(F9XMODEXT)" -o -f "$(DESTDIR)$(includedir)/HDF5.$(F9XMODEXT)"; then \
++	    set -x; $(RM) $(DESTDIR)$(includedir)/*.$(F9XMODEXT);                 \
+ 	  fi;                                                           \
+ 	fi;								\
+-	$(RM) $(bindir)/$(H5FC_NAME)
++	$(RM) $(DESTDIR)$(bindir)/$(H5FC_NAME)
+ 
+ # Also install and uninstall (uninstall-local above) h5fc script
+ install-exec-local:
+-	@$(INSTALL) h5fc $(bindir)/$(H5FC_NAME)
++	@$(INSTALL) h5fc $(DESTDIR)$(bindir)/$(H5FC_NAME)
+ 
+ #Specify what Automake needs to create: first the H5fort_type_defines.h
+ # header, then H5match_types which includes that header, then
+--- hdf5-1.8.0/hl/fortran/src/Makefile.in.destdir	2008-02-12 19:38:56.000000000 -0700
++++ hdf5-1.8.0/hl/fortran/src/Makefile.in	2008-02-28 15:26:42.000000000 -0700
+@@ -681,13 +681,13 @@
+ 
+ install-data-local:
+ 	@if test -n "$(F9XMODEXT)" && test "X$(F9XMODEXT)" != "Xo"; then \
+-	  $(CP) $(top_builddir)/$(subdir)/*.$(F9XMODEXT) $(includedir)/. ; \
++	  $(CP) $(top_builddir)/$(subdir)/*.$(F9XMODEXT) $(DESTDIR)$(includedir)/. ; \
+ 	fi
+ 
+ uninstall-local:
+ 	@if test -n "$(F9XMODEXT)" -a "X$(F9XMODEXT)" != "Xo"; then      \
+-	  if test -f "$(includedir)/hdf5.$(F9XMODEXT)" -o -f "$(includedir)/HDF5.$(F9XMODEXT)"; then \
+-	    set -x; $(RM) $(includedir)/*.$(F9XMODEXT);                 \
++	  if test -f "$(DESTDIR)$(includedir)/hdf5.$(F9XMODEXT)" -o -f "$(DESTDIR)$(includedir)/HDF5.$(F9XMODEXT)"; then \
++	    set -x; $(RM) $(DESTDIR)$(includedir)/*.$(F9XMODEXT);                 \
+ 	  fi;                                                           \
+ 	fi
+ 

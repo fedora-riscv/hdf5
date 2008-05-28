@@ -1,0 +1,18 @@
+--- hdf5-1.8.0/src/H5public.h.multiarch	2008-02-12 19:38:32.000000000 -0700
++++ hdf5-1.8.0/src/H5public.h	2008-02-29 14:50:23.000000000 -0700
+@@ -28,7 +28,14 @@
+  * it via H5public.h.  The #ifndef _H5public_H guard above would
+  * prevent repeated include.
+  */
+-#include "H5pubconf.h"		/*from configure                             */
++#include <bits/wordsize.h>
++#if __WORDSIZE == 32
++#include "H5pubconf-32.h"
++#elif __WORDSIZE == 64
++#include "H5pubconf-64.h"
++#else
++#error "Unknown word size"
++#endif
+ 
+ /* API Version macro wrapper definitions */
+ #include "H5version.h"
