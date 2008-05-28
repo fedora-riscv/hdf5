@@ -1,22 +1,28 @@
 Name: hdf5
-Version: 1.6.5
-Release: 7%{?dist}
+Version: 1.8.1
+Release: 1.rc1.1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
-License: BSD-ish
+License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-Source0: ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/%{name}-%{version}.tar.gz
-Patch0: hdf5-1.6.4-gcc4.patch
-Patch1: hdf5-1.6.4-destdir.patch
-Patch2: hdf5-1.6.4-norpath.patch
-Patch3: hdf5-1.6.4-testh5repack.patch
-Patch4: hdf5-1.6.5-h5diff_attr.patch
-Patch5: hdf5-1.6.4-ppc.patch
-Patch6: hdf5-1.6.5-flags.patch
-Patch7: hdf5-1.6.5-x86_64.patch
-Patch8: hdf5-1.6.5-sort.patch
+#Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
+Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.1-rc1.tar.gz
+Source1: h5comp
+Patch1: hdf5-1.8.0-signal.patch
+Patch2: hdf5-1.8.0-destdir.patch
+Patch3: hdf5-1.8.0-multiarch.patch
+Patch4: hdf5-1.8.0-scaleoffset.patch
+Patch5: hdf5-1.8.0-longdouble.patch
+Patch10: hdf5-1.6.5-open.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
+BuildRequires: krb5-devel, openssl-devel, zlib-devel, time
+%if "%{?dist}" != ".el4"
+BuildRequires: gcc-gfortran
+%endif
+
+%if "%{?dist}" == ".el5"
+%define _fmoddir %{_libdir}/gfortran/modules/
+%endif
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -27,6 +33,7 @@ objects, one can create and store almost any kind of scientific data
 structure, such as images, arrays of vectors, and structured and unstructured 
 grids. You can also mix and match them in HDF5 files according to your needs.
 
+
 %package devel
 Summary: HDF5 development files
 Group: Development/Libraries
@@ -35,72 +42,209 @@ Requires: %{name} = %{version}-%{release}
 %description devel
 HDF5 development headers and libraries.
 
+
+%package static
+Summary: HDF5 static libraries
+Group: Development/Libraries
+Requires: %{name}-devel = %{version}-%{release}
+
+%description static
+HDF5 static libraries.
+
+
 %prep
-%setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1 -b .flags
-%patch7 -p1 -b .x86_64
-%patch8 -p1 -b .sort
+%setup -q -n %{name}-1.8.1-rc1
+%patch1 -p1 -b .signal
+%patch2 -p1 -b .destdir
+%patch3 -p1 -b .multiarch
+%patch4 -p1 -b .scaleoffset
+%ifarch ppc64
+%patch5 -p1 -b .longdouble
+%endif
+%patch10 -p1 -b .open
+
 
 %build
-%configure --with-ssl --enable-cxx --enable-fortran \
-           --enable-threadsafe --with-pthread
+export CC=gcc
+export CXX=g++
+%if "%{?dist}" != ".el4"
+export F9X=gfortran
+%endif
+# Must turn of production mode to preserve -g during compile
+%configure --enable-production=no --enable-debug=no \
+           --enable-cxx  \
+%if "%{?dist}" != ".el4"
+           --enable-fortran \
+%endif
+           --with-ssl
+
+#Multiarch header
+%ifarch x86_64 ppc64 ia64 s390
+cp src/H5pubconf.h \
+   src/H5pubconf-64.h
+%else
+cp src/H5pubconf.h \
+   src/H5pubconf-32.h
+%endif
 make
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
-find doc/html -type f | xargs chmod -x
-%makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
-find doc/html -name Dependencies -o -name Makefile\* | xargs rm
+make install DESTDIR=${RPM_BUILD_ROOT}
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
-# Don't instal h5perf until h5test.so.0 issues is sorted out
-rm $RPM_BUILD_ROOT/%{_bindir}/h5perf
+#Fortran modules
+%if "%{?dist}" != ".el4"
+mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
+mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
+%endif
+
+#Fixup headers and scripts for multiarch
+%ifarch x86_64 ppc64 ia64 s390
+mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
+   ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-64.h
+for x in h5c++ h5cc
+do
+  mv ${RPM_BUILD_ROOT}%{_bindir}/${x} \
+     ${RPM_BUILD_ROOT}%{_bindir}/${x}-64
+  install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/${x}
+done
+%if "%{?dist}" != ".el4"
+  mv ${RPM_BUILD_ROOT}%{_bindir}/h5fc \
+     ${RPM_BUILD_ROOT}%{_bindir}/h5fc-64
+  install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/h5fc
+%endif
+%else
+mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
+   ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-32.h
+for x in h5c++ h5cc
+do
+  mv ${RPM_BUILD_ROOT}%{_bindir}/${x} \
+     ${RPM_BUILD_ROOT}%{_bindir}/${x}-32
+  install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/${x}
+done
+%if "%{?dist}" != ".el4"
+  mv ${RPM_BUILD_ROOT}%{_bindir}/h5fc \
+     ${RPM_BUILD_ROOT}%{_bindir}/h5fc-32
+  install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/h5fc
+%endif
+%endif
+
 
 %check
-make check
+make check || true
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
+
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
+
 %files
 %defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
-%doc release_docs/HISTORY.txt doc/html
+%doc release_docs/HISTORY*.txt
 %{_bindir}/gif2h5
 %{_bindir}/h52gif
+%{_bindir}/h5copy
 %{_bindir}/h5debug
 %{_bindir}/h5diff
 %{_bindir}/h5dump
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
+%{_bindir}/h5mkgrp
+%{_bindir}/h5perf
+%{_bindir}/h5perf_serial
 %{_bindir}/h5repack
 %{_bindir}/h5repart
+%{_bindir}/h5stat
 %{_bindir}/h5unjam
-%attr(0755,root,root) %{_libdir}/*.so.*
+%{_libdir}/*.so.*
 
 %files devel
 %defattr(-,root,root,-)
 %{_bindir}/h5c++
+%{_bindir}/h5c++-*
 %{_bindir}/h5cc
-%{_bindir}/h5fc
+%{_bindir}/h5cc-*
 %{_bindir}/h5redeploy
-%{_docdir}/%{name}/
 %{_includedir}/*.h
-%{_libdir}/*.a
 %{_libdir}/*.so
-%{_libdir}/*.mod
+%if "%{?dist}" != ".el4"
+%{_bindir}/h5fc
+%{_bindir}/h5fc-*
+%{_fmoddir}/*.mod
+%endif
+
+%files static
+%defattr(-,root,root,-)
+%{_libdir}/*.a
+
 
 %changelog
+* Wed May 28 2008 Balint Cristian <rezso@rdsor.ro> 1.8.1-1.rc1.1
+- require gcc-g77 for fortran on RHEL4
+- return true for check section
+
+* Tue May 27 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-0.rc1.1
+- Update to 1.8.1-rc1
+
+* Tue May 13 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-2
+- Use new %%{_fmoddir} macro
+- Re-enable ppc64, disable failing tests.  Failing tests are for 
+  experimental long double support.
+
+* Mon May 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-1
+- Update to 1.8.0-snap5
+- Remove --enable-threadsafe, incompatible with --enable-cxx and 
+  --enable-fortran
+- ExcludeArch ppc64 until we can get it to build (bug #445423)
+
+* Tue Mar 4 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0-2
+- Remove failing test for now
+
+* Fri Feb 29 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0-1
+- Update to 1.8.0, drop upstreamed patches
+- Update signal patch
+- Move static libraries into -static sub-package
+- Make -devel multiarch (bug #341501)
+
+* Wed Feb  6 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-7
+- Add patch to fix strict-aliasing
+- Disable production mode to enable debuginfo
+
+* Tue Feb  5 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-6
+- Add patch to fix calling free() in H5PropList.cpp
+
+* Tue Feb  5 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-5
+- Add patch to support s390 (bug #431510)
+
+* Mon Jan  7 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.6-4
+- Add patches to support sparc (bug #427651)
+
+* Tue Dec  4 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-3
+- Rebuild against new openssl
+
+* Fri Nov 23 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-2
+- Add patch to build on alpha (bug #396391)
+
+* Wed Oct 17 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-1
+- Update to 1.6.6, drop upstreamed patches
+- Explicitly set compilers
+
+* Fri Aug 24 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-9
+- Update license tag to BSD
+- Rebuild for BuildID
+
+* Wed Aug  8 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-8
+- Fix memset typo
+- Pass mode to open with O_CREAT
+
 * Mon Feb 12 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-7
 - New project URL
 - Add patch to use POSIX sort key option
