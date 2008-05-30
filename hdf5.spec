@@ -1,11 +1,11 @@
 Name: hdf5
-Version: 1.6.6
+Version: 1.6.7
 Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
+Source0: ftp://ftp.hdfgroup.org/HDF5/current16/src/%{name}-%{version}.tar.gz
 Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
 Patch3: hdf5-1.6.6-tail.patch
@@ -105,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 28 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.7-1
+- Update to 1.6.7
+
 * Wed Oct 17 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-1
 - Update to 1.6.6, drop upstreamed patches
 - Explicitly set compilers
