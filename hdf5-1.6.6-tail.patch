@@ -1,0 +1,11 @@
+--- hdf5-1.6.6/tools/h5dump/testh5dump.sh.in.tail	2007-10-17 10:37:38.000000000 -0600
++++ hdf5-1.6.6/tools/h5dump/testh5dump.sh.in	2007-10-17 10:38:26.000000000 -0600
+@@ -81,7 +81,7 @@
+         nerrors="`expr $nerrors + 1`"
+     else
+ 	# Skip the first three lines, which are label lines, before cmp.
+-        if tail +4l $expect | $CMP - $actual; then
++        if tail -n +4 $expect | $CMP - $actual; then
+ 	    echo " PASSED"
+         else
+ 	    echo "*FAILED*"

@@ -1,18 +1,18 @@
 Name: hdf5
-Version: 1.6.5
-Release: 3%{?dist}
+Version: 1.6.7
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
-License: BSD-ish
+License: BSD
 Group: System Environment/Libraries
-URL: http://hdf.ncsa.uiuc.edu/HDF5/
-Source0: ftp://ftp.ncsa.uiuc.edu/HDF/HDF5/current/src/%{name}-%{version}.tar.gz
-Patch0: hdf5-1.6.4-gcc4.patch
+URL: http://www.hdfgroup.org/HDF5/
+Source0: ftp://ftp.hdfgroup.org/HDF5/current16/src/%{name}-%{version}.tar.gz
 Patch1: hdf5-1.6.4-destdir.patch
 Patch2: hdf5-1.6.4-norpath.patch
-Patch3: hdf5-1.6.4-testh5repack.patch
-Patch4: hdf5-1.6.5-h5diff_attr.patch
-Patch5: hdf5-1.6.5-flags.patch
-Patch6: hdf5-1.6.5-x86_64.patch
+Patch3: hdf5-1.6.6-tail.patch
+Patch5: hdf5-1.6.4-ppc.patch
+Patch7: hdf5-1.6.5-x86_64.patch
+Patch8: hdf5-1.6.5-sort.patch
+Patch10: hdf5-1.6.5-open.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, time
 
@@ -35,37 +35,43 @@ HDF5 development headers and libraries.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1 -b .flags
-%patch6 -p1 -b .x86_64
+%patch1 -p1 -b .destdir
+%patch2 -p1 -b .norpath
+%patch3 -p1 -b .tail
+%patch5 -p1 -b .ppc
+%patch7 -p1 -b .x86_64
+%patch8 -p1 -b .sort
+%patch10 -p1 -b .open
+
 
 %build
-# the Fortran parts are hitting GCC bug 17917, add --enable-fortran when it gets fixed.
-%configure --with-ssl --enable-cxx --enable-threadsafe --with-pthread
+export CC=gcc
+export CXX=g++
+%configure --with-ssl --enable-cxx \
+           --enable-threadsafe --with-pthread
 make
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
 find doc/html -type f | xargs chmod -x
-find doc/html -name Dependencies | xargs rm
 %makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
+find doc/html -name Dependencies -o -name Makefile\* | xargs rm
 rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
-# Don't instal h5perf until h5test.so.0 issues is sorted out
-rm $RPM_BUILD_ROOT/%{_bindir}/h5perf
+
 
 %check
 make check
 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
 
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
+
 
 %files
 %defattr(-,root,root,-)
@@ -89,22 +95,70 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5c++
 %{_bindir}/h5cc
 %{_bindir}/h5redeploy
-%{_docdir}/%{name}/examples/
+%{_docdir}/%{name}/
 %{_includedir}/*.h
 %{_libdir}/*.a
 %{_libdir}/*.so
 
+
 %changelog
-* Wed Mar 15 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-3
+* Wed May 28 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.7-1
+- Update to 1.6.7
+
+* Wed Oct 17 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.6-1
+- Update to 1.6.6, drop upstreamed patches
+- Explicitly set compilers
+
+* Fri Aug 24 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-9
+- Update license tag to BSD
+- Rebuild for BuildID
+
+* Wed Aug  8 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-8
+- Fix memset typo
+- Pass mode to open with O_CREAT
+
+* Mon Feb 12 2007 Orion Poplawski <orion@cora.nwra.com> 1.6.5-7
+- New project URL
+- Add patch to use POSIX sort key option
+- Remove useless and multilib conflicting Makefiles from html docs
+  (bug #228365)
+- Make hdf5-devel own %{_docdir}/%{name}
+
+* Tue Aug 29 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-6
+- Rebuild for FC6
+
+* Wed Mar 15 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-5
 - Change rpath patch to not need autoconf
 - Add patch for libtool on x86_64
 - Fix shared lib permissions
 
-* Mon Mar 13 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-2
-- Add patch to avoid HDF setting the march compiler flag
+* Mon Mar 13 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-4
+- Add patch to avoid HDF setting the compiler flags
 
-* Thu Mar 02 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-1
+* Mon Feb 13 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-3
+- Rebuild for gcc/glibc changes
+
+* Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.5-2
+- Don't ship h5perf with missing library
+
+* Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.5-1
 - Update to 1.6.5
+
+* Wed Dec 21 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-9
+- Rebuild
+
+* Wed Nov 30 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-8
+- Package fortran files properly
+- Move compiler wrappers to devel
+
+* Fri Nov 18 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-7
+- Add patch for fortran compilation on ppc
+
+* Wed Nov 16 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-6
+- Bump for new openssl
+
+* Tue Sep 20 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-5
+- Enable fortran since the gcc bug is now fixed
 
 * Tue Jul 05 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-4
 - Make example scripts executable
