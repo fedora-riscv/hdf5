@@ -1,12 +1,12 @@
 Name: hdf5
 Version: 1.8.1
-Release: 0.rc1.1%{?dist}
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-#Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.1-rc1.tar.gz
+Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
+#Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.1-rc1.tar.gz
 Source1: h5comp
 Patch1: hdf5-1.8.0-signal.patch
 Patch2: hdf5-1.8.0-destdir.patch
@@ -46,7 +46,7 @@ HDF5 static libraries.
 
 
 %prep
-%setup -q -n %{name}-1.8.1-rc1
+%setup -q
 %patch1 -p1 -b .signal
 %patch2 -p1 -b .destdir
 %patch3 -p1 -b .multiarch
@@ -160,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-1
+- Update to 1.8.1
+
 * Tue May 27 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-0.rc1.1
 - Update to 1.8.1-rc1
 
