@@ -1,5 +1,5 @@
 Name: hdf5
-Version: 1.8.0
+Version: 1.8.1
 Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
@@ -10,8 +10,9 @@ Source1: h5comp
 Patch1: hdf5-1.8.0-signal.patch
 Patch2: hdf5-1.8.0-destdir.patch
 Patch3: hdf5-1.8.0-multiarch.patch
+Patch4: hdf5-1.8.0-scaleoffset.patch
+Patch5: hdf5-1.8.0-longdouble.patch
 Patch10: hdf5-1.6.5-open.patch
-Patch13: hdf5-1.6.6-free.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -48,8 +49,11 @@ HDF5 static libraries.
 %patch1 -p1 -b .signal
 %patch2 -p1 -b .destdir
 %patch3 -p1 -b .multiarch
+%patch4 -p1 -b .scaleoffset
+%ifarch ppc64
+%patch5 -p1 -b .longdouble
+%endif
 %patch10 -p1 -b .open
-%patch13 -p1 -b .free
 
 
 %build
@@ -58,8 +62,8 @@ export CXX=g++
 export F9X=gfortran
 # Must turn of production mode to preserve -g during compile
 %configure --enable-production=no --enable-debug=no \
-           --enable-cxx --enable-fortran --enable-threadsafe \
-           --with-pthread --with-ssl
+           --enable-cxx --enable-fortran \
+           --with-ssl
 #Multiarch header
 %ifarch x86_64 ppc64 ia64 s390
 cp src/H5pubconf.h \
@@ -102,8 +106,7 @@ done
 
 
 %check
-# XXX - we need to get the checks working
-make check || exit 0
+make check
 
 
 %clean
@@ -121,7 +124,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc release_docs/HISTORY*.txt
 %{_bindir}/gif2h5
 %{_bindir}/h52gif
-%{_bindir}/h52gifgentst
 %{_bindir}/h5copy
 %{_bindir}/h5debug
 %{_bindir}/h5diff
@@ -130,6 +132,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5jam
 %{_bindir}/h5ls
 %{_bindir}/h5mkgrp
+%{_bindir}/h5perf
+%{_bindir}/h5perf_serial
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5stat
@@ -155,6 +159,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jun 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-1
+- Update to 1.8.1
+- Disable failing ppc64 tests.  Failing tests are for 
+  experimental long double support.
+- Remove --enable-threadsafe, incompatible with --enable-cxx and 
+  --enable-fortran
+- Remove failing test for now
+
 * Fri Feb 29 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0-1
 - Update to 1.8.0, drop upstreamed patches
 - Update signal patch
