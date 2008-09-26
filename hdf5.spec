@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.8.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -13,6 +13,7 @@ Patch2: hdf5-1.8.0-destdir.patch
 Patch3: hdf5-1.8.0-multiarch.patch
 Patch4: hdf5-1.8.0-scaleoffset.patch
 Patch5: hdf5-1.8.0-longdouble.patch
+Patch6: hdf5-1.8.1-filter-as-option.patch
 Patch10: hdf5-1.6.5-open.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
@@ -54,6 +55,7 @@ HDF5 static libraries.
 %ifarch ppc64
 %patch5 -p1 -b .longdouble
 %endif
+%patch6 -p1 -b .filter-as-option
 %patch10 -p1 -b .open
 
 
@@ -160,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 26 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-2
+- Add patch to filter -little as option used on sh arch (#464052)
+ 
 * Thu Jun 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-1
 - Update to 1.8.1
 
