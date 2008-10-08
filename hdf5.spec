@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.8.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -68,7 +68,7 @@ export F9X=gfortran
            --enable-cxx --enable-fortran \
            --with-ssl
 #Multiarch header
-%ifarch x86_64 ppc64 ia64 s390
+%ifarch x86_64 ppc64 ia64 s390 sparc64
 cp src/H5pubconf.h \
    src/H5pubconf-64.h
 %else
@@ -87,7 +87,7 @@ mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
 mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
 
 #Fixup headers and scripts for multiarch
-%ifarch x86_64 ppc64 ia64 s390
+%ifarch x86_64 ppc64 ia64 s390 sparc64
 mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
    ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-64.h
 for x in h5c++ h5cc h5fc
@@ -162,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 8 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-3
+- Add sparc64 to 64-bit conditionals
+
 * Fri Sep 26 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-2
 - Add patch to filter -little as option used on sh arch (#464052)
  
