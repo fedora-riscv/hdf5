@@ -68,7 +68,7 @@ export F9X=gfortran
            --enable-cxx --enable-fortran \
            --with-ssl
 #Multiarch header
-%ifarch x86_64 ppc64 ia64 s390 sparc64
+%ifarch x86_64 ppc64 ia64 s390 sparc64 alpha
 cp src/H5pubconf.h \
    src/H5pubconf-64.h
 %else
@@ -87,7 +87,7 @@ mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
 mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
 
 #Fixup headers and scripts for multiarch
-%ifarch x86_64 ppc64 ia64 s390 sparc64
+%ifarch x86_64 ppc64 ia64 s390 sparc64 alpha
 mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
    ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-64.h
 for x in h5c++ h5cc h5fc
