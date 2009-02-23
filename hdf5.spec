@@ -1,6 +1,6 @@
 Name: hdf5
-Version: 1.8.1
-Release: 3%{?dist}
+Version: 1.8.2
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -8,10 +8,9 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
 #Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.1-rc1.tar.gz
 Source1: h5comp
-Patch1: hdf5-1.8.0-signal.patch
-Patch2: hdf5-1.8.0-destdir.patch
+Patch1: hdf5-1.8.2-signal.patch
+Patch2: hdf5-1.8.2-detect.patch
 Patch3: hdf5-1.8.0-multiarch.patch
-Patch4: hdf5-1.8.0-scaleoffset.patch
 Patch5: hdf5-1.8.0-longdouble.patch
 Patch6: hdf5-1.8.1-filter-as-option.patch
 Patch10: hdf5-1.6.5-open.patch
@@ -49,9 +48,8 @@ HDF5 static libraries.
 %prep
 %setup -q
 %patch1 -p1 -b .signal
-%patch2 -p1 -b .destdir
+%patch2 -p1 -b .detect
 %patch3 -p1 -b .multiarch
-%patch4 -p1 -b .scaleoffset
 %ifarch ppc64
 %patch5 -p1 -b .longdouble
 %endif
@@ -63,6 +61,7 @@ HDF5 static libraries.
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
+export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 # Must turn of production mode to preserve -g during compile
 %configure --enable-production=no --enable-debug=no \
            --enable-cxx --enable-fortran \
@@ -81,7 +80,7 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=${RPM_BUILD_ROOT}
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
+rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la
 #Fortran modules
 mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
 mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
@@ -135,7 +134,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5jam
 %{_bindir}/h5ls
 %{_bindir}/h5mkgrp
-%{_bindir}/h5perf
 %{_bindir}/h5perf_serial
 %{_bindir}/h5repack
 %{_bindir}/h5repart
@@ -154,6 +152,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5redeploy
 %{_includedir}/*.h
 %{_libdir}/*.so
+%{_libdir}/*.settings
 %{_fmoddir}/*.mod
 
 %files static
@@ -162,6 +161,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 23 2009 Orion Poplawski <orion@cora.nwra.com> 1.8.2-1
+- Update to 1.8.2
+- Add patch to compile H5detect without optimization - make detection
+  of datatype characteristics more robust - esp. long double
+- Update signal patch
+- Drop destdir patch fixed upstream
+- Drop scaleoffset patch
+- Re-add -fno-strict-aliasing
+- Keep settings file needed for -showconfig (bug #481032)
+- Wrapper script needs to pass arguments (bug #481032)
+
 * Wed Oct 8 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-3
 - Add sparc64 to 64-bit conditionals
 
