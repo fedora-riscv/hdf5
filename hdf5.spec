@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.8.2
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -67,7 +67,7 @@ export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
            --enable-cxx --enable-fortran \
            --with-ssl
 #Multiarch header
-%ifarch x86_64 ppc64 ia64 s390 sparc64 alpha
+%ifarch x86_64 ppc64 ia64 s390x sparc64 alpha
 cp src/H5pubconf.h \
    src/H5pubconf-64.h
 %else
@@ -86,7 +86,7 @@ mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
 mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
 
 #Fixup headers and scripts for multiarch
-%ifarch x86_64 ppc64 ia64 s390 sparc64 alpha
+%ifarch x86_64 ppc64 ia64 s390x sparc64 alpha
 mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
    ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-64.h
 for x in h5c++ h5cc h5fc
@@ -161,6 +161,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Apr 18 2009 Karsten Hopp <karsten@redhat.com> 1.8.2-1.1
+- fix s390x builds, s390x is 64bit, s390 is 32bit
+
 * Mon Feb 23 2009 Orion Poplawski <orion@cora.nwra.com> 1.8.2-1
 - Update to 1.8.2
 - Add patch to compile H5detect without optimization - make detection
