@@ -81,6 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
+%{_bindir}/h5perf
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5unjam
