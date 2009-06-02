@@ -1,6 +1,6 @@
 Name: hdf5
-Version: 1.8.2
-Release: 1%{?dist}.1
+Version: 1.8.3
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -8,12 +8,11 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
 #Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.1-rc1.tar.gz
 Source1: h5comp
-Patch1: hdf5-1.8.2-signal.patch
-Patch2: hdf5-1.8.2-detect.patch
+Patch1: hdf5-1.8.3-signal.patch
+Patch2: hdf5-1.8.3-detect.patch
 Patch3: hdf5-1.8.0-multiarch.patch
 Patch5: hdf5-1.8.0-longdouble.patch
 Patch6: hdf5-1.8.1-filter-as-option.patch
-Patch10: hdf5-1.6.5-open.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -54,7 +53,6 @@ HDF5 static libraries.
 %patch5 -p1 -b .longdouble
 %endif
 %patch6 -p1 -b .filter-as-option
-%patch10 -p1 -b .open
 
 
 %build
@@ -161,6 +159,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 2 2009 Orion Poplawski <orion@cora.nwra.com> 1.8.3-1
+- Update to 1.8.3
+- Update signal and detect patches
+- Drop open patch fixed upstream
+
 * Sat Apr 18 2009 Karsten Hopp <karsten@redhat.com> 1.8.2-1.1
 - fix s390x builds, s390x is 64bit, s390 is 32bit
 
