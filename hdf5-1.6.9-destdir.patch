@@ -1,6 +1,6 @@
---- hdf5-1.6.4/config/commence.in.BAD	2005-04-03 13:52:00.000000000 -0500
-+++ hdf5-1.6.4/config/commence.in	2005-04-03 13:52:53.000000000 -0500
-@@ -35,11 +35,11 @@
+--- hdf5-1.6.9/c++/config/commence.in.destdir	2009-04-30 20:22:52.000000000 -0600
++++ hdf5-1.6.9/c++/config/commence.in	2009-06-02 10:48:57.014511985 -0600
+@@ -51,12 +51,12 @@
  TRACE=:
  
  ## Installation points
@@ -18,9 +18,10 @@
 +docdir=$(DESTDIR)@exec_prefix@/doc
  PUB_LIB=$(LIB)
  
---- hdf5-1.6.4/fortran/config/commence.in.BAD	2005-04-03 14:08:27.000000000 -0500
-+++ hdf5-1.6.4/fortran/config/commence.in	2005-04-03 14:08:48.000000000 -0500
-@@ -40,11 +40,11 @@
+ ## Obtain default library; the current version of libtool does not fully
+--- hdf5-1.6.9/fortran/config/commence.in.destdir	2009-04-30 20:22:54.000000000 -0600
++++ hdf5-1.6.9/fortran/config/commence.in	2009-06-02 10:48:42.472512510 -0600
+@@ -58,12 +58,12 @@
  TRACE=:
  
  ## Installation points
@@ -38,9 +39,10 @@
 +docdir=$(DESTDIR)@exec_prefix@/doc
  PUB_LIB=$(LIB)
  
---- hdf5-1.6.4/c++/config/commence.in.BAD	2005-04-03 14:07:10.000000000 -0500
-+++ hdf5-1.6.4/c++/config/commence.in	2005-04-03 14:07:35.000000000 -0500
-@@ -32,11 +32,11 @@
+ ## Shared libraries
+--- hdf5-1.6.9/config/commence.in.destdir	2009-04-30 20:22:31.000000000 -0600
++++ hdf5-1.6.9/config/commence.in	2009-06-02 10:47:54.591451873 -0600
+@@ -54,12 +54,12 @@
  TRACE=:
  
  ## Installation points
@@ -58,3 +60,4 @@
 +docdir=$(DESTDIR)@exec_prefix@/doc
  PUB_LIB=$(LIB)
  
+ ## Shared libraries

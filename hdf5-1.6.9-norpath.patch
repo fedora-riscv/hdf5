@@ -1,7 +1,6 @@
---- hdf5-1.6.4/config/commence.in.BAD	2005-04-03 18:55:35.000000000 -0500
-+++ hdf5-1.6.4/config/commence.in	2005-04-03 18:55:54.000000000 -0500
-@@ -48,8 +48,8 @@
- DYNAMIC_DIRS=@DYNAMIC_DIRS@
+--- hdf5-1.6.9/config/commence.in.norpath	2009-06-02 10:51:25.431451460 -0600
++++ hdf5-1.6.9/config/commence.in	2009-06-02 10:53:49.177511893 -0600
+@@ -68,7 +68,7 @@
  LT=$(top_builddir)/libtool
  LT_COMPILE=$(LT) --mode=compile $(CC)
  LT_LINK_LIB=$(LT) --mode=link $(CC) -rpath $(libdir) $(DYNAMIC_DIRS)
@@ -10,10 +9,9 @@
  LT_RUN=$(LT) --mode=execute
  LT_INSTALL_PROG=$(LT) --mode=install $(INSTALL_PROGRAM)
  LT_INSTALL_LIB=$(LT) --mode=install $(INSTALL_DATA)
---- hdf5-1.6.4/c++/config/commence.in.BAD	2005-04-03 18:55:05.000000000 -0500
-+++ hdf5-1.6.4/c++/config/commence.in	2005-04-03 18:55:25.000000000 -0500
-@@ -50,8 +50,8 @@
- DYNAMIC_DIRS=@DYNAMIC_DIRS@
+--- hdf5-1.6.9/c++/config/commence.in.norpath	2009-06-02 10:51:25.430452315 -0600
++++ hdf5-1.6.9/c++/config/commence.in	2009-06-02 10:54:41.521511096 -0600
+@@ -70,7 +70,7 @@
  LT=$(top_builddir)/libtool
  LT_COMPILE=$(LT) --mode=compile $(CXX)
  LT_LINK_LIB=$(LT) --mode=link $(CXX) -static -rpath $(libdir) $(DYNAMIC_DIRS)

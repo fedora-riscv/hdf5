@@ -1,17 +1,16 @@
 Name: hdf5
-Version: 1.6.8
+Version: 1.6.9
 Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 Source0: ftp://ftp.hdfgroup.org/HDF5/current16/src/%{name}-%{version}.tar.gz
-Patch1: hdf5-1.6.4-destdir.patch
-Patch2: hdf5-1.6.4-norpath.patch
+Patch1: hdf5-1.6.9-destdir.patch
+Patch2: hdf5-1.6.9-norpath.patch
 Patch5: hdf5-1.6.4-ppc.patch
 Patch7: hdf5-1.6.5-x86_64.patch
 Patch8: hdf5-1.6.5-sort.patch
-Patch10: hdf5-1.6.5-open.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, time
 
@@ -39,7 +38,6 @@ HDF5 development headers and libraries.
 %patch5 -p1 -b .ppc
 %patch7 -p1 -b .x86_64
 %patch8 -p1 -b .sort
-%patch10 -p1 -b .open
 
 
 %build
@@ -100,6 +98,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 2 2009 Orion Poplawski <orion@cora.nwra.com> 1.6.9-1
+- Update to 1.6.9
+- Update destdir and norpath patches
+- Drop open patch fixed upstream
+- Ship h5perf
+
 * Sat Nov 15 2008 Orion Poplawski <orion@cora.nwra.com> 1.6.8-1
 - Update to 1.6.8
 
