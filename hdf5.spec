@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.6.9
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -53,7 +53,8 @@ rm -rf $RPM_BUILD_ROOT
 find doc/html -type f | xargs chmod -x
 %makeinstall docdir=${RPM_BUILD_ROOT}%{_docdir}
 find doc/html -name Dependencies -o -name Makefile\* | xargs rm
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la $RPM_BUILD_ROOT/%{_libdir}/*.settings
+rm -rf $RPM_BUILD_ROOT%{_libdir}/*.la $RPM_BUILD_ROOT%{_libdir}/*.settings
+rm $RPM_BUILD_ROOT%{_bindir}/h5perf
 
 
 %check
@@ -81,7 +82,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
-%{_bindir}/h5perf
 %{_bindir}/h5repack
 %{_bindir}/h5repart
 %{_bindir}/h5unjam
@@ -99,6 +99,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 3 2009 Orion Poplawski <orion@cora.nwra.com> 1.6.9-2
+- No, don't ship h5perf
+
 * Tue Jun 2 2009 Orion Poplawski <orion@cora.nwra.com> 1.6.9-1
 - Update to 1.6.9
 - Update destdir and norpath patches
