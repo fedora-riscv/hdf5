@@ -1,6 +1,6 @@
 Name: hdf5
 Version: 1.8.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -159,6 +159,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Tue Jun 2 2009 Orion Poplawski <orion@cora.nwra.com> 1.8.3-1
 - Update to 1.8.3
 - Update signal and detect patches
