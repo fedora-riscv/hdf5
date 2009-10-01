@@ -1,15 +1,15 @@
---- hdf5-1.8.3/src/H5detect.c.signal	2009-05-13 09:02:41.000000000 -0600
-+++ hdf5-1.8.3/src/H5detect.c	2009-06-02 10:34:24.203510646 -0600
-@@ -110,7 +110,7 @@
- static void detect_alignments(void);
- static void insert_libhdf5_settings(void);
+--- hdf5-1.8.3-snap12/src/H5detect.c.signal	2009-09-21 16:41:39.000000000 -0600
++++ hdf5-1.8.3-snap12/src/H5detect.c	2009-09-30 10:04:26.657899636 -0600
+@@ -111,7 +111,7 @@
+ static void insert_libhdf5_settings(FILE *flibinfo);
+ static void make_libinfo(void);
  static size_t align_g[] = {1, 2, 4, 8, 16};
 -static jmp_buf jbuf_g;
 +static sigjmp_buf jbuf_g;
  
  
  /*-------------------------------------------------------------------------
-@@ -369,7 +369,7 @@
+@@ -370,7 +370,7 @@
      void		(*_handler2)(int) = signal(SIGSEGV, sigsegv_handler);	\
  									      \
      _buf = (char*)malloc(sizeof(TYPE) + align_g[NELMTS(align_g) - 1]);	      \
@@ -18,7 +18,7 @@
      if(_ano < NELMTS(align_g)) {					      \
  	*((TYPE*)(_buf+align_g[_ano])) = _val; /*possible SIGBUS or SEGSEGV*/	\
  	_val2 = *((TYPE*)(_buf+align_g[_ano]));	/*possible SIGBUS or SEGSEGV*/	\
-@@ -386,7 +386,7 @@
+@@ -387,7 +387,7 @@
  	    memcpy(_buf+align_g[_ano]+(INFO.offset/8),((char *)&_val)+(INFO.offset/8),(size_t)(INFO.precision/8)); \
  	_val2 = *((TYPE*)(_buf+align_g[_ano]));				      \
  	if(_val!=_val2)							      \
@@ -27,7 +27,7 @@
  	/* End Cray Check */						      \
  	(INFO.align)=align_g[_ano];					      \
      } else {								      \
-@@ -457,7 +457,7 @@
+@@ -458,7 +458,7 @@
   *		it's not nearly as nice to work with, it does the job for
   *		this simple stuff.
   *
@@ -36,7 +36,7 @@
   *
   * Programmer:	Robb Matzke
   *		Thursday, March 18, 1999
-@@ -470,7 +470,7 @@
+@@ -471,7 +471,7 @@
  sigsegv_handler(int UNUSED signo)
  {
      signal(SIGSEGV, sigsegv_handler);
@@ -45,7 +45,7 @@
  }
  
  
-@@ -482,7 +482,7 @@
+@@ -483,7 +483,7 @@
   *		it's not nearly as nice to work with, it does the job for
   *		this simple stuff.
   *
@@ -54,7 +54,7 @@
   *
   * Programmer:	Robb Matzke
   *		Thursday, March 18, 1999
-@@ -495,7 +495,7 @@
+@@ -496,7 +496,7 @@
  sigbus_handler(int UNUSED signo)
  {
      signal(SIGBUS, sigbus_handler);
