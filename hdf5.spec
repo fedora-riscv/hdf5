@@ -1,13 +1,13 @@
-%define snaprel -snap12
+%define snaprel %{nil}
 Name: hdf5
-Version: 1.8.3
-Release: 3.snap12%{?dist}
+Version: 1.8.4
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 #Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-%{version}%{?snaprel}.tar.gz
+Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.3-snap12-signal.patch
 Patch3: hdf5-1.8.0-multiarch.patch
@@ -15,7 +15,7 @@ Patch3: hdf5-1.8.0-multiarch.patch
 # string will be NULL terminated.  The tstlite test ends up crashing with
 # a stack smash.  Reported upstream 9/30/2009, but probably will take a bit
 # of work to fix.  This disables that test
-Patch4: hdf5-1.8.3-snap12-tstlite.patch
+Patch4: hdf5-1.8.4-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -59,7 +59,7 @@ find -name '*.[ch]' -o -name '*.f90' -exec chmod -x {} +
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
-export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
+export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
 %configure \
   --disable-dependency-tracking \
   --enable-cxx \
@@ -164,6 +164,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 6 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4-1
+- Update to 1.8.4
+- Must compile with -O0 due to gcc-4.4 incompatability
+- No longer need -fno-strict-aliasing
+
 * Thu Oct 1 2009 Orion Poplawski <orion@cora.nwra.com> 1.8.3-3.snap12
 - Update to 1.8.3-snap12
 - Update signal patch
