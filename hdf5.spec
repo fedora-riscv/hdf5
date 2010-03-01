@@ -1,13 +1,14 @@
-%define snaprel %{nil}
+%define snaprel -patch1
 Name: hdf5
-Version: 1.8.4
+Version: 1.8.4.patch1
 Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 #Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
+#Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
+Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.4%{?snaprel}.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.3-snap12-signal.patch
 Patch3: hdf5-1.8.0-multiarch.patch
@@ -48,7 +49,8 @@ HDF5 static libraries.
 
 
 %prep
-%setup -q -n %{name}-%{version}%{?snaprel}
+#setup -q -n %{name}-%{version}%{?snaprel}
+%setup -q -n %{name}-1.8.4%{?snaprel}
 %patch1 -p1 -b .signal
 %patch3 -p1 -b .multiarch
 %patch4 -p1 -b .tstlite
@@ -164,6 +166,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 1 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4.patch1-1
+- Update to 1.8.4-patch1
+
 * Wed Jan 6 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4-1
 - Update to 1.8.4
 - Must compile with -O0 due to gcc-4.4 incompatability
