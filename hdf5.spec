@@ -1,18 +1,22 @@
+%define snaprel -patch1
 Name: hdf5
-Version: 1.8.3
-Release: 2%{?dist}
+Version: 1.8.4.patch1
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-#Source0: ftp://ftp.hdfgroup.uiuc.edu/pub/outgoing/hdf5/snapshots/v18/hdf5-1.8.1-rc1.tar.gz
+#Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
+#Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
+Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.4%{?snaprel}.tar.bz2
 Source1: h5comp
-Patch1: hdf5-1.8.3-signal.patch
-Patch2: hdf5-1.8.3-detect.patch
+Patch1: hdf5-1.8.3-snap12-signal.patch
 Patch3: hdf5-1.8.0-multiarch.patch
-Patch5: hdf5-1.8.0-longdouble.patch
-Patch6: hdf5-1.8.1-filter-as-option.patch
+# There is a problem with the h5ltread_dataset_string_f() api in that the 
+# string will be NULL terminated.  The tstlite test ends up crashing with
+# a stack smash.  Reported upstream 9/30/2009, but probably will take a bit
+# of work to fix.  This disables that test
+Patch4: hdf5-1.8.4-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -45,25 +49,28 @@ HDF5 static libraries.
 
 
 %prep
-%setup -q
+#setup -q -n %{name}-%{version}%{?snaprel}
+%setup -q -n %{name}-1.8.4%{?snaprel}
 %patch1 -p1 -b .signal
-%patch2 -p1 -b .detect
 %patch3 -p1 -b .multiarch
-%ifarch ppc64
-%patch5 -p1 -b .longdouble
-%endif
-%patch6 -p1 -b .filter-as-option
+%patch4 -p1 -b .tstlite
+find -name '*.[ch]' -o -name '*.f90' -exec chmod -x {} +
 
 
 %build
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
-export CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
-# Must turn of production mode to preserve -g during compile
-%configure --enable-production=no --enable-debug=no \
-           --enable-cxx --enable-fortran \
-           --with-ssl
+export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
+%configure \
+  --disable-dependency-tracking \
+  --enable-cxx \
+  --enable-fortran \
+  --enable-hl \
+  --with-ssl
+# --enable-cxx/fortran and --enable-parallel flags are incompatible
+#  --with-mpe=DIR          Use MPE instrumentation [default=no]
+# --enable-cxx/fortran/parallel and --enable-threadsafe flags are incompatible
 #Multiarch header
 %ifarch x86_64 ppc64 ia64 s390x sparc64 alpha
 cp src/H5pubconf.h \
@@ -159,6 +166,22 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 1 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4.patch1-1
+- Update to 1.8.4-patch1
+
+* Wed Jan 6 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4-1
+- Update to 1.8.4
+- Must compile with -O0 due to gcc-4.4 incompatability
+- No longer need -fno-strict-aliasing
+
+* Thu Oct 1 2009 Orion Poplawski <orion@cora.nwra.com> 1.8.3-3.snap12
+- Update to 1.8.3-snap12
+- Update signal patch
+- Drop detect and filter-as-option patch fixed upstream
+- Drop ppc only patch
+- Add patch to skip tstlite test for now, problem reported upstream
+- Fixup some source file permissions
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
@@ -249,7 +272,7 @@ rm -rf $RPM_BUILD_ROOT
 - Add patch to use POSIX sort key option
 - Remove useless and multilib conflicting Makefiles from html docs
   (bug #228365)
-- Make hdf5-devel own %{_docdir}/%{name}
+- Make hdf5-devel own %%{_docdir}/%%{name}
 
 * Tue Aug 29 2006 Orion Poplawski <orion@cora.nwra.com> 1.6.5-6
 - Rebuild for FC6
@@ -292,9 +315,9 @@ rm -rf $RPM_BUILD_ROOT
 
 * Wed Jul 01 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-3
 - Add --enable-threads --with-pthreads to configure
-- Add %check
-- Add some %docs
-- Use %makeinstall
+- Add %%check
+- Add some %%docs
+- Use %%makeinstall
 - Add patch to fix test for h5repack
 - Add patch to fix h5diff_attr.c
 
