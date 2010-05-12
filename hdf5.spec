@@ -1,7 +1,7 @@
 %define snaprel -patch1
 Name: hdf5
 Version: 1.8.4.patch1
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -10,6 +10,7 @@ URL: http://www.hdfgroup.org/HDF5/
 #Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.4%{?snaprel}.tar.bz2
 Source1: h5comp
+Patch0: hdf5-1.8.0-longdouble.patch
 Patch1: hdf5-1.8.3-snap12-signal.patch
 Patch3: hdf5-1.8.0-multiarch.patch
 # There is a problem with the h5ltread_dataset_string_f() api in that the 
@@ -51,6 +52,9 @@ HDF5 static libraries.
 %prep
 #setup -q -n %{name}-%{version}%{?snaprel}
 %setup -q -n %{name}-1.8.4%{?snaprel}
+%ifarch ppc64
+%patch0 -p1 -b .longdouble
+%endif
 %patch1 -p1 -b .signal
 %patch3 -p1 -b .multiarch
 %patch4 -p1 -b .tstlite
@@ -166,6 +170,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May 12 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4.patch1-1.1
+- Re-add longdouble patch for ppc64 for EPEL
+
 * Mon Mar 1 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4.patch1-1
 - Update to 1.8.4-patch1
 
