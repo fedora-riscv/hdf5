@@ -66,8 +66,7 @@ export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
   --disable-dependency-tracking \
   --enable-cxx \
   --enable-fortran \
-  --enable-hl \
-  --with-ssl
+  --enable-hl
 # --enable-cxx/fortran and --enable-parallel flags are incompatible
 #  --with-mpe=DIR          Use MPE instrumentation [default=no]
 # --enable-cxx/fortran/parallel and --enable-threadsafe flags are incompatible
