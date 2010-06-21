@@ -1,22 +1,15 @@
-%define snaprel -patch1
+%define snaprel %{nil}
 Name: hdf5
-Version: 1.8.4.patch1
+Version: 1.8.5
 Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 #Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-#Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
-Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.4%{?snaprel}.tar.bz2
+Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
-Patch1: hdf5-1.8.3-snap12-signal.patch
 Patch3: hdf5-1.8.0-multiarch.patch
-# There is a problem with the h5ltread_dataset_string_f() api in that the 
-# string will be NULL terminated.  The tstlite test ends up crashing with
-# a stack smash.  Reported upstream 9/30/2009, but probably will take a bit
-# of work to fix.  This disables that test
-Patch4: hdf5-1.8.4-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -49,11 +42,8 @@ HDF5 static libraries.
 
 
 %prep
-#setup -q -n %{name}-%{version}%{?snaprel}
-%setup -q -n %{name}-1.8.4%{?snaprel}
-%patch1 -p1 -b .signal
+%setup -q -n %{name}-%{version}%{?snaprel}
 %patch3 -p1 -b .multiarch
-%patch4 -p1 -b .tstlite
 find -name '*.[ch]' -o -name '*.f90' -exec chmod -x {} +
 
 
@@ -158,6 +148,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so
 %{_libdir}/*.settings
 %{_fmoddir}/*.mod
+%{_datadir}/hdf5_examples/
 
 %files static
 %defattr(-,root,root,-)
@@ -165,6 +156,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jun 21 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5-1
+- Update to 1.8.5
+- Drop patches fixed upstream
+
 * Mon Mar 1 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.4.patch1-1
 - Update to 1.8.4-patch1
 
