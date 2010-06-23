@@ -1,7 +1,7 @@
 %define snaprel %{nil}
 Name: hdf5
 Version: 1.8.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -9,7 +9,7 @@ URL: http://www.hdfgroup.org/HDF5/
 #Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
 Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
-Patch1: hdf5-1.8.0-longdouble.patch
+Patch1: hdf5-1.8.5-longdouble.patch
 Patch3: hdf5-1.8.0-multiarch.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
@@ -160,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 23 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5-3
+- Update longdouble patch for 1.8.5
+
 * Wed Jun 23 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5-2
 - Re-add longdouble patch on ppc64 for EPEL builds
 
