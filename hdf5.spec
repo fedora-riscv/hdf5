@@ -1,7 +1,7 @@
 %define snaprel %{nil}
 Name: hdf5
 Version: 1.8.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -11,6 +11,7 @@ Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}
 Source1: h5comp
 Patch1: hdf5-1.8.5-longdouble.patch
 Patch3: hdf5-1.8.0-multiarch.patch
+Patch3: hdf5-1.8.5-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -48,6 +49,7 @@ HDF5 static libraries.
 %patch1 -p1 -b .longdouble
 %endif
 %patch3 -p1 -b .multiarch
+%patch4 -p1 -b .tstlite
 find -name '*.[ch]' -o -name '*.f90' -exec chmod -x {} +
 
 
@@ -160,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 23 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5-4
+- Re-add rebased tstlite patch - not fixed yet
+
 * Wed Jun 23 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5-3
 - Update longdouble patch for 1.8.5
 
