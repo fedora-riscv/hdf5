@@ -1,7 +1,7 @@
 %define snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -61,6 +61,7 @@ export F9X=gfortran
 export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
 %configure \
   --disable-dependency-tracking \
+  --disable-sharedlib-rpath \
   --enable-cxx \
   --enable-fortran \
   --enable-hl
@@ -163,6 +164,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 7 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-2
+- Add --disable-sharedlib-rpath
+
 * Tue Sep 7 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-1
 - Update to 1.8.5-patch1
 
