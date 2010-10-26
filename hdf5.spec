@@ -250,6 +250,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mpich2/bin/h5jam
 %{_libdir}/mpich2/bin/h5ls
 %{_libdir}/mpich2/bin/h5mkgrp
+%{_libdir}/mpich2/bin/h5redeploy
 %{_libdir}/mpich2/bin/h5repack
 %{_libdir}/mpich2/bin/h5perf
 %{_libdir}/mpich2/bin/h5repart
@@ -271,6 +272,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/bin/h5ls
 %{_libdir}/openmpi/bin/h5mkgrp
 %{_libdir}/openmpi/bin/h5perf
+%{_libdir}/openmpi/bin/h5redeploy
 %{_libdir}/openmpi/bin/h5repack
 %{_libdir}/openmpi/bin/h5repart
 %{_libdir}/openmpi/bin/h5stat
