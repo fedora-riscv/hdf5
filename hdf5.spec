@@ -1,7 +1,7 @@
 %define snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -87,7 +87,7 @@ HDF5 parallel openmpi development files
 %patch1 -p1 -b .longdouble
 %endif
 %patch4 -p1 -b .tstlite
-find -name '*.[ch]*' -o -name '*.f90' -exec chmod -x {} +
+find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 
 
 %build
@@ -157,7 +157,7 @@ done
 mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
 mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
 #Fixup example permissions
-find ${RPM_BUILD_ROOT}%{_datadir} -name '*.[ch]*' -o -name '*.f90' -exec chmod -x {} +
+find ${RPM_BUILD_ROOT}%{_datadir} \( -name '*.[ch]*' -o -name '*.f90' \) -exec chmod -x {} +
 
 #Fixup headers and scripts for multiarch
 %ifarch x86_64 ppc64 ia64 s390x sparc64 alpha
@@ -304,6 +304,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 27 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-4
+- Really fixup all permissions
+
 * Wed Oct 27 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-3
 - Add docs to the mpi packages
 - Fixup example source file permissions
