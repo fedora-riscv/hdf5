@@ -87,6 +87,7 @@ HDF5 parallel openmpi development files
 %patch1 -p1 -b .longdouble
 %endif
 %patch4 -p1 -b .tstlite
+#This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 
 
