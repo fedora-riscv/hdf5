@@ -1,7 +1,7 @@
-%define snaprel %{nil}
+%global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -13,6 +13,12 @@ Patch1: hdf5-1.8.5-longdouble.patch
 Patch4: hdf5-1.8.5-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
+#No mpich2 on ppc64
+%ifarch ppc64
+%global mpi_list openmpi
+%else
+%global mpi_list mpich2 openmpi
+%endif
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -42,6 +48,8 @@ Requires: %{name}-devel = %{version}-%{release}
 HDF5 static libraries.
 
 
+#No mpich2 on ppc64
+%ifnarch ppc64
 %package mpich2
 Summary: HDF5 mpich2 libraries
 Group: Development/Libraries
@@ -55,10 +63,11 @@ HDF5 parallel mpich2 libraries
 %package mpich2-devel
 Summary: HDF5 mpich2 development files
 Group: Development/Libraries
-Requires: mpich2-devel, %{name}-mpich2 = %{version}-%{release}
+Requires: mpich2, %{name}-mpich2 = %{version}-%{release}
 
 %description mpich2-devel
 HDF5 parallel mpich2 development files
+%endif
 
 
 %package openmpi
@@ -112,6 +121,7 @@ export F9X=gfortran
 export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
 mkdir build
 pushd build
+ln -s ../configure .
 %configure \
   %{configure_opts} \
   --enable-cxx
@@ -122,11 +132,12 @@ popd
 export CC=mpicc
 export CXX=mpicxx
 export F9X=mpif90
-for mpi in mpich2 openmpi
+for mpi in %{mpi_list}
 do
   mkdir $mpi
   pushd $mpi
   module load $mpi-%{_arch}
+  ln -s ../configure .
   %configure \
     %{configure_opts} \
     --enable-parallel \
@@ -147,7 +158,7 @@ done
 rm -rf $RPM_BUILD_ROOT
 make -C build install DESTDIR=${RPM_BUILD_ROOT}
 rm $RPM_BUILD_ROOT/%{_libdir}/*.la
-for mpi in mpich2 openmpi
+for mpi in %{mpi_list}
 do
   module load $mpi-%{_arch}
   make -C $mpi install DESTDIR=${RPM_BUILD_ROOT}
@@ -241,6 +252,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/*.a
 
+%ifnarch ppc64
 %files mpich2
 %defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
@@ -263,6 +275,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mpich2/bin/h5unjam
 %{_libdir}/mpich2/bin/ph5diff
 %{_libdir}/mpich2/lib/*.so.*
+%endif
 
 %files openmpi
 %defattr(-,root,root,-)
@@ -287,6 +300,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/bin/ph5diff
 %{_libdir}/openmpi/lib/*.so.*
 
+%ifnarch ppc64
 %files mpich2-devel
 %defattr(-,root,root,-)
 %{_includedir}/mpich2-%{_arch}
@@ -294,6 +308,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mpich2/bin/h5pfc
 %{_libdir}/mpich2/lib/lib*.so
 %{_libdir}/mpich2/lib/lib*.settings
+%endif
 
 %files openmpi-devel
 %defattr(-,root,root,-)
@@ -305,6 +320,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 8 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-5
+- Add EL6 compatibility - no mpich2 on ppc64
+
 * Wed Oct 27 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-4
 - Really fixup all permissions
 
