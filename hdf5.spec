@@ -1,27 +1,32 @@
-%define snaprel %{nil}
+%global snaprel %{nil}
 Name: hdf5
-Version: 1.8.5
-Release: 4%{?dist}
+Version: 1.8.5.patch1
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-#Source0: ftp://ftp.hdfgroup.org/HDF5/current/src/%{name}-%{version}.tar.gz
-Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
+#Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
+Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.5-patch1.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.5-longdouble.patch
-Patch3: hdf5-1.8.0-multiarch.patch
 Patch4: hdf5-1.8.5-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
+#No mpich2 on ppc64
+%ifarch ppc64
+%global mpi_list openmpi
+%else
+%global mpi_list mpich2 openmpi
+%endif
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
-HDF5 can store two primary objects: datasets and groups. A dataset is 
-essentially a multidimensional array of data elements, and a group is a 
-structure for organizing objects in an HDF5 file. Using these two basic 
-objects, one can create and store almost any kind of scientific data 
-structure, such as images, arrays of vectors, and structured and unstructured 
+HDF5 can store two primary objects: datasets and groups. A dataset is
+essentially a multidimensional array of data elements, and a group is a
+structure for organizing objects in an HDF5 file. Using these two basic
+objects, one can create and store almost any kind of scientific data
+structure, such as images, arrays of vectors, and structured and unstructured
 grids. You can also mix and match them in HDF5 files according to your needs.
 
 
@@ -43,50 +48,132 @@ Requires: %{name}-devel = %{version}-%{release}
 HDF5 static libraries.
 
 
+#No mpich2 on ppc64
+%ifnarch ppc64
+%package mpich2
+Summary: HDF5 mpich2 libraries
+Group: Development/Libraries
+Requires: mpich2
+BuildRequires: mpich2-devel
+
+%description mpich2
+HDF5 parallel mpich2 libraries
+
+
+%package mpich2-devel
+Summary: HDF5 mpich2 development files
+Group: Development/Libraries
+Requires: mpich2, %{name}-mpich2 = %{version}-%{release}
+
+%description mpich2-devel
+HDF5 parallel mpich2 development files
+%endif
+
+
+%package openmpi
+Summary: HDF5 openmpi libraries
+Group: Development/Libraries
+Requires: openmpi
+BuildRequires: openmpi-devel
+
+%description openmpi
+HDF5 parallel openmpi libraries
+
+
+%package openmpi-devel
+Summary: HDF5 openmpi development files
+Group: Development/Libraries
+Requires: openmpi-devel, %{name}-openmpi = %{version}-%{release}
+
+%description openmpi-devel
+HDF5 parallel openmpi development files
+
+
 %prep
-%setup -q -n %{name}-%{version}%{?snaprel}
+#setup -q -n %{name}-%{version}%{?snaprel}
+%setup -q -n %{name}-1.8.5-patch1
 %ifarch ppc64
 %patch1 -p1 -b .longdouble
 %endif
-%patch3 -p1 -b .multiarch
 %patch4 -p1 -b .tstlite
-find -name '*.[ch]' -o -name '*.f90' -exec chmod -x {} +
+#This should be fixed in 1.8.7
+find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 
 
 %build
+#Do out of tree builds
+%global _configure ../configure
+#Common configure options
+%global configure_opts \\\
+  --disable-dependency-tracking \\\
+  --enable-fortran \\\
+  --enable-hl \\\
+  --enable-shared \\\
+%{nil}
+# --enable-cxx and --enable-parallel flags are incompatible
+# --with-mpe=DIR          Use MPE instrumentation [default=no]
+# --enable-cxx/fortran/parallel and --enable-threadsafe flags are incompatible
+
+#Serial build
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
 export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
+mkdir build
+pushd build
+ln -s ../configure .
 %configure \
-  --disable-dependency-tracking \
-  --enable-cxx \
-  --enable-fortran \
-  --enable-hl
-# --enable-cxx/fortran and --enable-parallel flags are incompatible
-#  --with-mpe=DIR          Use MPE instrumentation [default=no]
-# --enable-cxx/fortran/parallel and --enable-threadsafe flags are incompatible
-#Multiarch header
-%ifarch x86_64 ppc64 ia64 s390x sparc64 alpha
-cp src/H5pubconf.h \
-   src/H5pubconf-64.h
-%else
-cp src/H5pubconf.h \
-   src/H5pubconf-32.h
-%endif
+  %{configure_opts} \
+  --enable-cxx
 make
+popd
+
+#MPI builds
+export CC=mpicc
+export CXX=mpicxx
+export F9X=mpif90
+for mpi in %{mpi_list}
+do
+  mkdir $mpi
+  pushd $mpi
+  module load $mpi-%{_arch}
+  ln -s ../configure .
+  %configure \
+    %{configure_opts} \
+    --enable-parallel \
+    --disable-static \
+    --libdir=%{_libdir}/$mpi/lib \
+    --bindir=%{_libdir}/$mpi/bin \
+    --sbindir=%{_libdir}/$mpi/sbin \
+    --includedir=%{_includedir}/$mpi-%{_arch} \
+    --datarootdir=%{_libdir}/$mpi/share \
+    --mandir=%{_libdir}/$mpi/share/man \
+  make
+  module purge
+  popd
+done
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=${RPM_BUILD_ROOT}
-rm -rf $RPM_BUILD_ROOT/%{_libdir}/*.la
+make -C build install DESTDIR=${RPM_BUILD_ROOT}
+rm $RPM_BUILD_ROOT/%{_libdir}/*.la
+for mpi in %{mpi_list}
+do
+  module load $mpi-%{_arch}
+  make -C $mpi install DESTDIR=${RPM_BUILD_ROOT}
+  rm $RPM_BUILD_ROOT/%{_libdir}/$mpi/lib/*.la
+  module purge
+done
 #Fortran modules
 mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
 mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
+#Fixup example permissions
+find ${RPM_BUILD_ROOT}%{_datadir} \( -name '*.[ch]*' -o -name '*.f90' \) -exec chmod -x {} +
 
 #Fixup headers and scripts for multiarch
 %ifarch x86_64 ppc64 ia64 s390x sparc64 alpha
+sed -i -e s/H5pubconf.h/H5pubconf-64.h/ ${RPM_BUILD_ROOT}%{_includedir}/H5public.h
 mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
    ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-64.h
 for x in h5c++ h5cc h5fc
@@ -96,6 +183,7 @@ do
   install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/${x}
 done
 %else
+sed -i -e s/H5pubconf.h/H5pubconf-32.h/ ${RPM_BUILD_ROOT}%{_includedir}/H5public.h
 mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
    ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-32.h
 for x in h5c++ h5cc h5fc
@@ -108,7 +196,14 @@ done
 
 
 %check
-make check
+make -C build check
+#These really don't work on builders
+#for mpi in mpich2 openmpi
+#do
+#  module load $mpi-%{_arch}
+#  make -C $mpi check
+#  module purge
+#done
 
 
 %clean
@@ -143,12 +238,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
-%{_bindir}/h5c++
-%{_bindir}/h5c++-*
-%{_bindir}/h5cc
-%{_bindir}/h5cc-*
-%{_bindir}/h5fc
-%{_bindir}/h5fc-*
+%{_bindir}/h5c++*
+%{_bindir}/h5cc*
+%{_bindir}/h5fc*
 %{_bindir}/h5redeploy
 %{_includedir}/*.h
 %{_libdir}/*.so
@@ -160,8 +252,91 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/*.a
 
+%ifnarch ppc64
+%files mpich2
+%defattr(-,root,root,-)
+%doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
+%doc release_docs/HISTORY*.txt
+%{_libdir}/mpich2/bin/gif2h5
+%{_libdir}/mpich2/bin/h52gif
+%{_libdir}/mpich2/bin/h5copy
+%{_libdir}/mpich2/bin/h5debug
+%{_libdir}/mpich2/bin/h5diff
+%{_libdir}/mpich2/bin/h5dump
+%{_libdir}/mpich2/bin/h5import
+%{_libdir}/mpich2/bin/h5jam
+%{_libdir}/mpich2/bin/h5ls
+%{_libdir}/mpich2/bin/h5mkgrp
+%{_libdir}/mpich2/bin/h5redeploy
+%{_libdir}/mpich2/bin/h5repack
+%{_libdir}/mpich2/bin/h5perf
+%{_libdir}/mpich2/bin/h5repart
+%{_libdir}/mpich2/bin/h5stat
+%{_libdir}/mpich2/bin/h5unjam
+%{_libdir}/mpich2/bin/ph5diff
+%{_libdir}/mpich2/lib/*.so.*
+%endif
+
+%files openmpi
+%defattr(-,root,root,-)
+%doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
+%doc release_docs/HISTORY*.txt
+%{_libdir}/openmpi/bin/gif2h5
+%{_libdir}/openmpi/bin/h52gif
+%{_libdir}/openmpi/bin/h5copy
+%{_libdir}/openmpi/bin/h5debug
+%{_libdir}/openmpi/bin/h5diff
+%{_libdir}/openmpi/bin/h5dump
+%{_libdir}/openmpi/bin/h5import
+%{_libdir}/openmpi/bin/h5jam
+%{_libdir}/openmpi/bin/h5ls
+%{_libdir}/openmpi/bin/h5mkgrp
+%{_libdir}/openmpi/bin/h5perf
+%{_libdir}/openmpi/bin/h5redeploy
+%{_libdir}/openmpi/bin/h5repack
+%{_libdir}/openmpi/bin/h5repart
+%{_libdir}/openmpi/bin/h5stat
+%{_libdir}/openmpi/bin/h5unjam
+%{_libdir}/openmpi/bin/ph5diff
+%{_libdir}/openmpi/lib/*.so.*
+
+%ifnarch ppc64
+%files mpich2-devel
+%defattr(-,root,root,-)
+%{_includedir}/mpich2-%{_arch}
+%{_libdir}/mpich2/bin/h5pcc
+%{_libdir}/mpich2/bin/h5pfc
+%{_libdir}/mpich2/lib/lib*.so
+%{_libdir}/mpich2/lib/lib*.settings
+%endif
+
+%files openmpi-devel
+%defattr(-,root,root,-)
+%{_includedir}/openmpi-%{_arch}
+%{_libdir}/openmpi/bin/h5pcc
+%{_libdir}/openmpi/bin/h5pfc
+%{_libdir}/openmpi/lib/lib*.so
+%{_libdir}/openmpi/lib/lib*.settings
+
 
 %changelog
+* Wed Dec 8 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-5
+- Add EL6 compatibility - no mpich2 on ppc64
+
+* Wed Oct 27 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-4
+- Really fixup all permissions
+
+* Wed Oct 27 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-3
+- Add docs to the mpi packages
+- Fixup example source file permissions
+
+* Tue Oct 26 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-2
+- Build parallel hdf5 packages for mpich2 and openmpi
+- Rework multiarch support and drop multiarch patch
+
+* Tue Sep 7 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-1
+- Update to 1.8.5-patch1
+
 * Wed Jun 23 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5-4
 - Re-add rebased tstlite patch - not fixed yet
 
@@ -218,7 +393,7 @@ rm -rf $RPM_BUILD_ROOT
 
 * Fri Sep 26 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-2
 - Add patch to filter -little as option used on sh arch (#464052)
- 
+
 * Thu Jun 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.1-1
 - Update to 1.8.1
 
@@ -227,12 +402,12 @@ rm -rf $RPM_BUILD_ROOT
 
 * Tue May 13 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-2
 - Use new %%{_fmoddir} macro
-- Re-enable ppc64, disable failing tests.  Failing tests are for 
+- Re-enable ppc64, disable failing tests.  Failing tests are for
   experimental long double support.
 
 * Mon May 5 2008 Orion Poplawski <orion@cora.nwra.com> 1.8.0.snap5-1
 - Update to 1.8.0-snap5
-- Remove --enable-threadsafe, incompatible with --enable-cxx and 
+- Remove --enable-threadsafe, incompatible with --enable-cxx and
   --enable-fortran
 - ExcludeArch ppc64 until we can get it to build (bug #445423)
 
