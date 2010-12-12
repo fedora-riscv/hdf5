@@ -1,7 +1,7 @@
 %global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -13,11 +13,25 @@ Patch1: hdf5-1.8.5-longdouble.patch
 Patch4: hdf5-1.8.5-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
-#No mpich2 on ppc64
+
+%global with_mpich2 1
+%global with_openmpi 1
+%if 0%{?rhel}
 %ifarch ppc64
-%global mpi_list openmpi
-%else
-%global mpi_list mpich2 openmpi
+# No mpich2 on ppc64 in EL
+%global with_mpich2 0
+%endif
+%endif
+%ifarch s390 s390x
+# No openmpi on s390(x)
+%global with_openmpi 0
+%endif
+
+%if %{with_mpich2}
+%global mpi_list mpich2
+%endif
+%if %{with_openmpi}
+%global mpi_list %{mpi_list} openmpi
 %endif
 
 %description
@@ -48,8 +62,7 @@ Requires: %{name}-devel = %{version}-%{release}
 HDF5 static libraries.
 
 
-#No mpich2 on ppc64
-%ifnarch ppc64
+%if %{with_mpich2}
 %package mpich2
 Summary: HDF5 mpich2 libraries
 Group: Development/Libraries
@@ -70,6 +83,7 @@ HDF5 parallel mpich2 development files
 %endif
 
 
+%if %{with_openmpi}
 %package openmpi
 Summary: HDF5 openmpi libraries
 Group: Development/Libraries
@@ -87,6 +101,7 @@ Requires: openmpi-devel, %{name}-openmpi = %{version}-%{release}
 
 %description openmpi-devel
 HDF5 parallel openmpi development files
+%endif
 
 
 %prep
@@ -252,7 +267,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/*.a
 
-%ifnarch ppc64
+%if %{with_mpich2}
 %files mpich2
 %defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
@@ -275,8 +290,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mpich2/bin/h5unjam
 %{_libdir}/mpich2/bin/ph5diff
 %{_libdir}/mpich2/lib/*.so.*
+
+%files mpich2-devel
+%defattr(-,root,root,-)
+%{_includedir}/mpich2-%{_arch}
+%{_libdir}/mpich2/bin/h5pcc
+%{_libdir}/mpich2/bin/h5pfc
+%{_libdir}/mpich2/lib/lib*.so
+%{_libdir}/mpich2/lib/lib*.settings
 %endif
 
+%if %{with_openmpi}
 %files openmpi
 %defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
@@ -300,16 +324,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/bin/ph5diff
 %{_libdir}/openmpi/lib/*.so.*
 
-%ifnarch ppc64
-%files mpich2-devel
-%defattr(-,root,root,-)
-%{_includedir}/mpich2-%{_arch}
-%{_libdir}/mpich2/bin/h5pcc
-%{_libdir}/mpich2/bin/h5pfc
-%{_libdir}/mpich2/lib/lib*.so
-%{_libdir}/mpich2/lib/lib*.settings
-%endif
-
 %files openmpi-devel
 %defattr(-,root,root,-)
 %{_includedir}/openmpi-%{_arch}
@@ -317,9 +331,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/bin/h5pfc
 %{_libdir}/openmpi/lib/lib*.so
 %{_libdir}/openmpi/lib/lib*.settings
+%endif
 
 
 %changelog
+* Sun Dec 12 2010 Dan Horák <dan[at]danny.cz> 1.8.5.patch1-6
+- fully conditionalize MPI support
+
 * Wed Dec 8 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-5
 - Add EL6 compatibility - no mpich2 on ppc64
 
