@@ -1,7 +1,7 @@
 %global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -34,6 +34,7 @@ grids. You can also mix and match them in HDF5 files according to your needs.
 Summary: HDF5 development files
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
+Requires: zlib-devel
 
 %description devel
 HDF5 development headers and libraries.
@@ -320,6 +321,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Feb 6 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-6
+- Add Requires: zlib-devel to hdf5-devel
+
 * Wed Dec 8 2010 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-5
 - Add EL6 compatibility - no mpich2 on ppc64
 
