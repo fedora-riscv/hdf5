@@ -1,16 +1,15 @@
 %global snaprel %{nil}
 Name: hdf5
-Version: 1.8.5.patch1
-Release: 8%{?dist}
+Version: 1.8.6
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
-#Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
-Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.5-patch1.tar.bz2
+Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.5-longdouble.patch
-Patch4: hdf5-1.8.5-tstlite.patch
+Patch4: hdf5-1.8.6-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -107,7 +106,7 @@ HDF5 parallel openmpi development files
 
 %prep
 #setup -q -n %{name}-%{version}%{?snaprel}
-%setup -q -n %{name}-1.8.5-patch1
+%setup -q
 %ifarch ppc64
 %patch1 -p1 -b .longdouble
 %endif
@@ -336,6 +335,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Sep 18 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.6-1
+- Update to 1.8.6-1
+- Update tstlite patch - not fixed yet
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.5.patch1-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 

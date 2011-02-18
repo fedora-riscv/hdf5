@@ -1,0 +1,12 @@
+diff -up hdf5-1.8.6/hl/fortran/test/Makefile.in.tstlite hdf5-1.8.6/hl/fortran/test/Makefile.in
+--- hdf5-1.8.6/hl/fortran/test/Makefile.in.tstlite	2011-02-14 09:24:24.000000000 -0700
++++ hdf5-1.8.6/hl/fortran/test/Makefile.in	2011-02-18 14:39:45.755110289 -0700
+@@ -377,7 +377,7 @@ CHECK_CLEANFILES = *.chkexe *.chklog *.c
+ 	f1tab.h5
+ 
+ # Our main target, the test programs
+-TEST_PROG = tstlite tstimage tsttable
++TEST_PROG = tstimage tsttable
+ LDADD = $(LIBH5F_HL) $(LIBH5F) $(LIBH5_HL)  $(LIBHDF5)
+ 
+ # Source files for the programs
