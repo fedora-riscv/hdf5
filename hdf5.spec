@@ -1,4 +1,7 @@
 %global snaprel %{nil}
+
+# NOTE:  Try not to realease new versions to released versions of Fedora
+# You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.6
 Release: 1%{?dist}
