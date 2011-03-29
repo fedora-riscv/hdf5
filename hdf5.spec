@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -338,7 +338,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Sep 18 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.6-1
+* Tue Mar 29 2011 Deji Akingunola <dakingun@gmail.com> - 1.8.6-2
+- Rebuild for mpich2 soname bump
+
+* Fri Feb 18 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.6-1
 - Update to 1.8.6-1
 - Update tstlite patch - not fixed yet
 
