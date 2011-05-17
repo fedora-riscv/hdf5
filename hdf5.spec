@@ -3,8 +3,8 @@
 # NOTE:  Try not to realease new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.6
-Release: 2%{?dist}
+Version: 1.8.7
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -288,6 +288,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mpich2/bin/h5redeploy
 %{_libdir}/mpich2/bin/h5repack
 %{_libdir}/mpich2/bin/h5perf
+%{_libdir}/mpich2/bin/h5perf_serial
 %{_libdir}/mpich2/bin/h5repart
 %{_libdir}/mpich2/bin/h5stat
 %{_libdir}/mpich2/bin/h5unjam
@@ -319,6 +320,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/bin/h5ls
 %{_libdir}/openmpi/bin/h5mkgrp
 %{_libdir}/openmpi/bin/h5perf
+%{_libdir}/openmpi/bin/h5perf_serial
 %{_libdir}/openmpi/bin/h5redeploy
 %{_libdir}/openmpi/bin/h5repack
 %{_libdir}/openmpi/bin/h5repart
@@ -338,6 +340,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 17 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.7-1
+- Update to 1.8.7
+
 * Tue Mar 29 2011 Deji Akingunola <dakingun@gmail.com> - 1.8.6-2
 - Rebuild for mpich2 soname bump
 
