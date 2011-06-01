@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -110,9 +110,6 @@ HDF5 parallel openmpi development files
 %prep
 #setup -q -n %{name}-%{version}%{?snaprel}
 %setup -q
-%ifarch ppc64
-%patch1 -p1 -b .longdouble
-%endif
 %patch4 -p1 -b .tstlite
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
@@ -340,6 +337,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 01 2011 Karsten Hopp <karsten@redhat.com> 1.8.7-2
+- drop ppc64 longdouble patch, not required anymore
+
 * Tue May 17 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.7-1
 - Update to 1.8.7
 
