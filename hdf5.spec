@@ -1,7 +1,7 @@
 %global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -209,6 +209,18 @@ do
   install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/${x}
 done
 %endif
+# rpm macro for version checking
+mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm
+cat > ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm/macros.hdf5 <<EOF
+#
+# RPM macros for R packaging
+#
+
+#
+# Make R search index.txt
+#
+%_hdf5_version	%{version}
+EOF
 
 
 %check
@@ -254,6 +266,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
+%config(noreplace) %{_sysconfdir}/rpm/macros.hdf5
 %{_bindir}/h5c++*
 %{_bindir}/h5cc*
 %{_bindir}/h5fc*
@@ -336,6 +349,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Dec 16 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-10
+- Add rpm macro %%{_hdf5_version} for convenience
+
 * Wed Mar 30 2011 Deji Akingunola <dakingun@gmail.com> - 1.8.5.patch1-9
 - Rebuild for mpich2 soname bump
 
