@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.8
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -207,6 +207,18 @@ do
   install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/${x}
 done
 %endif
+# rpm macro for version checking
+mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm
+cat > ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm/macros.hdf5 <<EOF
+#
+# RPM macros for R packaging
+#
+
+#
+# Make R search index.txt
+#
+%_hdf5_version	%{version}
+EOF
 
 
 %check
@@ -252,6 +264,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-,root,root,-)
+%config(noreplace) %{_sysconfdir}/rpm/macros.hdf5
 %{_bindir}/h5c++*
 %{_bindir}/h5cc*
 %{_bindir}/h5fc*
@@ -336,6 +349,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov 16 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.8-2
+- Add rpm macro %%{_hdf5_version} for convenience
+
 * Tue Nov 15 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.8-1
 - Update to 1.8.8
 - Drop tstlite patch
