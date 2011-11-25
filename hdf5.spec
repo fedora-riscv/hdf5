@@ -376,7 +376,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-<<<<<<< HEAD
 * Fri Nov 18 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.7-3
 - Add rpm macro %%{_hdf5_version} for convenience
 - Enable static MPI builds
