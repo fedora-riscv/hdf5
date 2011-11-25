@@ -78,10 +78,20 @@ HDF5 parallel mpich2 libraries
 %package mpich2-devel
 Summary: HDF5 mpich2 development files
 Group: Development/Libraries
-Requires: mpich2, %{name}-mpich2 = %{version}-%{release}
+Requires: %{name}-mpich2%{?_isa} = %{version}-%{release}
+Requires: mpich2
 
 %description mpich2-devel
 HDF5 parallel mpich2 development files
+
+
+%package mpich2-static
+Summary: HDF5 mpich2 static libraries
+Group: Development/Libraries
+Requires: %{name}-mpich2-devel%{?_isa} = %{version}-%{release}
+
+%description mpich2-static
+HDF5 parallel mpich2 static libraries
 %endif
 
 
@@ -99,10 +109,20 @@ HDF5 parallel openmpi libraries
 %package openmpi-devel
 Summary: HDF5 openmpi development files
 Group: Development/Libraries
-Requires: openmpi-devel, %{name}-openmpi = %{version}-%{release}
+Requires: %{name}-openmpi%{_isa} = %{version}-%{release}
+Requires: openmpi-devel
 
 %description openmpi-devel
 HDF5 parallel openmpi development files
+
+
+%package openmpi-static
+Summary: HDF5 openmpi static libraries
+Group: Development/Libraries
+Requires: %{name}-openmpi-devel%{?_isa} = %{version}-%{release}
+
+%description openmpi-static
+HDF5 parallel openmpi static libraries
 %endif
 
 
@@ -155,7 +175,6 @@ do
   %configure \
     %{configure_opts} \
     --enable-parallel \
-    --disable-static \
     --libdir=%{_libdir}/$mpi/lib \
     --bindir=%{_libdir}/$mpi/bin \
     --sbindir=%{_libdir}/$mpi/sbin \
@@ -311,6 +330,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mpich2/bin/h5pfc
 %{_libdir}/mpich2/lib/lib*.so
 %{_libdir}/mpich2/lib/lib*.settings
+
+%files mpich2-static
+%defattr(-,root,root,-)
+%{_libdir}/mpich2/lib/*.a
 %endif
 
 %if %{with_openmpi}
@@ -345,12 +368,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/bin/h5pfc
 %{_libdir}/openmpi/lib/lib*.so
 %{_libdir}/openmpi/lib/lib*.settings
+
+%files openmpi-static
+%defattr(-,root,root,-)
+%{_libdir}/openmpi/lib/*.a
 %endif
 
 
 %changelog
+<<<<<<< HEAD
 * Fri Nov 18 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.7-3
 - Add rpm macro %%{_hdf5_version} for convenience
+- Enable static MPI builds
 
 * Wed Jun 01 2011 Karsten Hopp <karsten@redhat.com> 1.8.7-2
 - drop ppc64 longdouble patch, not required anymore
