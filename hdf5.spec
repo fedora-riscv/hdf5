@@ -1,7 +1,7 @@
 %global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -63,10 +63,20 @@ HDF5 parallel mpich2 libraries
 %package mpich2-devel
 Summary: HDF5 mpich2 development files
 Group: Development/Libraries
-Requires: mpich2, %{name}-mpich2 = %{version}-%{release}
+Requires: %{name}-mpich2%{?_isa} = %{version}-%{release}
+Requires: mpich2
 
 %description mpich2-devel
 HDF5 parallel mpich2 development files
+
+
+%package mpich2-static
+Summary: HDF5 mpich2 static libraries
+Group: Development/Libraries
+Requires: %{name}-mpich2-devel%{?_isa} = %{version}-%{release}
+
+%description mpich2-static
+HDF5 parallel mpich2 static libraries
 %endif
 
 
@@ -83,10 +93,21 @@ HDF5 parallel openmpi libraries
 %package openmpi-devel
 Summary: HDF5 openmpi development files
 Group: Development/Libraries
-Requires: openmpi-devel, %{name}-openmpi = %{version}-%{release}
+Requires: %{name}-openmpi%{_isa} = %{version}-%{release}
+Requires: openmpi-devel
 
 %description openmpi-devel
 HDF5 parallel openmpi development files
+
+
+%package openmpi-static
+Summary: HDF5 openmpi static libraries
+Group: Development/Libraries
+Requires: %{name}-openmpi-devel%{?_isa} = %{version}-%{release}
+
+%description openmpi-static
+HDF5 parallel openmpi static libraries
+%endif
 
 
 %prep
@@ -141,7 +162,6 @@ do
   %configure \
     %{configure_opts} \
     --enable-parallel \
-    --disable-static \
     --libdir=%{_libdir}/$mpi/lib \
     --bindir=%{_libdir}/$mpi/bin \
     --sbindir=%{_libdir}/$mpi/sbin \
@@ -288,6 +308,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/mpich2/bin/h5unjam
 %{_libdir}/mpich2/bin/ph5diff
 %{_libdir}/mpich2/lib/*.so.*
+
+%files mpich2-devel
+%defattr(-,root,root,-)
+%{_includedir}/mpich2-%{_arch}
+%{_libdir}/mpich2/bin/h5pcc
+%{_libdir}/mpich2/bin/h5pfc
+%{_libdir}/mpich2/lib/lib*.so
+%{_libdir}/mpich2/lib/lib*.settings
+
+%files mpich2-static
+%defattr(-,root,root,-)
+%{_libdir}/mpich2/lib/*.a
 %endif
 
 %files openmpi
@@ -313,16 +345,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/bin/ph5diff
 %{_libdir}/openmpi/lib/*.so.*
 
-%ifnarch ppc64
-%files mpich2-devel
-%defattr(-,root,root,-)
-%{_includedir}/mpich2-%{_arch}
-%{_libdir}/mpich2/bin/h5pcc
-%{_libdir}/mpich2/bin/h5pfc
-%{_libdir}/mpich2/lib/lib*.so
-%{_libdir}/mpich2/lib/lib*.settings
-%endif
-
 %files openmpi-devel
 %defattr(-,root,root,-)
 %{_includedir}/openmpi-%{_arch}
@@ -331,8 +353,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/lib/lib*.so
 %{_libdir}/openmpi/lib/lib*.settings
 
+%files openmpi-static
+%defattr(-,root,root,-)
+%{_libdir}/openmpi/lib/*.a
+
 
 %changelog
+* Tue Dec 27 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-7
+- Enable static MPI builds (bug #767589)
+- Fixup mpi -devel Requires
+
 * Tue Dec 27 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-6
 - Add rpm macro %%{_hdf5_version} for convenience
 
