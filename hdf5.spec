@@ -11,6 +11,7 @@ Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
+Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch4: hdf5-1.8.6-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
@@ -129,6 +130,7 @@ HDF5 parallel openmpi static libraries
 %prep
 #setup -q -n %{name}-%{version}%{?snaprel}
 %setup -q
+%patch0 -p1 -b .LD_LIBRARY_PATH
 %patch4 -p1 -b .tstlite
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
@@ -379,6 +381,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Nov 18 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.7-3
 - Add rpm macro %%{_hdf5_version} for convenience
 - Enable static MPI builds
+- Add patch to avoid setting LD_LIBRARY_PATH
 
 * Wed Jun 01 2011 Karsten Hopp <karsten@redhat.com> 1.8.7-2
 - drop ppc64 longdouble patch, not required anymore
