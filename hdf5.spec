@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.8
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -32,7 +32,7 @@ BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 %global mpi_list mpich2
 %endif
 %if %{with_openmpi}
-%global mpi_list %{mpi_list} openmpi
+%global mpi_list %{?mpi_list} openmpi
 %endif
 
 %description
@@ -376,6 +376,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 01 2011 Caolán McNamara <caolanm@redhat.com> 1.8.8-4
+- Related: rhbz#758334 hdf5 doesn't build on ppc64
+
 * Fri Nov 25 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.8-3
 - Enable static MPI builds
 
