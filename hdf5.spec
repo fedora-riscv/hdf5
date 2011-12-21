@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.8
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -12,6 +12,7 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 Patch0: hdf5-LD_LIBRARY_PATH.patch
+Patch1: hdf5-1.8.8-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 
@@ -130,6 +131,10 @@ HDF5 parallel openmpi static libraries
 #setup -q -n %{name}-%{version}%{?snaprel}
 %setup -q
 %patch0 -p1 -b .LD_LIBRARY_PATH
+%ifarch ppc64 s390x
+# the tstlite test fails with "stack smashing detected" on these arches
+%patch1 -p1 -b .tstlite
+%endif
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 
@@ -376,6 +381,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Dec 21 2011 Dan Horák <dan[at]danny.cz> 1.8.8-5
+- reintroduce the tstlite patch for ppc64 and s390x
+
 * Thu Dec 01 2011 Caolán McNamara <caolanm@redhat.com> 1.8.8-4
 - Related: rhbz#758334 hdf5 doesn't build on ppc64
 
