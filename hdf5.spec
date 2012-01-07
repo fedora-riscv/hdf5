@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.8
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -146,6 +146,7 @@ find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 %global configure_opts \\\
   --disable-dependency-tracking \\\
   --enable-fortran \\\
+  --enable-fortran2003 \\\
   --enable-hl \\\
   --enable-shared \\\
 %{nil}
@@ -381,6 +382,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 7 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.8-6
+- Enable Fortran 2003 support (bug 772387)
+
 * Wed Dec 21 2011 Dan Horák <dan[at]danny.cz> 1.8.8-5
 - reintroduce the tstlite patch for ppc64 and s390x
 
