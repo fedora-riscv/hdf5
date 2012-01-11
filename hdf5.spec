@@ -107,7 +107,6 @@ Requires: %{name}-openmpi-devel%{?_isa} = %{version}-%{release}
 
 %description openmpi-static
 HDF5 parallel openmpi static libraries
-%endif
 
 
 %prep
