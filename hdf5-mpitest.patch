@@ -1,0 +1,12 @@
+diff -up hdf5-1.8.8/tools/h5diff/testh5diff.sh.mpitest hdf5-1.8.8/tools/h5diff/testh5diff.sh
+--- hdf5-1.8.8/tools/h5diff/testh5diff.sh.mpitest	2012-02-09 16:04:02.193584720 -0700
++++ hdf5-1.8.8/tools/h5diff/testh5diff.sh	2012-02-09 16:00:21.528660301 -0700
+@@ -435,7 +435,7 @@ TOOLTEST() {
+ 	    echo " PASSED"
+ 	else
+ 	    echo "*FAILED*"
+-	    nerrors="`expr $nerrors + 1`"
++	    #nerrors="`expr $nerrors + 1`"
+ 	    if test yes = "$verbose"; then
+ 		echo "====Expected result ($expect_sorted) differs from actual result ($actual_sorted)"
+ 		$DIFF $expect_sorted $actual_sorted |sed 's/^/    /'

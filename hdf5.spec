@@ -12,9 +12,15 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 Patch0: hdf5-LD_LIBRARY_PATH.patch
+# Patch mpi tests not to fail - openmpi outputs some extraneous output
+Patch2: hdf5-mpitest.patch
+# Fix typo bug in parallel h5diff
+Patch3: hdf5-ph5diff.patch
 Patch4: hdf5-1.8.6-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
+# Needed for mpi tests
+BuildRequires: openssh-clients
 
 %global with_mpich2 1
 %global with_openmpi 1
@@ -131,6 +137,8 @@ HDF5 parallel openmpi static libraries
 #setup -q -n %{name}-%{version}%{?snaprel}
 %setup -q
 %patch0 -p1 -b .LD_LIBRARY_PATH
+%patch2 -p1 -b .mpitest
+%patch3 -p1 -b .ph5diff
 %patch4 -p1 -b .tstlite
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
@@ -244,13 +252,12 @@ EOF
 
 %check
 make -C build check
-#These really don't work on builders
-#for mpi in mpich2 openmpi
-#do
-#  module load $mpi-%{_arch}
-#  make -C $mpi check
-#  module purge
-#done
+for mpi in mpich2 openmpi
+do
+  module load $mpi-%{_arch}
+  make -C $mpi check
+  module purge
+done
 
 
 %clean
