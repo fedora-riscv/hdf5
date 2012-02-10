@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.8
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -390,6 +390,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 10 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.8-7
+- Add patch to fix parallel mpi tests
+- Add patch to fix bug in parallel h5diff
+
 * Sat Jan 7 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.8-6
 - Enable Fortran 2003 support (bug 772387)
 
