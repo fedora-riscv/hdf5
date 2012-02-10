@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.7
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -385,6 +385,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Feb 10 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.7-5
+- Add patch to fix parallel mpi tests
+- Add patch to fix bug in parallel h5diff
+
 * Thu Dec 01 2011 Caolán McNamara <caolanm@redhat.com> 1.8.7-4
 - Related: rhbz#758334 hdf5 doesn't build on ppc64
 
