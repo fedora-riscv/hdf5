@@ -13,8 +13,6 @@ Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}
 Source1: h5comp
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch1: hdf5-1.8.8-tstlite.patch
-# Patch mpi tests not to fail - openmpi outputs some extraneous output
-Patch2: hdf5-mpitest.patch
 # Fix typo bug in parallel h5diff
 Patch3: hdf5-ph5diff.patch
 
@@ -142,7 +140,6 @@ HDF5 parallel openmpi static libraries
 # the tstlite test fails with "stack smashing detected" on these arches
 %patch1 -p1 -b .tstlite
 %endif
-%patch2 -p1 -b .mpitest
 %patch3 -p1 -b .ph5diff
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
@@ -257,6 +254,7 @@ EOF
 
 %check
 make -C build check
+export HDF5_Make_Ignore=yes
 for mpi in mpich2 openmpi
 do
   module load $mpi-%{_arch}
