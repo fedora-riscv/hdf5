@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.8
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -16,7 +16,6 @@ Patch1: hdf5-1.8.8-tstlite.patch
 # Fix typo bug in parallel h5diff
 Patch3: hdf5-ph5diff.patch
 
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # Needed for mpi tests
 BuildRequires: openssh-clients
@@ -29,7 +28,7 @@ BuildRequires: openssh-clients
 %global with_mpich2 0
 %endif
 %endif
-%ifarch s390 s390x
+%ifarch s390 s390x %{arm}
 # No openmpi on s390(x)
 %global with_openmpi 0
 %endif
@@ -200,7 +199,6 @@ done
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make -C build install DESTDIR=${RPM_BUILD_ROOT}
 rm $RPM_BUILD_ROOT/%{_libdir}/*.la
 for mpi in %{mpi_list}
@@ -261,10 +259,6 @@ do
   make -C $mpi check
   module purge
 done
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 
 %post -p /sbin/ldconfig
@@ -388,6 +382,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 15 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.8-8
+- disable openmpi for ARM as we currently don't have it
+
 * Fri Feb 10 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.8-7
 - Add patch to fix parallel mpi tests
 - Add patch to fix bug in parallel h5diff
