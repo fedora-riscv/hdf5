@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.7
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -252,7 +252,7 @@ EOF
 
 %check
 make -C build check
-for mpi in mpich2 openmpi
+for mpi in %{mpi_list}
 do
   module load $mpi-%{_arch}
   make -C $mpi check
@@ -385,6 +385,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 20 2012 Dan Horák <dan[at]danny.cz> 1.8.7-6
+- use %%{mpi_list} also for tests
+
 * Fri Feb 10 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.7-5
 - Add patch to fix parallel mpi tests
 - Add patch to fix bug in parallel h5diff
