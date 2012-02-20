@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.8
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -253,7 +253,7 @@ EOF
 %check
 make -C build check
 export HDF5_Make_Ignore=yes
-for mpi in mpich2 openmpi
+for mpi in %{mpi_list}
 do
   module load $mpi-%{_arch}
   make -C $mpi check
@@ -382,6 +382,9 @@ done
 
 
 %changelog
+* Mon Feb 20 2012 Dan Horák <dan[at]danny.cz> 1.8.8-9
+- use %%{mpi_list} also for tests
+
 * Wed Feb 15 2012 Peter Robinson <pbrobinson@fedoraproject.org> - 1.8.8-8
 - disable openmpi for ARM as we currently don't have it
 
