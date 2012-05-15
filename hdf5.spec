@@ -3,8 +3,8 @@
 # NOTE:  Try not to realease new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.8
-Release: 9%{?dist}
+Version: 1.8.9
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -382,6 +382,9 @@ done
 
 
 %changelog
+* Tue May 15 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.9-1
+- Update to 1.8.9
+
 * Mon Feb 20 2012 Dan Horák <dan[at]danny.cz> 1.8.8-9
 - use %%{mpi_list} also for tests
 
