@@ -181,7 +181,7 @@ for mpi in %{mpi_list}
 do
   mkdir $mpi
   pushd $mpi
-  module load $mpi-%{_arch}
+  module load mpi/$mpi-%{_arch}
   ln -s ../configure .
   %configure \
     %{configure_opts} \
@@ -191,7 +191,7 @@ do
     --sbindir=%{_libdir}/$mpi/sbin \
     --includedir=%{_includedir}/$mpi-%{_arch} \
     --datarootdir=%{_libdir}/$mpi/share \
-    --mandir=%{_libdir}/$mpi/share/man \
+    --mandir=%{_libdir}/$mpi/share/man
   make
   module purge
   popd
@@ -203,7 +203,7 @@ make -C build install DESTDIR=${RPM_BUILD_ROOT}
 rm $RPM_BUILD_ROOT/%{_libdir}/*.la
 for mpi in %{mpi_list}
 do
-  module load $mpi-%{_arch}
+  module load mpi/$mpi-%{_arch}
   make -C $mpi install DESTDIR=${RPM_BUILD_ROOT}
   rm $RPM_BUILD_ROOT/%{_libdir}/$mpi/lib/*.la
   module purge
@@ -255,7 +255,7 @@ make -C build check
 export HDF5_Make_Ignore=yes
 for mpi in %{mpi_list}
 do
-  module load $mpi-%{_arch}
+  module load mpi/$mpi-%{_arch}
   make -C $mpi check
   module purge
 done
