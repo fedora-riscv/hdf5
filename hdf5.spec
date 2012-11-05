@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.9
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -382,6 +382,9 @@ done
 
 
 %changelog
+* Mon Nov 5 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.9-4
+- Rebuild for fixed openmpi f90 soname
+
 * Thu Nov 1 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.9-3
 - Rebuild for openmpi and mpich2 soname bumps
 
