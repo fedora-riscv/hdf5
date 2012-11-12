@@ -4,11 +4,12 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.9
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
+
 Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 Patch0: hdf5-LD_LIBRARY_PATH.patch
@@ -28,7 +29,7 @@ BuildRequires: openssh-clients
 %global with_mpich2 0
 %endif
 %endif
-%ifarch s390 s390x %{arm}
+%ifarch s390 s390x
 # No openmpi on s390(x)
 %global with_openmpi 0
 %endif
@@ -382,6 +383,9 @@ done
 
 
 %changelog
+* Mon Nov 12 2012 Peter Robinson <pbrobinson@fedoraproject.org> 1.8.9-3
+- Enable openmpi support on ARM as we now have it
+
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.9-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
