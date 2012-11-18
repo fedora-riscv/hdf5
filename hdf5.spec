@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.9
-Release: 3%{?dist}
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -182,7 +182,7 @@ for mpi in %{mpi_list}
 do
   mkdir $mpi
   pushd $mpi
-  module load $mpi-%{_arch}
+  module load mpi/$mpi-%{_arch}
   ln -s ../configure .
   %configure \
     %{configure_opts} \
@@ -192,7 +192,7 @@ do
     --sbindir=%{_libdir}/$mpi/sbin \
     --includedir=%{_includedir}/$mpi-%{_arch} \
     --datarootdir=%{_libdir}/$mpi/share \
-    --mandir=%{_libdir}/$mpi/share/man \
+    --mandir=%{_libdir}/$mpi/share/man
   make
   module purge
   popd
@@ -204,7 +204,7 @@ make -C build install DESTDIR=${RPM_BUILD_ROOT}
 rm $RPM_BUILD_ROOT/%{_libdir}/*.la
 for mpi in %{mpi_list}
 do
-  module load $mpi-%{_arch}
+  module load mpi/$mpi-%{_arch}
   make -C $mpi install DESTDIR=${RPM_BUILD_ROOT}
   rm $RPM_BUILD_ROOT/%{_libdir}/$mpi/lib/*.la
   module purge
@@ -256,7 +256,7 @@ make -C build check
 export HDF5_Make_Ignore=yes
 for mpi in %{mpi_list}
 do
-  module load $mpi-%{_arch}
+  module load mpi/$mpi-%{_arch}
   make -C $mpi check
   module purge
 done
@@ -383,8 +383,14 @@ done
 
 
 %changelog
-* Mon Nov 12 2012 Peter Robinson <pbrobinson@fedoraproject.org> 1.8.9-3
+* Mon Nov 12 2012 Peter Robinson <pbrobinson@fedoraproject.org> 1.8.9-5
 - Enable openmpi support on ARM as we now have it
+
+* Mon Nov 5 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.9-4
+- Rebuild for fixed openmpi f90 soname
+
+* Thu Nov 1 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.9-3
+- Rebuild for openmpi and mpich2 soname bumps
 
 * Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.9-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
