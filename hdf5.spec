@@ -3,8 +3,8 @@
 # NOTE:  Try not to realease new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.9
-Release: 4%{?dist}
+Version: 1.8.10
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -13,8 +13,6 @@ Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}
 Source1: h5comp
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch1: hdf5-1.8.8-tstlite.patch
-# Fix typo bug in parallel h5diff
-Patch3: hdf5-ph5diff.patch
 
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # Needed for mpi tests
@@ -139,7 +137,6 @@ HDF5 parallel openmpi static libraries
 # the tstlite test fails with "stack smashing detected" on these arches
 %patch1 -p1 -b .tstlite
 %endif
-%patch3 -p1 -b .ph5diff
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 
@@ -149,7 +146,7 @@ find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 %global _configure ../configure
 #Common configure options
 %global configure_opts \\\
-  --disable-dependency-tracking \\\
+  --disable-silent-rules \\\
   --enable-fortran \\\
   --enable-fortran2003 \\\
   --enable-hl \\\
@@ -382,6 +379,11 @@ done
 
 
 %changelog
+* Wed Nov 14 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.10-1
+- Update to 1.8.10
+- Rebase LD_LIBRARY_PATH patch
+- Drop ph5diff patch fixed upstream
+
 * Mon Nov 5 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.9-4
 - Rebuild for fixed openmpi f90 soname
 
