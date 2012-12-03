@@ -9,6 +9,7 @@ Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
+
 Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 Patch0: hdf5-LD_LIBRARY_PATH.patch
@@ -26,7 +27,7 @@ BuildRequires: openssh-clients
 %global with_mpich2 0
 %endif
 %endif
-%ifarch s390 s390x %{arm}
+%ifarch s390 s390x
 # No openmpi on s390(x)
 %global with_openmpi 0
 %endif
@@ -383,6 +384,9 @@ done
 - Update to 1.8.10
 - Rebase LD_LIBRARY_PATH patch
 - Drop ph5diff patch fixed upstream
+
+* Mon Nov 12 2012 Peter Robinson <pbrobinson@fedoraproject.org> 1.8.9-5
+- Enable openmpi support on ARM as we now have it
 
 * Mon Nov 5 2012 Orion Poplawski <orion@cora.nwra.com> 1.8.9-4
 - Rebuild for fixed openmpi f90 soname
