@@ -271,7 +271,6 @@ done
 
 
 %files
-%defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_bindir}/gif2h5
@@ -306,7 +305,6 @@ done
 %{_mandir}/man1/h5unjam.1*
 
 %files devel
-%defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.hdf5
 %{_bindir}/h5c++*
 %{_bindir}/h5cc*
@@ -323,12 +321,10 @@ done
 %{_mandir}/man1/h5redeploy.1*
 
 %files static
-%defattr(-,root,root,-)
 %{_libdir}/*.a
 
 %if %{with_mpich2}
 %files mpich2
-%defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_libdir}/mpich2/bin/gif2h5
@@ -352,7 +348,6 @@ done
 %{_libdir}/mpich2/lib/*.so.*
 
 %files mpich2-devel
-%defattr(-,root,root,-)
 %{_includedir}/mpich2-%{_arch}
 %{_libdir}/mpich2/bin/h5pcc
 %{_libdir}/mpich2/bin/h5pfc
@@ -360,13 +355,11 @@ done
 %{_libdir}/mpich2/lib/lib*.settings
 
 %files mpich2-static
-%defattr(-,root,root,-)
 %{_libdir}/mpich2/lib/*.a
 %endif
 
 %if %{with_openmpi}
 %files openmpi
-%defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_libdir}/openmpi/bin/gif2h5
@@ -390,7 +383,6 @@ done
 %{_libdir}/openmpi/lib/*.so.*
 
 %files openmpi-devel
-%defattr(-,root,root,-)
 %{_includedir}/openmpi-%{_arch}
 %{_libdir}/openmpi/bin/h5pcc
 %{_libdir}/openmpi/bin/h5pfc
@@ -398,7 +390,6 @@ done
 %{_libdir}/openmpi/lib/lib*.settings
 
 %files openmpi-static
-%defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.a
 %endif
 
