@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.11
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -395,6 +395,9 @@ done
 
 
 %changelog
+* Thu Jul 11 2013 Orion Poplawski <orion@cora.nwra.com> 1.8.11-3
+- Rebuild for openmpi 1.7.2
+
 * Fri Jun 7 2013 Orion Poplawski <orion@cora.nwra.com> 1.8.11-2
 - Add man pages from debian (bug #971551)
 
