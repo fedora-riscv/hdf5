@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.10
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -19,12 +19,12 @@ BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # Needed for mpi tests
 BuildRequires: openssh-clients
 
-%global with_mpich2 1
+%global with_mpich 1
 %global with_openmpi 1
 %if 0%{?rhel}
 %ifarch ppc64
 # No mpich2 on ppc64 in EL
-%global with_mpich2 0
+%global with_mpich 0
 %endif
 %endif
 %ifarch s390 s390x
@@ -32,8 +32,8 @@ BuildRequires: openssh-clients
 %global with_openmpi 0
 %endif
 
-%if %{with_mpich2}
-%global mpi_list mpich2
+%if %{with_mpich}
+%global mpi_list mpich
 %endif
 %if %{with_openmpi}
 %global mpi_list %{?mpi_list} openmpi
@@ -68,34 +68,40 @@ Requires: %{name}-devel = %{version}-%{release}
 HDF5 static libraries.
 
 
-%if %{with_mpich2}
-%package mpich2
-Summary: HDF5 mpich2 libraries
+%if %{with_mpich}
+%package mpich
+Summary: HDF5 mpich libraries
 Group: Development/Libraries
-Requires: mpich2
-BuildRequires: mpich2-devel
+Requires: mpich
+BuildRequires: mpich-devel
+Provides: %{name}-mpich2 = %{version}-%{release}
+Obsoletes: %{name}-mpich2 < 1.8.10-4
 
-%description mpich2
-HDF5 parallel mpich2 libraries
+%description mpich
+HDF5 parallel mpich libraries
 
 
-%package mpich2-devel
-Summary: HDF5 mpich2 development files
+%package mpich-devel
+Summary: HDF5 mpich development files
 Group: Development/Libraries
-Requires: %{name}-mpich2%{?_isa} = %{version}-%{release}
-Requires: mpich2
+Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
+Requires: mpich
+Provides: %{name}-mpich2-devel = %{version}-%{release}
+Obsoletes: %{name}-mpich2-devel < 1.8.10-4
 
-%description mpich2-devel
-HDF5 parallel mpich2 development files
+%description mpich-devel
+HDF5 parallel mpich development files
 
 
-%package mpich2-static
-Summary: HDF5 mpich2 static libraries
+%package mpich-static
+Summary: HDF5 mpich static libraries
 Group: Development/Libraries
-Requires: %{name}-mpich2-devel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mpich-devel%{?_isa} = %{version}-%{release}
+Provides: %{name}-mpich2-static = %{version}-%{release}
+Obsoletes: %{name}-mpich2-static < 1.8.10-4
 
-%description mpich2-static
-HDF5 parallel mpich2 static libraries
+%description mpich-static
+HDF5 parallel mpich static libraries
 %endif
 
 
@@ -302,42 +308,42 @@ done
 %defattr(-,root,root,-)
 %{_libdir}/*.a
 
-%if %{with_mpich2}
-%files mpich2
+%if %{with_mpich}
+%files mpich
 %defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
-%{_libdir}/mpich2/bin/gif2h5
-%{_libdir}/mpich2/bin/h52gif
-%{_libdir}/mpich2/bin/h5copy
-%{_libdir}/mpich2/bin/h5debug
-%{_libdir}/mpich2/bin/h5diff
-%{_libdir}/mpich2/bin/h5dump
-%{_libdir}/mpich2/bin/h5import
-%{_libdir}/mpich2/bin/h5jam
-%{_libdir}/mpich2/bin/h5ls
-%{_libdir}/mpich2/bin/h5mkgrp
-%{_libdir}/mpich2/bin/h5redeploy
-%{_libdir}/mpich2/bin/h5repack
-%{_libdir}/mpich2/bin/h5perf
-%{_libdir}/mpich2/bin/h5perf_serial
-%{_libdir}/mpich2/bin/h5repart
-%{_libdir}/mpich2/bin/h5stat
-%{_libdir}/mpich2/bin/h5unjam
-%{_libdir}/mpich2/bin/ph5diff
-%{_libdir}/mpich2/lib/*.so.*
+%{_libdir}/mpich/bin/gif2h5
+%{_libdir}/mpich/bin/h52gif
+%{_libdir}/mpich/bin/h5copy
+%{_libdir}/mpich/bin/h5debug
+%{_libdir}/mpich/bin/h5diff
+%{_libdir}/mpich/bin/h5dump
+%{_libdir}/mpich/bin/h5import
+%{_libdir}/mpich/bin/h5jam
+%{_libdir}/mpich/bin/h5ls
+%{_libdir}/mpich/bin/h5mkgrp
+%{_libdir}/mpich/bin/h5redeploy
+%{_libdir}/mpich/bin/h5repack
+%{_libdir}/mpich/bin/h5perf
+%{_libdir}/mpich/bin/h5perf_serial
+%{_libdir}/mpich/bin/h5repart
+%{_libdir}/mpich/bin/h5stat
+%{_libdir}/mpich/bin/h5unjam
+%{_libdir}/mpich/bin/ph5diff
+%{_libdir}/mpich/lib/*.so.*
 
-%files mpich2-devel
+%files mpich-devel
 %defattr(-,root,root,-)
-%{_includedir}/mpich2-%{_arch}
-%{_libdir}/mpich2/bin/h5pcc
-%{_libdir}/mpich2/bin/h5pfc
-%{_libdir}/mpich2/lib/lib*.so
-%{_libdir}/mpich2/lib/lib*.settings
+%{_includedir}/mpich-%{_arch}
+%{_libdir}/mpich/bin/h5pcc
+%{_libdir}/mpich/bin/h5pfc
+%{_libdir}/mpich/lib/lib*.so
+%{_libdir}/mpich/lib/lib*.settings
 
-%files mpich2-static
+%files mpich-static
 %defattr(-,root,root,-)
-%{_libdir}/mpich2/lib/*.a
+%{_libdir}/mpich/lib/*.a
 %endif
 
 %if %{with_openmpi}
@@ -380,6 +386,10 @@ done
 
 
 %changelog
+* Wed Jul 24 2013 Deji Akingunola <dakingun@gmail.com> - 1.8.10-4
+- Rename mpich2 sub-packages to mpich and rebuild for mpich-3.0
+
+
 * Mon Mar 11 2013 Ralf Corsépius <corsepiu@fedoraproject.org> - 1.8.10-3
 - Remove %%config from %%{_sysconfdir}/rpm/macros.*
   (https://fedorahosted.org/fpc/ticket/259).
