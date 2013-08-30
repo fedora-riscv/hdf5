@@ -4,7 +4,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.10
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -256,6 +256,9 @@ EOF
 
 %check
 make -C build check
+# disable parallel tests on s390(x) - something gets wrong in DNS resolver in glibc
+# they are passed when run manually in mock
+%ifnarch s390 s390x
 export HDF5_Make_Ignore=yes
 for mpi in %{mpi_list}
 do
@@ -263,6 +266,7 @@ do
   make -C $mpi check
   module purge
 done
+%endif
 
 
 %post -p /sbin/ldconfig
@@ -386,6 +390,9 @@ done
 
 
 %changelog
+* Fri Aug 30 2013 Dan Horák <dan[at]danny.cz> - 1.8.10-5
+- disable parallel tests on s390(x)
+
 * Wed Jul 24 2013 Deji Akingunola <dakingun@gmail.com> - 1.8.10-4
 - Rename mpich2 sub-packages to mpich and rebuild for mpich-3.0
 
