@@ -1,6 +1,6 @@
 %global snaprel %{nil}
 
-# NOTE:  Try not to realease new versions to released versions of Fedora
+# NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.11
@@ -245,13 +245,7 @@ done
 # rpm macro for version checking
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm
 cat > ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm/macros.hdf5 <<EOF
-#
-# RPM macros for R packaging
-#
-
-#
-# Make R search index.txt
-#
+# HDF5 version is
 %_hdf5_version	%{version}
 EOF
 
