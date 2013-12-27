@@ -4,8 +4,8 @@
 # NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.11
-Release: 6%{?dist}
+Version: 1.8.12
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -14,7 +14,7 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-%{version}%{?snaprel}/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 # For man pages
-Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.11-5.debian.tar.gz
+Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_%{version}-1.debian.tar.gz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch1: hdf5-1.8.8-tstlite.patch
 
@@ -400,6 +400,9 @@ done
 
 
 %changelog
+* Fri Dec 27 2013 Orion Poplawski <orion@cora.nwra.com> 1.8.12-1
+- Update to 1.8.12
+
 * Fri Aug 30 2013 Dan Horák <dan[at]danny.cz> - 1.8.11-6
 - disable parallel tests on s390(x)
 
