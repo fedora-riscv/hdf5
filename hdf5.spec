@@ -5,7 +5,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -250,7 +250,7 @@ done
 mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm
 cat > ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm/macros.hdf5 <<EOF
 # HDF5 version is
-%_hdf5_version	%{version}
+%%_hdf5_version	%{version}
 EOF
 
 # Install man pages from debian
@@ -403,6 +403,9 @@ done
 
 
 %changelog
+* Wed Jan 29 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-3
+- Fix rpm/macros.hdf5 generation (bug #105911)
+
 * Wed Jan 8 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-2
 - Update debian source
 - Add patch for aarch64 support (bug #925545)
