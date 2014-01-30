@@ -404,7 +404,7 @@ done
 
 %changelog
 * Wed Jan 29 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-3
-- Fix rpm/macros.hdf5 generation (bug #105911)
+- Fix rpm/macros.hdf5 generation (bug #1059161)
 
 * Wed Jan 8 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-2
 - Update debian source
