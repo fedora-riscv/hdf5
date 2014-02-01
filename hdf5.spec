@@ -1,3 +1,5 @@
+%global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
+
 # Patch version?
 %global snaprel %{nil}
 
@@ -247,8 +249,8 @@ do
 done
 %endif
 # rpm macro for version checking
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm
-cat > ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm/macros.hdf5 <<EOF
+mkdir -p ${RPM_BUILD_ROOT}%{macrosdir}
+cat > ${RPM_BUILD_ROOT}%{macrosdir}/macros.hdf5 <<EOF
 # HDF5 version is
 %%_hdf5_version	%{version}
 EOF
@@ -313,7 +315,7 @@ done
 %{_mandir}/man1/h5unjam.1*
 
 %files devel
-%{_sysconfdir}/rpm/macros.hdf5
+%{macrosdir}/macros.hdf5
 %{_bindir}/h5c++*
 %{_bindir}/h5cc*
 %{_bindir}/h5fc*
@@ -403,6 +405,9 @@ done
 
 
 %changelog
+* Fri Jan 31 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-4
+- Fix rpm macros install dir
+
 * Wed Jan 29 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-3
 - Fix rpm/macros.hdf5 generation (bug #1059161)
 
