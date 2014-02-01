@@ -687,7 +687,7 @@ done
 * Tue Jul 05 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-4
 - Make example scripts executable
 
-* Wed Jul 01 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-3
+* Wed Jun 29 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-3
 - Add --enable-threads --with-pthreads to configure
 - Add %%check
 - Add some %%docs
