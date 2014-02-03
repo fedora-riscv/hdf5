@@ -1,3 +1,5 @@
+%global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
+
 # Patch version?
 %global snaprel %{nil}
 
@@ -5,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -246,10 +248,10 @@ do
 done
 %endif
 # rpm macro for version checking
-mkdir -p ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm
-cat > ${RPM_BUILD_ROOT}%{_sysconfdir}/rpm/macros.hdf5 <<EOF
+mkdir -p ${RPM_BUILD_ROOT}%{macrosdir}
+cat > ${RPM_BUILD_ROOT}%{macrosdir}/macros.hdf5 <<EOF
 # HDF5 version is
-%_hdf5_version	%{version}
+%%_hdf5_version	%{version}
 EOF
 
 # Install man pages from debian
@@ -312,7 +314,7 @@ done
 %{_mandir}/man1/h5unjam.1*
 
 %files devel
-%{_sysconfdir}/rpm/macros.hdf5
+%{macrosdir}/macros.hdf5
 %{_bindir}/h5c++*
 %{_bindir}/h5cc*
 %{_bindir}/h5fc*
@@ -402,6 +404,12 @@ done
 
 
 %changelog
+* Fri Jan 31 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-4
+- Fix rpm macros install dir
+
+* Wed Jan 29 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-3
+- Fix rpm/macros.hdf5 generation (bug #1059161)
+
 * Wed Jan 8 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-2
 - Update debian source
 - Add patch for aarch64 support (bug #925545)
@@ -683,7 +691,7 @@ done
 * Tue Jul 05 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-4
 - Make example scripts executable
 
-* Wed Jul 01 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-3
+* Wed Jun 29 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-3
 - Add --enable-threads --with-pthreads to configure
 - Add %%check
 - Add some %%docs
