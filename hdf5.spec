@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -181,7 +181,7 @@ ln -s ../configure .
 %configure \
   %{configure_opts} \
   --enable-cxx
-make
+make %{?_smp_mflags}
 popd
 
 #MPI builds
@@ -203,7 +203,7 @@ do
     --includedir=%{_includedir}/$mpi-%{_arch} \
     --datarootdir=%{_libdir}/$mpi/share \
     --mandir=%{_libdir}/$mpi/share/man
-  make
+  make %{?_smp_mflags}
   module purge
   popd
 done
@@ -261,6 +261,8 @@ cp -p debian/man/*.1 ${RPM_BUILD_ROOT}%{_mandir}/man1/
 
 %check
 make -C build check
+# Limit to 4 processors to try to avoid oversubscribing
+export NPROCS=4
 # disable parallel tests on s390(x) - something gets wrong in DNS resolver in glibc
 # they are passed when run manually in mock
 %ifnarch s390 s390x
@@ -404,6 +406,11 @@ done
 
 
 %changelog
+* Tue Feb 4 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-5
+- Use parallel make
+- Limit number of processors to 4 in parallel tests to avoid mpich issue with
+  oversubscription
+
 * Fri Jan 31 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-4
 - Fix rpm macros install dir
 
