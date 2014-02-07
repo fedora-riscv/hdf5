@@ -188,6 +188,8 @@ popd
 export CC=mpicc
 export CXX=mpicxx
 export F9X=mpif90
+# Work around a bug in mpich when hostname is not resovable
+export RUNPARALLEL="mpiexec -np 4 -host localhost"
 for mpi in %{mpi_list}
 do
   mkdir $mpi
