@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -405,6 +405,9 @@ done
 
 
 %changelog
+* Sat Feb 22 2014 Deji Akingunola <dakingun@gmail.com> - 1.8.12-4
+- Rebuild for mpich-3.1
+
 * Fri Jan 31 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.12-4
 - Fix rpm macros install dir
 
