@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -24,6 +24,8 @@ Patch2: hdf5-aarch64.patch
 # Fix long double conversions on ppc64le
 # https://bugzilla.redhat.com/show_bug.cgi?id=1078173
 Patch3: hdf5-ldouble-ppc64le.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=1080122
+Patch4: hdf5-ppc64le.patch
 
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # For patches/rpath
@@ -159,6 +161,7 @@ HDF5 parallel openmpi static libraries
 %endif
 %patch2 -p1 -b .aarch64
 %patch3 -p1 -b .ldouble-ppc64le
+%patch4 -p1 -b .ppc64le
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 autoreconf -f -i
@@ -413,6 +416,9 @@ done
 
 
 %changelog
+* Mon Mar 24 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-6
+- Add patch to add ppc64le to config.guess (bug #1080122)
+
 * Wed Mar 19 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-5
 - Add patch to fix long double conversions on ppc64le (bug #1078173)
 - Run autoreconf for patches and to remove rpaths
