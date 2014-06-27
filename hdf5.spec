@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.13
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -194,7 +194,7 @@ popd
 export CC=mpicc
 export CXX=mpicxx
 export F9X=mpif90
-for mpi in %{mpi_list}
+for mpi in %{?mpi_list}
 do
   mkdir $mpi
   pushd $mpi
@@ -218,7 +218,7 @@ done
 %install
 make -C build install DESTDIR=${RPM_BUILD_ROOT}
 rm $RPM_BUILD_ROOT/%{_libdir}/*.la
-for mpi in %{mpi_list}
+for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
   make -C $mpi install DESTDIR=${RPM_BUILD_ROOT}
@@ -271,7 +271,7 @@ make -C build check
 # they are passed when run manually in mock
 %ifnarch s390 s390x
 export HDF5_Make_Ignore=yes
-for mpi in %{mpi_list}
+for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
   make -C $mpi check
@@ -410,6 +410,9 @@ done
 
 
 %changelog
+* Fri Jun 27 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-4
+- Make build work if not building any mpi pacakges (bug #1113610)
+
 * Fri Jun 27 2014 Marcin Juszkiewicz <mjuszkiewicz@redhat.com> - 1.8.13-3
 - Drop gnu-config patches replaced by %%configure macro
 
