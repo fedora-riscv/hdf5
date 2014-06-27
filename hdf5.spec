@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.13
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -19,13 +19,9 @@ Source1: h5comp
 Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.12+docs-1.1.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch1: hdf5-1.8.8-tstlite.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=925545
-Patch2: hdf5-aarch64.patch
 # Fix long double conversions on ppc64le
 # https://bugzilla.redhat.com/show_bug.cgi?id=1078173
 Patch3: hdf5-ldouble-ppc64le.patch
-# https://bugzilla.redhat.com/show_bug.cgi?id=1080122
-Patch4: hdf5-ppc64le.patch
 
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # For patches/rpath
@@ -159,9 +155,7 @@ HDF5 parallel openmpi static libraries
 # the tstlite test fails with "stack smashing detected" on these arches
 %patch1 -p1 -b .tstlite
 %endif
-%patch2 -p1 -b .aarch64
 %patch3 -p1 -b .ldouble-ppc64le
-%patch4 -p1 -b .ppc64le
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 autoreconf -f -i
@@ -416,6 +410,9 @@ done
 
 
 %changelog
+* Fri Jun 27 2014 Marcin Juszkiewicz <mjuszkiewicz@redhat.com> - 1.8.13-3
+- Drop gnu-config patches replaced by %%configure macro
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.13-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
