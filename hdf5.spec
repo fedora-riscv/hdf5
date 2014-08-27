@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.13
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -410,6 +410,9 @@ done
 
 
 %changelog
+* Wed Aug 27 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-6
+- Rebuild for openmpi Fortran ABI change
+
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.13-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
