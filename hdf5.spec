@@ -409,7 +409,7 @@ done
 
 
 %changelog
-- Wed Sep 3 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-7
+* Wed Sep 3 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-7
 - No longer build with -O0, seems to be working
 
 * Wed Aug 27 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-6
