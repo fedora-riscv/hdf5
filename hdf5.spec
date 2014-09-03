@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.13
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -180,7 +180,6 @@ autoreconf -f -i
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
-export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
 mkdir build
 pushd build
 ln -s ../configure .
@@ -410,6 +409,9 @@ done
 
 
 %changelog
+- Wed Sep 3 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-7
+- No longer build with -O0, seems to be working
+
 * Wed Aug 27 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-6
 - Rebuild for openmpi Fortran ABI change
 
