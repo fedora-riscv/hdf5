@@ -1,7 +1,7 @@
 %global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -13,11 +13,11 @@ Patch1: hdf5-1.8.5-longdouble.patch
 Patch4: hdf5-1.8.5-tstlite.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
-#No mpich2 on ppc64
+#No mpich on ppc64
 %ifarch ppc64
 %global mpi_list openmpi
 %else
-%global mpi_list mpich2 openmpi
+%global mpi_list mpich openmpi
 %endif
 
 %description
@@ -48,35 +48,35 @@ Requires: %{name}-devel = %{version}-%{release}
 HDF5 static libraries.
 
 
-#No mpich2 on ppc64
+#No mpich on ppc64
 %ifnarch ppc64
-%package mpich2
-Summary: HDF5 mpich2 libraries
+%package mpich
+Summary: HDF5 mpich libraries
 Group: Development/Libraries
-Requires: mpich2
-BuildRequires: mpich2-devel
+Requires: mpich
+BuildRequires: mpich-devel
 
-%description mpich2
-HDF5 parallel mpich2 libraries
+%description mpich
+HDF5 parallel mpich libraries
 
 
-%package mpich2-devel
-Summary: HDF5 mpich2 development files
+%package mpich-devel
+Summary: HDF5 mpich development files
 Group: Development/Libraries
-Requires: %{name}-mpich2%{?_isa} = %{version}-%{release}
-Requires: mpich2
+Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
+Requires: mpich
 
-%description mpich2-devel
-HDF5 parallel mpich2 development files
+%description mpich-devel
+HDF5 parallel mpich development files
 
 
-%package mpich2-static
-Summary: HDF5 mpich2 static libraries
+%package mpich-static
+Summary: HDF5 mpich static libraries
 Group: Development/Libraries
-Requires: %{name}-mpich2-devel%{?_isa} = %{version}-%{release}
+Requires: %{name}-mpich-devel%{?_isa} = %{version}-%{release}
 
-%description mpich2-static
-HDF5 parallel mpich2 static libraries
+%description mpich-static
+HDF5 parallel mpich static libraries
 %endif
 
 
@@ -229,7 +229,7 @@ EOF
 %check
 make -C build check
 #These really don't work on builders
-#for mpi in mpich2 openmpi
+#for mpi in mpich openmpi
 #do
 #  module load $mpi-%{_arch}
 #  make -C $mpi check
@@ -247,7 +247,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files
-%defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_bindir}/gif2h5
@@ -268,7 +267,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/*.so.*
 
 %files devel
-%defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/rpm/macros.hdf5
 %{_bindir}/h5c++*
 %{_bindir}/h5cc*
@@ -281,48 +279,43 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/hdf5_examples/
 
 %files static
-%defattr(-,root,root,-)
 %{_libdir}/*.a
 
 %ifnarch ppc64
-%files mpich2
-%defattr(-,root,root,-)
+%files mpich
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
-%{_libdir}/mpich2/bin/gif2h5
-%{_libdir}/mpich2/bin/h52gif
-%{_libdir}/mpich2/bin/h5copy
-%{_libdir}/mpich2/bin/h5debug
-%{_libdir}/mpich2/bin/h5diff
-%{_libdir}/mpich2/bin/h5dump
-%{_libdir}/mpich2/bin/h5import
-%{_libdir}/mpich2/bin/h5jam
-%{_libdir}/mpich2/bin/h5ls
-%{_libdir}/mpich2/bin/h5mkgrp
-%{_libdir}/mpich2/bin/h5redeploy
-%{_libdir}/mpich2/bin/h5repack
-%{_libdir}/mpich2/bin/h5perf
-%{_libdir}/mpich2/bin/h5repart
-%{_libdir}/mpich2/bin/h5stat
-%{_libdir}/mpich2/bin/h5unjam
-%{_libdir}/mpich2/bin/ph5diff
-%{_libdir}/mpich2/lib/*.so.*
+%{_libdir}/mpich/bin/gif2h5
+%{_libdir}/mpich/bin/h52gif
+%{_libdir}/mpich/bin/h5copy
+%{_libdir}/mpich/bin/h5debug
+%{_libdir}/mpich/bin/h5diff
+%{_libdir}/mpich/bin/h5dump
+%{_libdir}/mpich/bin/h5import
+%{_libdir}/mpich/bin/h5jam
+%{_libdir}/mpich/bin/h5ls
+%{_libdir}/mpich/bin/h5mkgrp
+%{_libdir}/mpich/bin/h5redeploy
+%{_libdir}/mpich/bin/h5repack
+%{_libdir}/mpich/bin/h5perf
+%{_libdir}/mpich/bin/h5repart
+%{_libdir}/mpich/bin/h5stat
+%{_libdir}/mpich/bin/h5unjam
+%{_libdir}/mpich/bin/ph5diff
+%{_libdir}/mpich/lib/*.so.*
 
-%files mpich2-devel
-%defattr(-,root,root,-)
-%{_includedir}/mpich2-%{_arch}
-%{_libdir}/mpich2/bin/h5pcc
-%{_libdir}/mpich2/bin/h5pfc
-%{_libdir}/mpich2/lib/lib*.so
-%{_libdir}/mpich2/lib/lib*.settings
+%files mpich-devel
+%{_includedir}/mpich-%{_arch}
+%{_libdir}/mpich/bin/h5pcc
+%{_libdir}/mpich/bin/h5pfc
+%{_libdir}/mpich/lib/lib*.so
+%{_libdir}/mpich/lib/lib*.settings
 
-%files mpich2-static
-%defattr(-,root,root,-)
-%{_libdir}/mpich2/lib/*.a
+%files mpich-static
+%{_libdir}/mpich/lib/*.a
 %endif
 
 %files openmpi
-%defattr(-,root,root,-)
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_libdir}/openmpi/bin/gif2h5
@@ -345,7 +338,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/lib/*.so.*
 
 %files openmpi-devel
-%defattr(-,root,root,-)
 %{_includedir}/openmpi-%{_arch}
 %{_libdir}/openmpi/bin/h5pcc
 %{_libdir}/openmpi/bin/h5pfc
@@ -353,11 +345,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/openmpi/lib/lib*.settings
 
 %files openmpi-static
-%defattr(-,root,root,-)
 %{_libdir}/openmpi/lib/*.a
 
 
 %changelog
+* Tue Oct 21 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-8
+- Replace mpich2 with mpich for EL6.6 (bug #1155089)
+
 * Tue Dec 27 2011 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-7
 - Enable static MPI builds (bug #767589)
 - Fixup mpi -devel Requires
@@ -542,7 +536,7 @@ rm -rf $RPM_BUILD_ROOT
 * Tue Jul 05 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-4
 - Make example scripts executable
 
-* Wed Jul 01 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-3
+* Wed Jun 29 2005 Orion Poplawski <orion@cora.nwra.com> 1.6.4-3
 - Add --enable-threads --with-pthreads to configure
 - Add %%check
 - Add some %%docs
