@@ -1,7 +1,7 @@
 %global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -55,6 +55,8 @@ Summary: HDF5 mpich libraries
 Group: Development/Libraries
 Requires: mpich
 BuildRequires: mpich-devel
+Obsoletes: %{name}-mpich2 < 1.8.5.patch1-8
+Provides: %{name}-mpich2 = %{version}-%{release}
 
 %description mpich
 HDF5 parallel mpich libraries
@@ -65,6 +67,8 @@ Summary: HDF5 mpich development files
 Group: Development/Libraries
 Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
 Requires: mpich
+Obsoletes: %{name}-mpich2-devel < 1.8.5.patch1-8
+Provides: %{name}-mpich2-devel = %{version}-%{release}
 
 %description mpich-devel
 HDF5 parallel mpich development files
@@ -74,6 +78,8 @@ HDF5 parallel mpich development files
 Summary: HDF5 mpich static libraries
 Group: Development/Libraries
 Requires: %{name}-mpich-devel%{?_isa} = %{version}-%{release}
+Obsoletes: %{name}-mpich2-static < 1.8.5.patch1-8
+Provides: %{name}-mpich2-static = %{version}-%{release}
 
 %description mpich-static
 HDF5 parallel mpich static libraries
@@ -349,6 +355,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 21 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-9
+- Add Obsoletes/Provides for mpich2 upgrade
+
 * Tue Oct 21 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-8
 - Replace mpich2 with mpich for EL6.6 (bug #1155089)
 
