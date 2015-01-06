@@ -6,8 +6,8 @@
 # NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.13
-Release: 7%{?dist}
+Version: 1.8.14
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -16,7 +16,7 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-%{version}%{?snaprel}/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 # For man pages
-Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.12+docs-1.1.debian.tar.xz
+Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.13+docs-15.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch1: hdf5-1.8.8-tstlite.patch
 # Fix long double conversions on ppc64le
@@ -262,6 +262,12 @@ EOF
 # Install man pages from debian
 mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/man1
 cp -p debian/man/*.1 ${RPM_BUILD_ROOT}%{_mandir}/man1/
+for mpi in %{?mpi_list}
+do
+  mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/$mpi/share/man/man1
+  cp -p debian/man/h5p[cf]c.1 ${RPM_BUILD_ROOT}%{_libdir}/$mpi/share/man/man1/
+done
+rm ${RPM_BUILD_ROOT}%{_mandir}/man1/h5p[cf]c.1
 
 
 %check
@@ -331,6 +337,7 @@ done
 %{_datadir}/hdf5_examples/
 %{_mandir}/man1/h5c++.1*
 %{_mandir}/man1/h5cc.1*
+%{_mandir}/man1/h5debug.1*
 %{_mandir}/man1/h5fc.1*
 %{_mandir}/man1/h5redeploy.1*
 
@@ -367,6 +374,8 @@ done
 %{_libdir}/mpich/bin/h5pfc
 %{_libdir}/mpich/lib/lib*.so
 %{_libdir}/mpich/lib/lib*.settings
+%{_libdir}/mpich/share/man/man1/h5pcc.1*
+%{_libdir}/mpich/share/man/man1/h5pfc.1*
 
 %files mpich-static
 %{_libdir}/mpich/lib/*.a
@@ -402,6 +411,8 @@ done
 %{_libdir}/openmpi/bin/h5pfc
 %{_libdir}/openmpi/lib/lib*.so
 %{_libdir}/openmpi/lib/lib*.settings
+%{_libdir}/openmpi/share/man/man1/h5pcc.1*
+%{_libdir}/openmpi/share/man/man1/h5pfc.1*
 
 %files openmpi-static
 %{_libdir}/openmpi/lib/*.a
@@ -409,6 +420,9 @@ done
 
 
 %changelog
+* Tue Jan 6 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.14-1
+- Update to 1.8.14
+
 * Wed Sep 3 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-7
 - No longer build with -O0, seems to be working
 
