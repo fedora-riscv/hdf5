@@ -420,7 +420,7 @@ done
 
 
 %changelog
-* Tue Jan 6 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.14-1
+* Tue Jan 6 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.14-1
 - Update to 1.8.14
 
 * Wed Sep 3 2014 Orion Poplawski <orion@cora.nwra.com> - 1.8.13-7
