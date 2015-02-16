@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.14
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -420,6 +420,9 @@ done
 
 
 %changelog
+* Mon Feb 16 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.14-2
+- Rebuild for gcc 5 fortran module
+
 * Tue Jan 6 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.14-1
 - Update to 1.8.14
 
