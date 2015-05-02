@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.14
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -420,6 +420,9 @@ done
 
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 1.8.14-4
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Wed Mar 11 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.14-3
 - Rebuild for mpich 3.1.4 soname change
 
