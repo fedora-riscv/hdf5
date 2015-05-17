@@ -6,8 +6,8 @@
 # NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.14
-Release: 4%{?dist}
+Version: 1.8.15
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -16,9 +16,11 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-%{version}%{?snaprel}/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 # For man pages
-Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.13+docs-15.debian.tar.xz
+Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.14+docs-3.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch1: hdf5-1.8.8-tstlite.patch
+# Fix -Werror=format-security errors
+Patch2: hdf5-format.patch
 # Fix long double conversions on ppc64le
 # https://bugzilla.redhat.com/show_bug.cgi?id=1078173
 Patch3: hdf5-ldouble-ppc64le.patch
@@ -155,6 +157,7 @@ HDF5 parallel openmpi static libraries
 # the tstlite test fails with "stack smashing detected" on these arches
 %patch1 -p1 -b .tstlite
 %endif
+%patch2 -p1 -b .format
 %patch3 -p1 -b .ldouble-ppc64le
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
@@ -308,7 +311,7 @@ done
 %{_bindir}/h5repart
 %{_bindir}/h5stat
 %{_bindir}/h5unjam
-%{_libdir}/*.so.*
+%{_libdir}/*.so.10*
 %{_mandir}/man1/gif2h5.1*
 %{_mandir}/man1/h52gif.1*
 %{_mandir}/man1/h5copy.1*
@@ -366,7 +369,7 @@ done
 %{_libdir}/mpich/bin/h5stat
 %{_libdir}/mpich/bin/h5unjam
 %{_libdir}/mpich/bin/ph5diff
-%{_libdir}/mpich/lib/*.so.*
+%{_libdir}/mpich/lib/*.so.10*
 
 %files mpich-devel
 %{_includedir}/mpich-%{_arch}
@@ -403,7 +406,7 @@ done
 %{_libdir}/openmpi/bin/h5stat
 %{_libdir}/openmpi/bin/h5unjam
 %{_libdir}/openmpi/bin/ph5diff
-%{_libdir}/openmpi/lib/*.so.*
+%{_libdir}/openmpi/lib/*.so.10*
 
 %files openmpi-devel
 %{_includedir}/openmpi-%{_arch}
@@ -420,6 +423,9 @@ done
 
 
 %changelog
+* Sat May 16 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-1
+- Update to 1.8.15
+
 * Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 1.8.14-4
 - Rebuilt for GCC 5 C++11 ABI change
 
