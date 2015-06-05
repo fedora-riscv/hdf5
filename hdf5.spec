@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.15
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -18,7 +18,6 @@ Source1: h5comp
 # For man pages
 Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.14+docs-3.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
-Patch1: hdf5-1.8.8-tstlite.patch
 # Fix -Werror=format-security errors
 Patch2: hdf5-format.patch
 # Fix long double conversions on ppc64le
@@ -153,10 +152,6 @@ HDF5 parallel openmpi static libraries
 #setup -q -n %{name}-%{version}%{?snaprel}
 %setup -q -a 2
 %patch0 -p1 -b .LD_LIBRARY_PATH
-%ifarch ppc64 s390x
-# the tstlite test fails with "stack smashing detected" on these arches
-%patch1 -p1 -b .tstlite
-%endif
 %patch2 -p1 -b .format
 %patch3 -p1 -b .ldouble-ppc64le
 #This should be fixed in 1.8.7
@@ -423,6 +418,9 @@ done
 
 
 %changelog
+* Fri Jun 05 2015 Dan Horák <dan[at]danny.cz> - 1.8.15-2
+- drop unnecessary patch, issue seems fixed with gcc5
+
 * Sat May 16 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-1
 - Update to 1.8.15
 
