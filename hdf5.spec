@@ -1,13 +1,13 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 # Patch version?
-%global snaprel %{nil}
+%global snaprel -patch1
 
 # NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.15
-Release: 2%{?dist}
+Release: 3.patch1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -149,8 +149,7 @@ HDF5 parallel openmpi static libraries
 
 
 %prep
-#setup -q -n %{name}-%{version}%{?snaprel}
-%setup -q -a 2
+%setup -q -a 2 -n %{name}-%{version}%{?snaprel}
 %patch0 -p1 -b .LD_LIBRARY_PATH
 %patch2 -p1 -b .format
 %patch3 -p1 -b .ldouble-ppc64le
@@ -418,6 +417,9 @@ done
 
 
 %changelog
+* Mon Jun 8 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-3.patch1
+- Update to 1.8.15-patch1
+
 * Fri Jun 05 2015 Dan Horák <dan[at]danny.cz> - 1.8.15-2
 - drop unnecessary patch, issue seems fixed with gcc5
 
