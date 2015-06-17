@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.15
-Release: 3.patch1%{?dist}
+Release: 4.patch1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -417,6 +417,9 @@ done
 
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.15-4.patch1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Mon Jun 8 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-3.patch1
 - Update to 1.8.15-patch1
 
