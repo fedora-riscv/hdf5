@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.15
-Release: 4.patch1%{?dist}
+Release: 5.patch1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -84,7 +84,6 @@ HDF5 static libraries.
 %package mpich
 Summary: HDF5 mpich libraries
 Group: Development/Libraries
-Requires: mpich
 BuildRequires: mpich-devel
 Provides: %{name}-mpich2 = %{version}-%{release}
 Obsoletes: %{name}-mpich2 < 1.8.11-4
@@ -97,7 +96,6 @@ HDF5 parallel mpich libraries
 Summary: HDF5 mpich development files
 Group: Development/Libraries
 Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
-Requires: mpich
 Provides: %{name}-mpich2-devel = %{version}-%{release}
 Obsoletes: %{name}-mpich2-devel < 1.8.11-4
 
@@ -121,7 +119,6 @@ HDF5 parallel mpich static libraries
 %package openmpi
 Summary: HDF5 openmpi libraries
 Group: Development/Libraries
-Requires: openmpi
 BuildRequires: openmpi-devel
 
 %description openmpi
@@ -417,6 +414,9 @@ done
 
 
 %changelog
+* Sun Jul 26 2015 Sandro Mani <manisandro@gmail.com> - 1.8.15-5.patch1
+- Rebuild for RPM MPI Requires Provides Change
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.15-4.patch1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
