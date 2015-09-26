@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.15
-Release: 7.patch1%{?dist}
+Release: 8.patch1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -150,8 +150,8 @@ HDF5 parallel openmpi static libraries
 %patch0 -p1 -b .LD_LIBRARY_PATH
 %patch2 -p1 -b .format
 %patch3 -p1 -b .ldouble-ppc64le
-#This should be fixed in 1.8.7
-find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
+# Force shared by default for compiler wrappers (bug #1266645)
+sed -i -e '/^STATIC_AVAILABLE=/s/=.*/=no/' */*/h5[cf]*.in
 autoreconf -f -i
 
 
@@ -414,6 +414,9 @@ done
 
 
 %changelog
+* Fri Sep 25 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-8.patch1
+- Force shared by default for compiler wrappers (bug #1266645)
+
 * Tue Sep 15 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-7.patch1
 - Rebuild for openmpi 1.10.0
 
