@@ -1,13 +1,13 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 # Patch version?
-%global snaprel -patch1
+%global snaprel %{nil}
 
 # NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.15
-Release: 9.patch1%{?dist}
+Version: 1.8.16
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -16,7 +16,7 @@ URL: http://www.hdfgroup.org/HDF5/
 Source0: http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-%{version}%{?snaprel}/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 # For man pages
-Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.14+docs-3.debian.tar.xz
+Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.15-patch1+docs-5.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 # Fix -Werror=format-security errors
 Patch2: hdf5-format.patch
@@ -304,6 +304,7 @@ done
 %{_bindir}/h5stat
 %{_bindir}/h5unjam
 %{_libdir}/*.so.10*
+%{_libdir}/libhdf5_*cpp.so.11*
 %{_mandir}/man1/gif2h5.1*
 %{_mandir}/man1/h52gif.1*
 %{_mandir}/man1/h5copy.1*
@@ -369,6 +370,7 @@ done
 %{_libdir}/mpich/bin/h5pfc
 %{_libdir}/mpich/lib/lib*.so
 %{_libdir}/mpich/lib/lib*.settings
+%{_libdir}/mpich/share/hdf5_examples/
 %{_libdir}/mpich/share/man/man1/h5pcc.1*
 %{_libdir}/mpich/share/man/man1/h5pfc.1*
 
@@ -406,6 +408,7 @@ done
 %{_libdir}/openmpi/bin/h5pfc
 %{_libdir}/openmpi/lib/lib*.so
 %{_libdir}/openmpi/lib/lib*.settings
+%{_libdir}/openmpi/share/hdf5_examples/
 %{_libdir}/openmpi/share/man/man1/h5pcc.1*
 %{_libdir}/openmpi/share/man/man1/h5pfc.1*
 
@@ -415,6 +418,9 @@ done
 
 
 %changelog
+* Fri Nov 20 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.16
+- Update to 1.8.16
+
 * Fri Nov 20 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-9.patch1
 - Use MPI_FORTRAN_MOD_DIR to locate MPI Fortran module
  
