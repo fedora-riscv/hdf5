@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.15
-Release: 8.patch1%{?dist}
+Release: 9.patch1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -195,6 +195,7 @@ do
   ln -s ../configure .
   %configure \
     %{configure_opts} \
+    FCFLAGS="$FCFLAGS -I$MPI_FORTRAN_MOD_DIR" \
     --enable-parallel \
     --libdir=%{_libdir}/$mpi/lib \
     --bindir=%{_libdir}/$mpi/bin \
@@ -414,6 +415,9 @@ done
 
 
 %changelog
+* Fri Nov 20 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-9.patch1
+- Use MPI_FORTRAN_MOD_DIR to locate MPI Fortran module
+ 
 * Fri Sep 25 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-8.patch1
 - Force shared by default for compiler wrappers (bug #1266645)
 
