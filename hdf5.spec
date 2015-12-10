@@ -420,7 +420,7 @@ done
 
 %changelog
 * Wed Dec 9 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-7
-- Rebuild with openmpi 1.10.0
+- Rebuild with openmpi 1.10.0 (bug #1290286)
 
 * Wed Mar 4 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-6
 - Add patch to add ppc64le to config.guess (bug #1080122)
