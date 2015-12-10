@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -419,6 +419,9 @@ done
 
 
 %changelog
+* Wed Dec 9 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-7
+- Rebuild with openmpi 1.10.0
+
 * Wed Mar 4 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-6
 - Add patch to add ppc64le to config.guess (bug #1080122)
 - Add patch to fix long double conversions on ppc64le (bug #1078173)
