@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.16
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -96,6 +96,7 @@ HDF5 parallel mpich libraries
 Summary: HDF5 mpich development files
 Group: Development/Libraries
 Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
+Requires: mpich-devel
 Provides: %{name}-mpich2-devel = %{version}-%{release}
 Obsoletes: %{name}-mpich2-devel < 1.8.11-4
 
@@ -418,6 +419,9 @@ done
 
 
 %changelog
+* Wed Mar 2 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.16-3
+- Make hdf5-mpich-devel require mpich-devel (bug #1314091)
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.16-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
