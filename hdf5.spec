@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.16
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -18,6 +18,8 @@ Source1: h5comp
 # For man pages
 Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.15-patch1+docs-5.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
+# Properly run MPI_Finalize() in t_pflush1
+Patch1: hdf5-mpi.patch
 # Fix -Werror=format-security errors
 Patch2: hdf5-format.patch
 # Fix long double conversions on ppc64le
@@ -149,6 +151,7 @@ HDF5 parallel openmpi static libraries
 %prep
 %setup -q -a 2 -n %{name}-%{version}%{?snaprel}
 %patch0 -p1 -b .LD_LIBRARY_PATH
+%patch1 -p1 -b .mpi
 %patch2 -p1 -b .format
 %patch3 -p1 -b .ldouble-ppc64le
 # Force shared by default for compiler wrappers (bug #1266645)
@@ -419,6 +422,9 @@ done
 
 
 %changelog
+* Sun Mar 20 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.16-4
+- Add patch to properly call MPI_Finalize() in t_pflush1
+
 * Wed Mar 2 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.16-3
 - Make hdf5-mpich-devel require mpich-devel (bug #1314091)
 
