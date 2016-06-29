@@ -421,7 +421,7 @@ done
 
 
 %changelog
-* Fri May 13 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.17-1
+* Wed Jun 29 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.17-1
 - Update to 1.8.17
 
 * Sun Mar 20 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.16-4
