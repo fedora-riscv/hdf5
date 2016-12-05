@@ -6,20 +6,22 @@
 # NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.17
-Release: 2%{?dist}
+Version: 1.8.18
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
 URL: http://www.hdfgroup.org/HDF5/
 
-Source0: http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-%{version}%{?snaprel}/src/hdf5-%{version}%{?snaprel}.tar.bz2
+Source0: https://support.hdfgroup.org/ftp/HDF5/current18/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
 # For man pages
 Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.16+docs-8.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 # Properly run MPI_Finalize() in t_pflush1
 Patch1: hdf5-mpi.patch
+# Fix compilation with -Werror=implicit-function-declaration
+Patch2: hdf5-implicit.patch
 # Fix long double conversions on ppc64le
 # https://bugzilla.redhat.com/show_bug.cgi?id=1078173
 Patch3: hdf5-ldouble-ppc64le.patch
@@ -150,6 +152,7 @@ HDF5 parallel openmpi static libraries
 %setup -q -a 2 -n %{name}-%{version}%{?snaprel}
 %patch0 -p1 -b .LD_LIBRARY_PATH
 %patch1 -p1 -b .mpi
+%patch2 -p1 -b .implicit
 %patch3 -p1 -b .ldouble-ppc64le
 # Force shared by default for compiler wrappers (bug #1266645)
 sed -i -e '/^STATIC_AVAILABLE=/s/=.*/=no/' */*/h5[cf]*.in
@@ -422,6 +425,10 @@ done
 
 
 %changelog
+* Mon Dec 5 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.18-1
+- Update to 1.8.18
+- Add patch to fix build with -Werror=implicit-function-declaration
+
 * Fri Oct 21 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.17-2
 - Rebuild for openmpi 2.0
 
