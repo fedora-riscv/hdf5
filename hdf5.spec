@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.18
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -41,9 +41,11 @@ BuildRequires: openssh-clients
 %global with_mpich 0
 %endif
 %endif
+%if 0%{?fedora} < 26
 %ifarch s390 s390x
 # No openmpi on s390(x)
 %global with_openmpi 0
+%endif
 %endif
 
 %if %{with_mpich}
@@ -425,6 +427,9 @@ done
 
 
 %changelog
+* Thu Dec 8 2016 Dan Horák <dan[at]danny.cz> - 1.8.18-2
+- Enable openmpi for s390(x) on F>=26
+
 * Mon Dec 5 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.18-1
 - Update to 1.8.18
 - Add patch to fix build with -Werror=implicit-function-declaration
