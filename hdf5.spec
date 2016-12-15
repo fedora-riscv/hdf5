@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.16
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -18,6 +18,8 @@ Source1: h5comp
 # For man pages
 Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.15-patch1+docs-5.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
+# Upstream patch for various Talos CVEs
+Patch1: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/talospatch/hdf51.8-CVE2016.patch
 # Fix -Werror=format-security errors
 Patch2: hdf5-format.patch
 # Fix long double conversions on ppc64le
@@ -149,6 +151,7 @@ HDF5 parallel openmpi static libraries
 %prep
 %setup -q -a 2 -n %{name}-%{version}%{?snaprel}
 %patch0 -p1 -b .LD_LIBRARY_PATH
+%patch1 -p0 -b .CVE
 %patch2 -p1 -b .format
 %patch3 -p1 -b .ldouble-ppc64le
 # Force shared by default for compiler wrappers (bug #1266645)
@@ -419,6 +422,9 @@ done
 
 
 %changelog
+* Thu Dec 15 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.16-4
+- Add upstream patch to fix various Talos CVEs (bug #1397715)
+
 * Wed Mar 2 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.16-3
 - Make hdf5-mpich-devel require mpich-devel (bug #1314091)
 
