@@ -1,7 +1,7 @@
 %global snaprel %{nil}
 Name: hdf5
 Version: 1.8.5.patch1
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -11,6 +11,10 @@ Source0: http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.5-patch1.tar.bz2
 Source1: h5comp
 Patch1: hdf5-1.8.5-longdouble.patch
 Patch4: hdf5-1.8.5-tstlite.patch
+# Upstream patch for various Talos CVEs
+# https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/talospatch/hdf51.8-CVE2016.patch
+# Rebased for 1.8.5-patch1
+Patch5: hdf5-1.8.5.patch1-CVE.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 #No mpich on ppc64
@@ -122,6 +126,7 @@ HDF5 parallel openmpi static libraries
 %patch1 -p1 -b .longdouble
 %endif
 %patch4 -p1 -b .tstlite
+%patch5 -p1 -b .CVE
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 
@@ -355,6 +360,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 15 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.5.patch1-10
+- Add upstream patch to fix various Talos CVEs (bug #1397716)
+
 * Tue Oct 21 2014 Orion Poplawski <orion@cora.nwra.com> 1.8.5.patch1-9
 - Add Obsoletes/Provides for mpich2 upgrade
 
