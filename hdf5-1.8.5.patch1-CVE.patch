@@ -1,6 +1,6 @@
 diff -up hdf5-1.8.5-patch1/src/H5Ocache.c.CVE hdf5-1.8.5-patch1/src/H5Ocache.c
 --- hdf5-1.8.5-patch1/src/H5Ocache.c.CVE	2010-08-26 08:21:45.000000000 -0600
-+++ hdf5-1.8.5-patch1/src/H5Ocache.c	2016-12-15 11:20:16.027929291 -0700
++++ hdf5-1.8.5-patch1/src/H5Ocache.c	2016-12-15 12:44:59.080894664 -0700
 @@ -1057,6 +1057,10 @@ H5O_chunk_deserialize(H5O_t *oh, haddr_t
              HGOTO_ERROR(H5E_OHDR, H5E_CANTLOAD, FAIL, "bad flag combination for message")
          if((flags & H5O_MSG_FLAG_WAS_UNKNOWN) && !(flags & H5O_MSG_FLAG_MARK_IF_UNKNOWN))
@@ -14,7 +14,7 @@ diff -up hdf5-1.8.5-patch1/src/H5Ocache.c.CVE hdf5-1.8.5-patch1/src/H5Ocache.c
          if(oh->version == H5O_VERSION_1)
 diff -up hdf5-1.8.5-patch1/src/H5Odtype.c.CVE hdf5-1.8.5-patch1/src/H5Odtype.c
 --- hdf5-1.8.5-patch1/src/H5Odtype.c.CVE	2010-08-26 08:21:45.000000000 -0600
-+++ hdf5-1.8.5-patch1/src/H5Odtype.c	2016-12-15 11:20:16.027929291 -0700
++++ hdf5-1.8.5-patch1/src/H5Odtype.c	2016-12-15 12:44:59.081894658 -0700
 @@ -305,7 +305,11 @@ H5O_dtype_decode_helper(H5F_t *f, unsign
                      if(version == H5O_DTYPE_VERSION_1) {
                          /* Decode the number of dimensions */
@@ -40,7 +40,7 @@ diff -up hdf5-1.8.5-patch1/src/H5Odtype.c.CVE hdf5-1.8.5-patch1/src/H5Odtype.c
              if(version < H5O_DTYPE_VERSION_3)
 diff -up hdf5-1.8.5-patch1/src/H5Opkg.h.CVE hdf5-1.8.5-patch1/src/H5Opkg.h
 --- hdf5-1.8.5-patch1/src/H5Opkg.h.CVE	2010-08-26 08:21:45.000000000 -0600
-+++ hdf5-1.8.5-patch1/src/H5Opkg.h	2016-12-15 11:20:16.028929285 -0700
++++ hdf5-1.8.5-patch1/src/H5Opkg.h	2016-12-15 12:44:59.081894658 -0700
 @@ -201,6 +201,7 @@
                                                                                \
          /* Set the message's "shared info", if it's shareable */	      \
@@ -49,9 +49,25 @@ diff -up hdf5-1.8.5-patch1/src/H5Opkg.h.CVE hdf5-1.8.5-patch1/src/H5Opkg.h
              H5O_UPDATE_SHARED((H5O_shared_t *)(MSG)->native, H5O_SHARE_TYPE_HERE, (F), msg_type->id, (MSG)->crt_idx, (OH)->chunk[0].addr) \
          } /* end if */                                                        \
                                                                                \
+diff -up hdf5-1.8.5-patch1/src/H5private.h.CVE hdf5-1.8.5-patch1/src/H5private.h
+--- hdf5-1.8.5-patch1/src/H5private.h.CVE	2010-08-26 08:21:45.000000000 -0600
++++ hdf5-1.8.5-patch1/src/H5private.h	2016-12-15 13:24:22.989142690 -0700
+@@ -1855,6 +1855,12 @@ static herr_t		H5_INTERFACE_INIT_FUNC(vo
+     FUNC_ENTER_NOAPI_INIT(func_name,err)		                      \
+     {
+ 
++/* Use this macro for all "normal" staticly-scoped functions */
++#define FUNC_ENTER_STATIC {                                                   \
++    FUNC_ENTER_COMMON(func_name, H5_IS_API(#func_name));                      \
++    H5_PUSH_FUNC(#func_name)                                                  \
++    {
++
+ /* Use this macro for all non-API functions, which propagate errors, but don't issue them */
+ #define FUNC_ENTER_NOAPI_NOERR(func_name,err) {                               \
+     FUNC_ENTER_COMMON_NOERR(func_name, !H5_IS_API(#func_name));               \
 diff -up hdf5-1.8.5-patch1/src/H5Znbit.c.CVE hdf5-1.8.5-patch1/src/H5Znbit.c
 --- hdf5-1.8.5-patch1/src/H5Znbit.c.CVE	2010-08-26 08:21:45.000000000 -0600
-+++ hdf5-1.8.5-patch1/src/H5Znbit.c	2016-12-15 11:27:48.133252212 -0700
++++ hdf5-1.8.5-patch1/src/H5Znbit.c	2016-12-15 12:44:59.082894653 -0700
 @@ -62,11 +62,11 @@ static void H5Z_nbit_decompress_one_noop
                         unsigned char *buffer, size_t *j, int *buf_len, unsigned size);
  static void H5Z_nbit_decompress_one_atomic(unsigned char *data, size_t data_offset,
