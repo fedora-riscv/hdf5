@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -26,6 +26,8 @@ Patch2: hdf5-aarch64.patch
 Patch3: hdf5-ldouble-ppc64le.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1080122
 Patch4: hdf5-ppc64le.patch
+# Upstream patch for various Talos CVEs
+Patch5: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/talospatch/hdf51.8-CVE2016.patch
 
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # For patches/rpath
@@ -161,6 +163,7 @@ HDF5 parallel openmpi static libraries
 %patch2 -p1 -b .aarch64
 %patch3 -p1 -b .ldouble-ppc64le
 %patch4 -p1 -b .ppc64le
+%patch5 -p0 -b .CVE
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 autoreconf -f -i
@@ -419,6 +422,9 @@ done
 
 
 %changelog
+* Thu Dec 15 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-8
+- Add upstream patch to fix various Talos CVEs (bug #1397716)
+
 * Wed Dec 9 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-7
 - Rebuild with openmpi 1.10.0 (bug #1290286)
 
