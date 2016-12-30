@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.18
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -219,16 +219,19 @@ done
 %install
 make -C build install DESTDIR=${RPM_BUILD_ROOT}
 rm $RPM_BUILD_ROOT/%{_libdir}/*.la
+#Fortran modules
+mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
+mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
   make -C $mpi install DESTDIR=${RPM_BUILD_ROOT}
   rm $RPM_BUILD_ROOT/%{_libdir}/$mpi/lib/*.la
+  #Fortran modules
+  mkdir -p ${RPM_BUILD_ROOT}${MPI_FORTRAN_MOD_DIR}
+  mv ${RPM_BUILD_ROOT}%{_includedir}/${mpi}-%{_arch}/*.mod ${RPM_BUILD_ROOT}${MPI_FORTRAN_MOD_DIR}/
   module purge
 done
-#Fortran modules
-mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
-mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
 #Fixup example permissions
 find ${RPM_BUILD_ROOT}%{_datadir} \( -name '*.[ch]*' -o -name '*.f90' \) -exec chmod -x {} +
 
@@ -294,7 +297,8 @@ done
 
 
 %files
-%doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
+%license COPYING
+%doc MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_bindir}/gif2h5
 %{_bindir}/h52gif
@@ -351,7 +355,8 @@ done
 
 %if %{with_mpich}
 %files mpich
-%doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
+%license COPYING
+%doc MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_libdir}/mpich/bin/gif2h5
 %{_libdir}/mpich/bin/h52gif
@@ -375,6 +380,7 @@ done
 
 %files mpich-devel
 %{_includedir}/mpich-%{_arch}
+%{_fmoddir}/mpich/*.mod
 %{_libdir}/mpich/bin/h5pcc
 %{_libdir}/mpich/bin/h5pfc
 %{_libdir}/mpich/lib/lib*.so
@@ -389,7 +395,8 @@ done
 
 %if %{with_openmpi}
 %files openmpi
-%doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
+%license COPYING
+%doc MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
 %{_libdir}/openmpi/bin/gif2h5
 %{_libdir}/openmpi/bin/h52gif
@@ -413,6 +420,7 @@ done
 
 %files openmpi-devel
 %{_includedir}/openmpi-%{_arch}
+%{_fmoddir}/openmpi/*.mod
 %{_libdir}/openmpi/bin/h5pcc
 %{_libdir}/openmpi/bin/h5pfc
 %{_libdir}/openmpi/lib/lib*.so
@@ -427,6 +435,10 @@ done
 
 
 %changelog
+* Fri Dec 30 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.18-3
+- Install MPI Fortran module into proper location (bug #1409229)
+- Use %%license
+
 * Thu Dec 8 2016 Dan Horák <dan[at]danny.cz> - 1.8.18-2
 - Enable openmpi for s390(x) on F>=26
 
