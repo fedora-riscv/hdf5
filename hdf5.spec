@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.18
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -435,6 +435,9 @@ done
 
 
 %changelog
+* Sat Jan 28 2017 Björn Esser <besser82@fedoraproject.org> - 1.8.18-4
+- Rebuilt for GCC-7
+
 * Fri Dec 30 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.18-3
 - Install MPI Fortran module into proper location (bug #1409229)
 - Use %%license
@@ -466,7 +469,7 @@ done
 
 * Fri Nov 20 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-9.patch1
 - Use MPI_FORTRAN_MOD_DIR to locate MPI Fortran module
- 
+
 * Fri Sep 25 2015 Orion Poplawski <orion@cora.nwra.com> - 1.8.15-8.patch1
 - Force shared by default for compiler wrappers (bug #1266645)
 
