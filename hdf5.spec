@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.18
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -32,6 +32,7 @@ BuildRequires: automake
 BuildRequires: libtool
 # Needed for mpi tests
 BuildRequires: openssh-clients
+BuildRequires: libaec-devel
 
 %global with_mpich 1
 %global with_openmpi 1
@@ -171,6 +172,7 @@ autoreconf -f -i
   --enable-fortran2003 \\\
   --enable-hl \\\
   --enable-shared \\\
+  --with-szlib \\\
 %{nil}
 # --enable-cxx and --enable-parallel flags are incompatible
 # --with-mpe=DIR          Use MPE instrumentation [default=no]
@@ -435,6 +437,9 @@ done
 
 
 %changelog
+* Sun Aug 06 2017 Christoph Junghans <junghans@votca.org> - 1.8.18-8
+- enable szip support through libaec
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.18-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
