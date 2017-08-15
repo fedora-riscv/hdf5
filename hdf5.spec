@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -35,6 +35,7 @@ BuildRequires: automake
 BuildRequires: libtool
 # Needed for mpi tests
 BuildRequires: openssh-clients
+BuildRequires: libaec-devel
 
 %global with_mpich 1
 %global with_openmpi 1
@@ -70,6 +71,7 @@ grids. You can also mix and match them in HDF5 files according to your needs.
 Summary: HDF5 development files
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
+Requires: libaec-devel%{?_isa}
 Requires: zlib-devel
 
 %description devel
@@ -179,6 +181,7 @@ autoreconf -f -i
   --enable-fortran2003 \\\
   --enable-hl \\\
   --enable-shared \\\
+  --with-szlib \\\
 %{nil}
 # --enable-cxx and --enable-parallel flags are incompatible
 # --with-mpe=DIR          Use MPE instrumentation [default=no]
@@ -422,6 +425,9 @@ done
 
 
 %changelog
+* Tue Aug 15 2017 Christoph Junghans <junghans@votca.org> - 1.8.12-9
+- enable szip support through libaec
+
 * Thu Dec 15 2016 Orion Poplawski <orion@cora.nwra.com> - 1.8.12-8
 - Add upstream patch to fix various Talos CVEs (bug #1397716)
 
