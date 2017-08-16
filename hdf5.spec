@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.18
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -70,7 +70,8 @@ grids. You can also mix and match them in HDF5 files according to your needs.
 Summary: HDF5 development files
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
-Requires: zlib-devel
+Requires: libaec-devel%{?_isa}
+Requires: zlib-devel%{?_isa}
 
 %description devel
 HDF5 development headers and libraries.
@@ -101,7 +102,9 @@ HDF5 parallel mpich libraries
 Summary: HDF5 mpich development files
 Group: Development/Libraries
 Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
-Requires: mpich-devel
+Requires: libaec-devel%{?_isa}
+Requires: zlib-devel%{?_isa}
+Requires: mpich-devel%{?_isa}
 Provides: %{name}-mpich2-devel = %{version}-%{release}
 Obsoletes: %{name}-mpich2-devel < 1.8.11-4
 
@@ -135,7 +138,9 @@ HDF5 parallel openmpi libraries
 Summary: HDF5 openmpi development files
 Group: Development/Libraries
 Requires: %{name}-openmpi%{_isa} = %{version}-%{release}
-Requires: openmpi-devel
+Requires: libaec-devel%{?_isa}
+Requires: zlib-devel%{?_isa}
+Requires: openmpi-devel%{?_isa}
 
 %description openmpi-devel
 HDF5 parallel openmpi development files
@@ -437,6 +442,9 @@ done
 
 
 %changelog
+* Wed Aug 16 2017 Orion Poplawski <orion@nwra.com> - 1.8.18-9
+- Make hdf5-devel require libaec
+
 * Sun Aug 06 2017 Christoph Junghans <junghans@votca.org> - 1.8.18-8
 - enable szip support through libaec
 
