@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 9%{?dist}
+Release: 10%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -105,7 +105,8 @@ Group: Development/Libraries
 Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
 Requires: libaec-devel%{?_isa}
 Requires: zlib-devel%{?_isa}
-Requires: mpich-devel%{?_isa}
+# RHEL doesn't provide with %{_isa}
+Requires: mpich-devel
 Provides: %{name}-mpich2-devel = %{version}-%{release}
 Obsoletes: %{name}-mpich2-devel < 1.8.11-4
 
@@ -429,6 +430,9 @@ done
 
 
 %changelog
+* Tue Aug 22 2017 Orion Poplawski <orion@nwra.com> - 1.8.12-10
+- RHEL doesn't provide mpich-devel%%{_isa}
+
 * Tue Aug 15 2017 Christoph Junghans <junghans@votca.org> - 1.8.12-9
 - enable szip support through libaec
 
