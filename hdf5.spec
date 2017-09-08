@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.18
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -442,6 +442,9 @@ done
 
 
 %changelog
+* Fri Sep 08 2017 Dan Horák <dan[at]danny.cz> - 1.8.18-11
+- fix the compiler wrapper - s390x is 64-bit
+
 * Wed Aug 16 2017 Orion Poplawski <orion@cora.nwra.com> - 1.8.18-10
 - Bump for rebuild
 
