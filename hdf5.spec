@@ -443,7 +443,7 @@ done
 
 %changelog
 * Fri Sep 08 2017 Dan Horák <dan[at]danny.cz> - 1.8.18-11
-- fix the compiler wrapper - s390x is 64-bit
+- fix the compiler wrapper - s390x is 64-bit (#1489954)
 
 * Wed Aug 16 2017 Orion Poplawski <orion@cora.nwra.com> - 1.8.18-10
 - Bump for rebuild
