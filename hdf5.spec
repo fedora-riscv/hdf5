@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.18
-Release: 12%{?dist}
+Release: 13%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -298,9 +298,7 @@ done
 %endif
 
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %files
@@ -442,6 +440,9 @@ done
 
 
 %changelog
+* Fri Feb 02 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1.8.18-13
+- Switch to %%ldconfig_scriptlets
+
 * Wed Jan 31 2018 Orion Poplawski <orion@cora.nwra.com> - 1.8.18-12
 - Rebuild for gfortran-8
 
