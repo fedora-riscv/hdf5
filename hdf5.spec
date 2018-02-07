@@ -6,8 +6,8 @@
 # NOTE:  Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.18
-Release: 14%{?dist}
+Version: 1.8.20
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -321,7 +321,7 @@ done
 %{_bindir}/h5stat
 %{_bindir}/h5unjam
 %{_libdir}/*.so.10*
-%{_libdir}/libhdf5_cpp.so.13*
+%{_libdir}/libhdf5_cpp.so.15*
 %{_libdir}/libhdf5_hl_cpp.so.11*
 %{_mandir}/man1/gif2h5.1*
 %{_mandir}/man1/h52gif.1*
@@ -440,6 +440,9 @@ done
 
 
 %changelog
+* Wed Feb 7 2018 Orion Poplawski <orion@nwra.com> - 1.8.20-1
+- Update to 1.8.20
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.18-14
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
