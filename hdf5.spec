@@ -439,7 +439,7 @@ done
 
 %changelog
 * Tue Feb 20 2018 Antonio Trande <sagitter@fedoraproject.com> - 1.8.20-2
-- Devel package with full versioned depedency
+- Devel package with full versioned dependency
 - Use %%make_install
 
 * Wed Feb 7 2018 Orion Poplawski <orion@nwra.com> - 1.8.20-1
