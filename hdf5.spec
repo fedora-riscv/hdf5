@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.20
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -69,7 +69,7 @@ grids. You can also mix and match them in HDF5 files according to your needs.
 %package devel
 Summary: HDF5 development files
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: libaec-devel%{?_isa}
 Requires: zlib-devel%{?_isa}
 
@@ -137,7 +137,7 @@ HDF5 parallel openmpi libraries
 %package openmpi-devel
 Summary: HDF5 openmpi development files
 Group: Development/Libraries
-Requires: %{name}-openmpi%{_isa} = %{version}-%{release}
+Requires: %{name}-openmpi%{?_isa} = %{version}-%{release}
 Requires: libaec-devel%{?_isa}
 Requires: zlib-devel%{?_isa}
 Requires: openmpi-devel%{?_isa}
@@ -224,8 +224,8 @@ done
 
 
 %install
-make -C build install DESTDIR=${RPM_BUILD_ROOT}
-rm $RPM_BUILD_ROOT/%{_libdir}/*.la
+%make_install -C build
+rm $RPM_BUILD_ROOT%{_libdir}/*.la
 #Fortran modules
 mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
 mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
@@ -297,9 +297,7 @@ do
 done
 %endif
 
-
 %ldconfig_scriptlets
-
 
 %files
 %license COPYING
@@ -440,6 +438,10 @@ done
 
 
 %changelog
+* Tue Feb 20 2018 Antonio Trande <sagitter@fedoraproject.com> - 1.8.20-2
+- Devel package with full versioned depedency
+- Use %%make_install
+
 * Wed Feb 7 2018 Orion Poplawski <orion@nwra.com> - 1.8.20-1
 - Update to 1.8.20
 
