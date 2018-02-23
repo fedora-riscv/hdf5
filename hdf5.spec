@@ -3,15 +3,15 @@
 # Patch version?
 %global snaprel %{nil}
 
-# NOTE:  Try not to release new versions to released versions of Fedora
+# NOTE: Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.20
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
-URL: http://www.hdfgroup.org/HDF5/
+URL: https://portal.hdfgroup.org/display/HDF5/HDF5
 
 Source0: https://support.hdfgroup.org/ftp/HDF5/current18/src/hdf5-%{version}%{?snaprel}.tar.bz2
 Source1: h5comp
@@ -33,6 +33,7 @@ BuildRequires: libtool
 # Needed for mpi tests
 BuildRequires: openssh-clients
 BuildRequires: libaec-devel
+BuildRequires: gcc, gcc-c++
 
 %global with_mpich 1
 %global with_openmpi 1
@@ -72,6 +73,7 @@ Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: libaec-devel%{?_isa}
 Requires: zlib-devel%{?_isa}
+Requires: gcc-gfortran%{?_isa}
 
 %description devel
 HDF5 development headers and libraries.
@@ -162,10 +164,13 @@ HDF5 parallel openmpi static libraries
 %patch1 -p1 -b .mpi
 %patch2 -p1 -b .implicit
 %patch3 -p1 -b .ldouble-ppc64le
+
 # Force shared by default for compiler wrappers (bug #1266645)
 sed -i -e '/^STATIC_AVAILABLE=/s/=.*/=no/' */*/h5[cf]*.in
 autoreconf -f -i
 
+# Modify low optimization level for gnu compilers
+sed -e 's|-O -finline-functions|-O3 -finline-functions|g' -i config/gnu-flags
 
 %build
 #Do out of tree builds
@@ -180,26 +185,29 @@ autoreconf -f -i
   --with-szlib \\\
 %{nil}
 # --enable-cxx and --enable-parallel flags are incompatible
-# --with-mpe=DIR          Use MPE instrumentation [default=no]
+# --with-mpe=DIR Use MPE instrumentation [default=no]
 # --enable-cxx/fortran/parallel and --enable-threadsafe flags are incompatible
 
 #Serial build
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
+export LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
 mkdir build
 pushd build
 ln -s ../configure .
 %configure \
   %{configure_opts} \
   --enable-cxx
-make
+sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
+make LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
 popd
 
 #MPI builds
 export CC=mpicc
 export CXX=mpicxx
 export F9X=mpif90
+export LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
 for mpi in %{?mpi_list}
 do
   mkdir $mpi
@@ -217,7 +225,8 @@ do
     --includedir=%{_includedir}/$mpi-%{_arch} \
     --datarootdir=%{_libdir}/$mpi/share \
     --mandir=%{_libdir}/$mpi/share/man
-  make
+  sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
+  make LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
   module purge
   popd
 done
@@ -268,7 +277,7 @@ done
 mkdir -p ${RPM_BUILD_ROOT}%{macrosdir}
 cat > ${RPM_BUILD_ROOT}%{macrosdir}/macros.hdf5 <<EOF
 # HDF5 version is
-%%_hdf5_version	%{version}
+%%_hdf5_version %{version}
 EOF
 
 # Install man pages from debian
@@ -438,6 +447,12 @@ done
 
 
 %changelog
+* Fri Feb 23 2018 Antonio Trande <sagitter@fedoraproject.com> - 1.8.20-3
+- Force default ldflags for Fedora (bz#1548533)
+- Switch -shared flag to -Wl,--as-needed
+- Modify low optimization level for gnu compilers
+- New URL
+
 * Tue Feb 20 2018 Antonio Trande <sagitter@fedoraproject.com> - 1.8.20-2
 - Devel package with full versioned dependency
 - Use %%make_install
