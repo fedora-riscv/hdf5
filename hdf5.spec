@@ -6,24 +6,21 @@
 # NOTE: Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.8.20
-Release: 6%{?dist}
+Version: 1.10.5
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
 
-Source0: https://support.hdfgroup.org/ftp/HDF5/current18/src/hdf5-%{version}%{?snaprel}.tar.bz2
+Source0: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-%{version}/src/hdf5-%{version}.tar.bz2
 Source1: h5comp
 # For man pages
-Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.8.16+docs-8.debian.tar.xz
+Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.10.4+repack-1.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 # Properly run MPI_Finalize() in t_pflush1
 Patch1: hdf5-mpi.patch
-# Fix compilation with -Werror=implicit-function-declaration
-Patch2: hdf5-implicit.patch
-# Fix long double conversions on ppc64le
-# https://bugzilla.redhat.com/show_bug.cgi?id=1078173
-Patch3: hdf5-ldouble-ppc64le.patch
+# Fix some warnings
+Patch2: hdf5-warning.patch
 
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # For patches/rpath
@@ -152,9 +149,8 @@ HDF5 parallel openmpi static libraries
 %prep
 %setup -q -a 2 -n %{name}-%{version}%{?snaprel}
 %patch0 -p1 -b .LD_LIBRARY_PATH
-%patch1 -p1 -b .mpi
-%patch2 -p1 -b .implicit
-%patch3 -p1 -b .ldouble-ppc64le
+#patch1 -p1 -b .mpi
+%patch2 -p1 -b .warning
 
 # Force shared by default for compiler wrappers (bug #1266645)
 sed -i -e '/^STATIC_AVAILABLE=/s/=.*/=no/' */*/h5[cf]*.in
@@ -225,69 +221,65 @@ done
 
 %install
 %make_install -C build
-rm $RPM_BUILD_ROOT%{_libdir}/*.la
+rm %{buildroot}%{_libdir}/*.la
 #Fortran modules
-mkdir -p ${RPM_BUILD_ROOT}%{_fmoddir}
-mv ${RPM_BUILD_ROOT}%{_includedir}/*.mod ${RPM_BUILD_ROOT}%{_fmoddir}
+mkdir -p %{buildroot}%{_fmoddir}
+mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
-  make -C $mpi install DESTDIR=${RPM_BUILD_ROOT}
-  rm $RPM_BUILD_ROOT/%{_libdir}/$mpi/lib/*.la
+  make -C $mpi install DESTDIR=%{buildroot}
+  rm %{buildroot}/%{_libdir}/$mpi/lib/*.la
   #Fortran modules
-  mkdir -p ${RPM_BUILD_ROOT}${MPI_FORTRAN_MOD_DIR}
-  mv ${RPM_BUILD_ROOT}%{_includedir}/${mpi}-%{_arch}/*.mod ${RPM_BUILD_ROOT}${MPI_FORTRAN_MOD_DIR}/
+  mkdir -p %{buildroot}${MPI_FORTRAN_MOD_DIR}
+  mv %{buildroot}%{_includedir}/${mpi}-%{_arch}/*.mod %{buildroot}${MPI_FORTRAN_MOD_DIR}/
   module purge
 done
 #Fixup example permissions
-find ${RPM_BUILD_ROOT}%{_datadir} \( -name '*.[ch]*' -o -name '*.f90' \) -exec chmod -x {} +
+find %{buildroot}%{_datadir} \( -name '*.[ch]*' -o -name '*.f90' \) -exec chmod -x {} +
 
 #Fixup headers and scripts for multiarch
 %ifarch x86_64 ppc64 ia64 s390x sparc64 alpha
-sed -i -e s/H5pubconf.h/H5pubconf-64.h/ ${RPM_BUILD_ROOT}%{_includedir}/H5public.h
-mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
-   ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-64.h
+sed -i -e s/H5pubconf.h/H5pubconf-64.h/ %{buildroot}%{_includedir}/H5public.h
+mv %{buildroot}%{_includedir}/H5pubconf.h \
+   %{buildroot}%{_includedir}/H5pubconf-64.h
 for x in h5c++ h5cc h5fc
 do
-  mv ${RPM_BUILD_ROOT}%{_bindir}/${x} \
-     ${RPM_BUILD_ROOT}%{_bindir}/${x}-64
-  install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/${x}
+  mv %{buildroot}%{_bindir}/${x} \
+     %{buildroot}%{_bindir}/${x}-64
+  install -m 0755 %SOURCE1 %{buildroot}%{_bindir}/${x}
 done
 %else
-sed -i -e s/H5pubconf.h/H5pubconf-32.h/ ${RPM_BUILD_ROOT}%{_includedir}/H5public.h
-mv ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf.h \
-   ${RPM_BUILD_ROOT}%{_includedir}/H5pubconf-32.h
+sed -i -e s/H5pubconf.h/H5pubconf-32.h/ %{buildroot}%{_includedir}/H5public.h
+mv %{buildroot}%{_includedir}/H5pubconf.h \
+   %{buildroot}%{_includedir}/H5pubconf-32.h
 for x in h5c++ h5cc h5fc
 do
-  mv ${RPM_BUILD_ROOT}%{_bindir}/${x} \
-     ${RPM_BUILD_ROOT}%{_bindir}/${x}-32
-  install -m 0755 %SOURCE1 ${RPM_BUILD_ROOT}%{_bindir}/${x}
+  mv %{buildroot}%{_bindir}/${x} \
+     %{buildroot}%{_bindir}/${x}-32
+  install -m 0755 %SOURCE1 %{buildroot}%{_bindir}/${x}
 done
 %endif
 # rpm macro for version checking
-mkdir -p ${RPM_BUILD_ROOT}%{macrosdir}
-cat > ${RPM_BUILD_ROOT}%{macrosdir}/macros.hdf5 <<EOF
+mkdir -p %{buildroot}%{macrosdir}
+cat > %{buildroot}%{macrosdir}/macros.hdf5 <<EOF
 # HDF5 version is
 %%_hdf5_version %{version}
 EOF
 
 # Install man pages from debian
-mkdir -p ${RPM_BUILD_ROOT}%{_mandir}/man1
-cp -p debian/man/*.1 ${RPM_BUILD_ROOT}%{_mandir}/man1/
+mkdir -p %{buildroot}%{_mandir}/man1
+cp -p debian/man/*.1 %{buildroot}%{_mandir}/man1/
 for mpi in %{?mpi_list}
 do
-  mkdir -p ${RPM_BUILD_ROOT}%{_libdir}/$mpi/share/man/man1
-  cp -p debian/man/h5p[cf]c.1 ${RPM_BUILD_ROOT}%{_libdir}/$mpi/share/man/man1/
+  mkdir -p %{buildroot}%{_libdir}/$mpi/share/man/man1
+  cp -p debian/man/h5p[cf]c.1 %{buildroot}%{_libdir}/$mpi/share/man/man1/
 done
-rm ${RPM_BUILD_ROOT}%{_mandir}/man1/h5p[cf]c.1
+rm %{buildroot}%{_mandir}/man1/h5p[cf]c*.1
 
 
 %check
 make -C build check
-# disable parallel tests on s390(x) - something gets wrong in DNS resolver in glibc
-# they are passed when run manually in mock
-# testphdf5 is hanging on arm with openmpi
-%ifnarch s390 s390x %{arm}
 export HDF5_Make_Ignore=yes
 for mpi in %{?mpi_list}
 do
@@ -295,9 +287,10 @@ do
   make -C $mpi check
   module purge
 done
-%endif
+
 
 %ldconfig_scriptlets
+
 
 %files
 %license COPYING
@@ -305,10 +298,12 @@ done
 %doc release_docs/HISTORY*.txt
 %{_bindir}/gif2h5
 %{_bindir}/h52gif
+%{_bindir}/h5clear
 %{_bindir}/h5copy
 %{_bindir}/h5debug
 %{_bindir}/h5diff
 %{_bindir}/h5dump
+%{_bindir}/h5format_convert
 %{_bindir}/h5import
 %{_bindir}/h5jam
 %{_bindir}/h5ls
@@ -318,9 +313,13 @@ done
 %{_bindir}/h5repart
 %{_bindir}/h5stat
 %{_bindir}/h5unjam
-%{_libdir}/*.so.10*
-%{_libdir}/libhdf5_cpp.so.15*
-%{_libdir}/libhdf5_hl_cpp.so.11*
+%{_bindir}/h5watch
+%{_libdir}/libhdf5.so.103*
+%{_libdir}/libhdf5_cpp.so.103*
+%{_libdir}/libhdf5_fortran.so.102*
+%{_libdir}/libhdf5hl_fortran.so.100*
+%{_libdir}/libhdf5_hl.so.100*
+%{_libdir}/libhdf5_hl_cpp.so.100*
 %{_mandir}/man1/gif2h5.1*
 %{_mandir}/man1/h52gif.1*
 %{_mandir}/man1/h5copy.1*
@@ -363,10 +362,12 @@ done
 %doc release_docs/HISTORY*.txt
 %{_libdir}/mpich/bin/gif2h5
 %{_libdir}/mpich/bin/h52gif
+%{_libdir}/mpich/bin/h5clear
 %{_libdir}/mpich/bin/h5copy
 %{_libdir}/mpich/bin/h5debug
 %{_libdir}/mpich/bin/h5diff
 %{_libdir}/mpich/bin/h5dump
+%{_libdir}/mpich/bin/h5format_convert
 %{_libdir}/mpich/bin/h5import
 %{_libdir}/mpich/bin/h5jam
 %{_libdir}/mpich/bin/h5ls
@@ -378,6 +379,7 @@ done
 %{_libdir}/mpich/bin/h5repart
 %{_libdir}/mpich/bin/h5stat
 %{_libdir}/mpich/bin/h5unjam
+%{_libdir}/mpich/bin/h5watch
 %{_libdir}/mpich/bin/ph5diff
 %{_libdir}/mpich/lib/*.so.10*
 
@@ -403,10 +405,12 @@ done
 %doc release_docs/HISTORY*.txt
 %{_libdir}/openmpi/bin/gif2h5
 %{_libdir}/openmpi/bin/h52gif
+%{_libdir}/openmpi/bin/h5clear
 %{_libdir}/openmpi/bin/h5copy
 %{_libdir}/openmpi/bin/h5debug
 %{_libdir}/openmpi/bin/h5diff
 %{_libdir}/openmpi/bin/h5dump
+%{_libdir}/openmpi/bin/h5format_convert
 %{_libdir}/openmpi/bin/h5import
 %{_libdir}/openmpi/bin/h5jam
 %{_libdir}/openmpi/bin/h5ls
@@ -418,6 +422,7 @@ done
 %{_libdir}/openmpi/bin/h5repart
 %{_libdir}/openmpi/bin/h5stat
 %{_libdir}/openmpi/bin/h5unjam
+%{_libdir}/openmpi/bin/h5watch
 %{_libdir}/openmpi/bin/ph5diff
 %{_libdir}/openmpi/lib/*.so.10*
 
@@ -438,6 +443,9 @@ done
 
 
 %changelog
+* Sat Mar 16 2019 Orion Poplawski <orion@nwra.com> - 1.10.5-1
+- Update to 1.10.5
+
 * Thu Feb 14 2019 Orion Poplawski <orion@nwra.com> - 1.8.20-6
 - Rebuild for openmpi 3.1.3
 
