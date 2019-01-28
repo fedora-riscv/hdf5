@@ -10,7 +10,6 @@ Version: 1.8.20
 Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
-Group: System Environment/Libraries
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
 
 Source0: https://support.hdfgroup.org/ftp/HDF5/current18/src/hdf5-%{version}%{?snaprel}.tar.bz2
@@ -69,7 +68,6 @@ grids. You can also mix and match them in HDF5 files according to your needs.
 
 %package devel
 Summary: HDF5 development files
-Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: libaec-devel%{?_isa}
 Requires: zlib-devel%{?_isa}
@@ -81,7 +79,6 @@ HDF5 development headers and libraries.
 
 %package static
 Summary: HDF5 static libraries
-Group: Development/Libraries
 Requires: %{name}-devel = %{version}-%{release}
 
 %description static
@@ -91,7 +88,6 @@ HDF5 static libraries.
 %if %{with_mpich}
 %package mpich
 Summary: HDF5 mpich libraries
-Group: Development/Libraries
 BuildRequires: mpich-devel
 Provides: %{name}-mpich2 = %{version}-%{release}
 Obsoletes: %{name}-mpich2 < 1.8.11-4
@@ -102,7 +98,6 @@ HDF5 parallel mpich libraries
 
 %package mpich-devel
 Summary: HDF5 mpich development files
-Group: Development/Libraries
 Requires: %{name}-mpich%{?_isa} = %{version}-%{release}
 Requires: libaec-devel%{?_isa}
 Requires: zlib-devel%{?_isa}
@@ -116,7 +111,6 @@ HDF5 parallel mpich development files
 
 %package mpich-static
 Summary: HDF5 mpich static libraries
-Group: Development/Libraries
 Requires: %{name}-mpich-devel%{?_isa} = %{version}-%{release}
 Provides: %{name}-mpich2-static = %{version}-%{release}
 Obsoletes: %{name}-mpich2-static < 1.8.11-4
@@ -129,7 +123,6 @@ HDF5 parallel mpich static libraries
 %if %{with_openmpi}
 %package openmpi
 Summary: HDF5 openmpi libraries
-Group: Development/Libraries
 BuildRequires: openmpi-devel
 
 %description openmpi
@@ -138,7 +131,6 @@ HDF5 parallel openmpi libraries
 
 %package openmpi-devel
 Summary: HDF5 openmpi development files
-Group: Development/Libraries
 Requires: %{name}-openmpi%{?_isa} = %{version}-%{release}
 Requires: libaec-devel%{?_isa}
 Requires: zlib-devel%{?_isa}
@@ -150,7 +142,6 @@ HDF5 parallel openmpi development files
 
 %package openmpi-static
 Summary: HDF5 openmpi static libraries
-Group: Development/Libraries
 Requires: %{name}-openmpi-devel%{?_isa} = %{version}-%{release}
 
 %description openmpi-static
