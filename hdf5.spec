@@ -281,12 +281,16 @@ rm %{buildroot}%{_mandir}/man1/h5p[cf]c*.1
 %check
 make -C build check
 export HDF5_Make_Ignore=yes
+export OMPI_MCA_rmaps_base_oversubscribe=1
+# t_cache_image appears to be hanging, others taking very long on s390x
+%ifnarch s390x
 for mpi in %{?mpi_list}
 do
-  module load mpi/$mpi-%{_arch}
-  make -C $mpi check
-  module purge
+    module load mpi/$mpi-%{_arch}
+    make -C $mpi check
+    module purge
 done
+%endif
 
 
 %ldconfig_scriptlets
