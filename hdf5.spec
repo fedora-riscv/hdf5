@@ -286,9 +286,9 @@ export OMPI_MCA_rmaps_base_oversubscribe=1
 %ifnarch s390x
 for mpi in %{?mpi_list}
 do
-    module load mpi/$mpi-%{_arch}
-    make -C $mpi check
-    module purge
+  module load mpi/$mpi-%{_arch}
+  make -C $mpi check
+  module purge
 done
 %endif
 
