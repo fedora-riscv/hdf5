@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.10.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -21,8 +21,20 @@ Patch0: hdf5-LD_LIBRARY_PATH.patch
 Patch1: hdf5-mpi.patch
 # Fix some warnings
 Patch2: hdf5-warning.patch
+# Fix java build
+# JUnit-TestH5Fbasic test is failing
+Patch3: hdf5-build.patch
 
-BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
+BuildRequires: gcc-gfortran
+BuildRequires: java-devel
+BuildRequires: javapackages-tools
+BuildRequires: hamcrest
+BuildRequires: junit
+BuildRequires: slf4j
+BuildRequires: krb5-devel
+BuildRequires: openssl-devel
+BuildRequires: time
+BuildRequires: zlib-devel
 # For patches/rpath
 BuildRequires: automake
 BuildRequires: libtool
@@ -73,6 +85,13 @@ Requires: gcc-gfortran%{?_isa}
 %description devel
 HDF5 development headers and libraries.
 
+%package -n java-hdf5
+Summary: HDF5 java library
+Requires:  slf4j
+Obsoletes: jhdf5 < 3.3.1-2
+
+%description -n java-hdf5
+HDF5 java library
 
 %package static
 Summary: HDF5 static libraries
@@ -151,6 +170,18 @@ HDF5 parallel openmpi static libraries
 %patch0 -p1 -b .LD_LIBRARY_PATH
 #patch1 -p1 -b .mpi
 %patch2 -p1 -b .warning
+%patch3 -p1 -b .build
+
+# Replace jars with system versions
+find -name \*.jar -delete
+ln -s %{_javadir}/hamcrest/core.jar java/lib/hamcrest-core.jar
+ln -s %{_javadir}/junit.jar java/lib/junit.jar
+ln -s %{_javadir}/slf4j/api.jar java/lib/slf4j-api-1.7.25.jar
+ln -s %{_javadir}/slf4j/nop.jar java/lib/ext/slf4j-nop-1.7.25.jar
+ln -s %{_javadir}/slf4j/simple.jar java/lib/ext/slf4j-simple-1.7.25.jar
+# Fix test output
+junit_ver=$(sed -n '/<version>/{s/^.*>\([0-9]\.[0-9]*\)<.*/\1/;p;q}' /usr/share/maven-poms/junit.pom)
+sed -i -e "s/JUnit version .*/JUnit version $junit_ver/" java/test/testfiles/JUnit-*.txt
 
 # Force shared by default for compiler wrappers (bug #1266645)
 sed -i -e '/^STATIC_AVAILABLE=/s/=.*/=no/' */*/h5[cf]*.in
@@ -158,6 +189,7 @@ autoreconf -f -i
 
 # Modify low optimization level for gnu compilers
 sed -e 's|-O -finline-functions|-O3 -finline-functions|g' -i config/gnu-flags
+
 
 %build
 #Do out of tree builds
@@ -185,7 +217,8 @@ pushd build
 ln -s ../configure .
 %configure \
   %{configure_opts} \
-  --enable-cxx
+  --enable-cxx \
+  --enable-java
 sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 make LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
 popd
@@ -277,6 +310,10 @@ do
 done
 rm %{buildroot}%{_mandir}/man1/h5p[cf]c*.1
 
+# Java
+mkdir -p %{buildroot}%{_libdir}/%{name}
+mv %{buildroot}%{_libdir}/libhdf5_java.so %{buildroot}%{_libdir}/%{name}/
+
 
 %check
 make -C build check
@@ -358,6 +395,10 @@ done
 
 %files static
 %{_libdir}/*.a
+
+%files -n java-hdf5
+%{_jnidir}/hdf5.jar
+%{_libdir}/%{name}/
 
 %if %{with_mpich}
 %files mpich
@@ -447,6 +488,9 @@ done
 
 
 %changelog
+* Sat Apr  6 2019 Orion Poplawski <orion@nwra.com> - 1.10.5-2
+- Enable java
+
 * Sat Mar 16 2019 Orion Poplawski <orion@nwra.com> - 1.10.5-1
 - Update to 1.10.5
 
