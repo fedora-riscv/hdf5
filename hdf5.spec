@@ -23,6 +23,7 @@ Patch1: hdf5-mpi.patch
 Patch2: hdf5-warning.patch
 # Fix java build
 # JUnit-TestH5Fbasic test is failing
+# JUnit-TestH5P is failing on 32-bit
 Patch3: hdf5-build.patch
 
 BuildRequires: gcc-gfortran
