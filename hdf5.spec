@@ -39,25 +39,23 @@ BuildRequires: libaec-devel
 
 %global with_mpich 1
 %global with_openmpi 1
-%if 0%{?rhel} <= 6
+
 %ifarch ppc64
-% No mpich2 on ppc64 in EL6
-%global with_mpich 0
-%endif
-%endif
-%ifarch s390 s390x
-# No openmpi on s390(x)
-%global with_openmpi 0
+# No openmpi3 on ppc64
+%global with_openmpi3 0
+%else
+%global with_openmpi3 1
 %endif
 
 %if %{with_mpich}
 %global mpi_list mpich
 %endif
 %if %{with_openmpi}
-%global mpi_list %{?mpi_list} openmpi %{?el7:openmpi3}
+%global mpi_list %{?mpi_list} openmpi
 %endif
-
-%{?el7:%global ompi3 1}
+%if 0%{?with_openmpi3}
+%global mpi_list %{?mpi_list} openmpi3
+%endif
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -159,7 +157,7 @@ Requires: %{name}-openmpi-devel%{?_isa} = %{version}-%{release}
 %description openmpi-static
 HDF5 parallel openmpi static libraries
 
-%if 0%{?ompi3}
+%if 0%{?with_openmpi3}
 %package openmpi3
 Summary: HDF5 openmpi3 libraries
 Group: Development/Libraries
@@ -461,7 +459,7 @@ done
 %files openmpi-static
 %{_libdir}/openmpi/lib/*.a
 
-%if 0%{?ompi3}
+%if 0%{?with_openmpi3}
 %files openmpi3
 %doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
 %doc release_docs/HISTORY*.txt
