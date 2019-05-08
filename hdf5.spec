@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 10%{?dist}
+Release: 11%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -54,8 +54,10 @@ BuildRequires: libaec-devel
 %global mpi_list mpich
 %endif
 %if %{with_openmpi}
-%global mpi_list %{?mpi_list} openmpi
+%global mpi_list %{?mpi_list} openmpi %{?el7:openmpi3}
 %endif
+
+%{?el7:%global ompi3 1}
 
 %description
 HDF5 is a general purpose library and file format for storing scientific data.
@@ -156,6 +158,38 @@ Requires: %{name}-openmpi-devel%{?_isa} = %{version}-%{release}
 
 %description openmpi-static
 HDF5 parallel openmpi static libraries
+
+%if 0%{?ompi3}
+%package openmpi3
+Summary: HDF5 openmpi3 libraries
+Group: Development/Libraries
+Requires: openmpi3
+BuildRequires: openmpi3-devel
+
+%description openmpi3
+HDF5 parallel openmpi3 libraries
+
+
+%package openmpi3-devel
+Summary: HDF5 openmpi3 development files
+Group: Development/Libraries
+Requires: %{name}-openmpi3%{_isa} = %{version}-%{release}
+Requires: libaec-devel%{?_isa}
+Requires: zlib-devel%{?_isa}
+Requires: openmpi3-devel%{?_isa}
+
+%description openmpi3-devel
+HDF5 parallel openmpi3 development files
+
+
+%package openmpi3-static
+Summary: HDF5 openmpi3 static libraries
+Group: Development/Libraries
+Requires: %{name}-openmpi3-devel%{?_isa} = %{version}-%{release}
+
+%description openmpi3-static
+HDF5 parallel openmpi3 static libraries
+%endif
 %endif
 
 
@@ -426,10 +460,48 @@ done
 
 %files openmpi-static
 %{_libdir}/openmpi/lib/*.a
+
+%if 0%{?ompi3}
+%files openmpi3
+%doc COPYING MANIFEST README.txt release_docs/RELEASE.txt
+%doc release_docs/HISTORY*.txt
+%{_libdir}/openmpi3/bin/gif2h5
+%{_libdir}/openmpi3/bin/h52gif
+%{_libdir}/openmpi3/bin/h5copy
+%{_libdir}/openmpi3/bin/h5debug
+%{_libdir}/openmpi3/bin/h5diff
+%{_libdir}/openmpi3/bin/h5dump
+%{_libdir}/openmpi3/bin/h5import
+%{_libdir}/openmpi3/bin/h5jam
+%{_libdir}/openmpi3/bin/h5ls
+%{_libdir}/openmpi3/bin/h5mkgrp
+%{_libdir}/openmpi3/bin/h5perf
+%{_libdir}/openmpi3/bin/h5perf_serial
+%{_libdir}/openmpi3/bin/h5redeploy
+%{_libdir}/openmpi3/bin/h5repack
+%{_libdir}/openmpi3/bin/h5repart
+%{_libdir}/openmpi3/bin/h5stat
+%{_libdir}/openmpi3/bin/h5unjam
+%{_libdir}/openmpi3/bin/ph5diff
+%{_libdir}/openmpi3/lib/*.so.*
+
+%files openmpi3-devel
+%{_includedir}/openmpi3-%{_arch}
+%{_libdir}/openmpi3/bin/h5pcc
+%{_libdir}/openmpi3/bin/h5pfc
+%{_libdir}/openmpi3/lib/lib*.so
+%{_libdir}/openmpi3/lib/lib*.settings
+
+%files openmpi3-static
+%{_libdir}/openmpi3/lib/*.a
+%endif
 %endif
 
 
 %changelog
+* Sun Apr 28 2019 Dave Love <loveshack@fedoraproject.org> - 1.8.12-11
+- Build an openmpi3 version on el7
+
 * Tue Aug 22 2017 Orion Poplawski <orion@nwra.com> - 1.8.12-10
 - RHEL doesn't provide mpich-devel%%{_isa}
 
