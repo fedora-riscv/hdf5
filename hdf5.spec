@@ -52,12 +52,12 @@ BuildRequires: gcc, gcc-c++
 %global with_mpich 0
 %endif
 %endif
-%if 0%{?fedora} < 26
-%ifarch s390 s390x
+#%if 0%{?fedora} < 26
+#%ifarch s390 s390x
 # No openmpi on s390(x)
-%global with_openmpi 0
-%endif
-%endif
+#%global with_openmpi 0
+#%endif
+#%endif
 
 %if %{with_mpich}
 %global mpi_list mpich
@@ -321,7 +321,7 @@ make -C build check
 export HDF5_Make_Ignore=yes
 export OMPI_MCA_rmaps_base_oversubscribe=1
 # t_cache_image appears to be hanging, others taking very long on s390x
-%ifnarch s390x
+%ifnarch s390x aarch64
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
