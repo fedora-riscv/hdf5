@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.10.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -52,12 +52,6 @@ BuildRequires: gcc, gcc-c++
 %global with_mpich 0
 %endif
 %endif
-#%if 0%{?fedora} < 26
-#%ifarch s390 s390x
-# No openmpi on s390(x)
-#%global with_openmpi 0
-#%endif
-#%endif
 
 %if %{with_mpich}
 %global mpi_list mpich
@@ -321,6 +315,7 @@ make -C build check
 export HDF5_Make_Ignore=yes
 export OMPI_MCA_rmaps_base_oversubscribe=1
 # t_cache_image appears to be hanging, others taking very long on s390x
+# openmpi test is hanging on aarch64 in RHEL8.0
 %ifnarch s390x aarch64
 for mpi in %{?mpi_list}
 do
@@ -489,6 +484,9 @@ done
 
 
 %changelog
+* Thu Aug 15 2019 Orion Poplawski <orion@nwra.com> - 1.10.5-4
+- Re-enable openmpi build
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
