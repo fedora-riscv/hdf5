@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.10.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -22,9 +22,9 @@ Patch1: hdf5-mpi.patch
 # Fix some warnings
 Patch2: hdf5-warning.patch
 # Fix java build
-# JUnit-TestH5Fbasic test is failing
-# JUnit-TestH5P is failing on 32-bit
 Patch3: hdf5-build.patch
+# Upstream fix for Java tests
+Patch4: https://jira.hdfgroup.org/secure/attachment/26110/fix-HDFFV-10745.patch
 
 BuildRequires: gcc-gfortran
 BuildRequires: java-devel
@@ -172,6 +172,7 @@ HDF5 parallel openmpi static libraries
 #patch1 -p1 -b .mpi
 %patch2 -p1 -b .warning
 %patch3 -p1 -b .build
+%patch4 -p1 -b .jira
 
 # Replace jars with system versions
 find -name \*.jar -delete
@@ -489,6 +490,9 @@ done
 
 
 %changelog
+* Mon Nov 11 2019 Orion Poplawski <orion@nwra.com> - 1.10.5-4
+- Add upstream patch to fix 32-bit java tests
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 

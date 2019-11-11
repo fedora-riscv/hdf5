@@ -120,24 +120,6 @@ diff -up hdf5-1.10.5/java/test/junit.sh.in.build hdf5-1.10.5/java/test/junit.sh.
  TESTJARFILE=jar@PACKAGE_TARNAME@test.jar
  test -d $BLDLIBDIR || mkdir -p $BLDLIBDIR
  
-@@ -418,7 +418,7 @@ if diff JUnit-TestH5Fbasic.out JUnit-Tes
- else
-     echo "**FAILED**    JUnit-TestH5Fbasic"
-     echo "    Expected result differs from actual result"
--    nerrors="`expr $nerrors + 1`"
-+    #nerrors="`expr $nerrors + 1`"
-     test yes = "$verbose" && $DIFF JUnit-TestH5Fbasic.txt JUnit-TestH5Fbasic.out |sed 's/^/    /'
- fi
- 
-@@ -775,7 +775,7 @@ if diff JUnit-TestH5P.out JUnit-TestH5P.
- else
-     echo "**FAILED**    JUnit-TestH5P"
-     echo "    Expected result differs from actual result"
--    nerrors="`expr $nerrors + 1`"
-+    #nerrors="`expr $nerrors + 1`"
-     test yes = "$verbose" && $DIFF JUnit-TestH5P.txt JUnit-TestH5P.out |sed 's/^/    /'
- fi
- 
 diff -up hdf5-1.10.5/java/test/Makefile.am.build hdf5-1.10.5/java/test/Makefile.am
 --- hdf5-1.10.5/java/test/Makefile.am.build	2019-02-16 15:41:11.000000000 -0700
 +++ hdf5-1.10.5/java/test/Makefile.am	2019-04-07 15:29:56.309854683 -0600
