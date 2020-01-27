@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.10.5
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -25,6 +25,9 @@ Patch2: hdf5-warning.patch
 Patch3: hdf5-build.patch
 # Upstream fix for Java tests
 Patch4: https://jira.hdfgroup.org/secure/attachment/26110/fix-HDFFV-10745.patch
+# Remove Fedora build flags from h5cc/h5c++/h5fc
+# https://bugzilla.redhat.com/show_bug.cgi?id=1794625
+Patch5: hdf5-wrappers.patch
 
 BuildRequires: gcc-gfortran
 BuildRequires: java-devel
@@ -173,6 +176,7 @@ HDF5 parallel openmpi static libraries
 %patch2 -p1 -b .warning
 %patch3 -p1 -b .build
 %patch4 -p1 -b .jira
+%patch5 -p1 -b .wrappers
 
 # Replace jars with system versions
 find -name \*.jar -delete
@@ -490,6 +494,9 @@ done
 
 
 %changelog
+* Sun Jan 26 2020 Orion Poplawski <orion@nwra.com> - 1.10.5-5
+- Remove Fedora build flags from h5cc/h5c++/h5fc (bz#1794625)
+
 * Mon Nov 11 2019 Orion Poplawski <orion@nwra.com> - 1.10.5-4
 - Add upstream patch to fix 32-bit java tests
 
