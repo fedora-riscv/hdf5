@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 12%{?dist}
+Release: 13%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -28,6 +28,9 @@ Patch3: hdf5-ldouble-ppc64le.patch
 Patch4: hdf5-ppc64le.patch
 # Upstream patch for various Talos CVEs
 Patch5: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/talospatch/hdf51.8-CVE2016.patch
+# Remove Fedora build flags from h5cc/h5c++/h5fc
+# https://bugzilla.redhat.com/show_bug.cgi?id=1794625
+Patch6: hdf5-wrappers.patch
 
 BuildRequires: krb5-devel, openssl-devel, zlib-devel, gcc-gfortran, time
 # For patches/rpath
@@ -203,6 +206,7 @@ HDF5 parallel openmpi3 static libraries
 %patch3 -p1 -b .ldouble-ppc64le
 %patch4 -p1 -b .ppc64le
 %patch5 -p0 -b .CVE
+%patch6 -p1 -b .wrappers
 #This should be fixed in 1.8.7
 find \( -name '*.[ch]*' -o -name '*.f90' -o -name '*.txt' \) -exec chmod -x {} +
 autoreconf -f -i
@@ -496,6 +500,9 @@ done
 
 
 %changelog
+* Wed Sep 15 2021 Orion Poplawski <orion@nwra.com> - 1.8.12-13
+- Remove Fedora build flags from h5cc/h5c++/h5fc (bz#1980549)
+
 * Tue Jan 26 2021 Orion Poplawski <orion@nwra.com> - 1.8.12-12
 - Drop compiling with -O0
 
