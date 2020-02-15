@@ -1,26 +1,28 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 # Patch version?
-%global snaprel %{nil}
+#global snaprel -beta
 
 ## WARNING: Wait for netcdf 4.8.0 !
 
 # NOTE: Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.10.7
-Release: 2%{?dist}
+Version: 1.12.1
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
 
-Source0: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-%{version}/src/hdf5-%{version}.tar.bz2
+%global version_main %(echo %version | cut -d. -f-2)
+Source0: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-%{version_main}/hdf5-%{version}/src/hdf5-%{version}.tar.bz2
+
+%global so_version 200
+
 Source1: h5comp
 # For man pages
-Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.10.6+repack-2.debian.tar.xz
+Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.12.0+repack-1~exp2.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
-# Fix some warnings
-Patch2: hdf5-warning.patch
 # Fix java build
 Patch3: hdf5-build.patch
 # Remove Fedora build flags from h5cc/h5c++/h5fc
@@ -37,6 +39,7 @@ BuildRequires: krb5-devel
 BuildRequires: openssl-devel
 BuildRequires: time
 BuildRequires: zlib-devel
+BuildRequires: hostname
 # For patches/rpath
 BuildRequires: automake
 BuildRequires: libtool
@@ -157,11 +160,7 @@ HDF5 parallel openmpi static libraries
 
 
 %prep
-%setup -q -a 2 -n %{name}-%{version}%{?snaprel}
-%patch0 -p1 -b .LD_LIBRARY_PATH
-%patch2 -p1 -b .warning
-%patch3 -p1 -b .build
-%patch5 -p1 -b .wrappers
+%autosetup -a 2 -n %{name}-%{version}%{?snaprel} -p1
 
 # Replace jars with system versions
 # hamcrest-core is obsoleted in hamcrest-2.2
@@ -187,7 +186,6 @@ autoreconf -f -i
 
 # Modify low optimization level for gnu compilers
 sed -e 's|-O -finline-functions|-O3 -finline-functions|g' -i config/gnu-flags
-
 
 %build
 #Do out of tree builds
@@ -217,8 +215,9 @@ ln -s ../configure .
   %{configure_opts} \
   --enable-cxx \
   --enable-java
-sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
-make LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
+sed -i -e 's| -shared | -Wl,--as-needed\0|g' libtool
+sed -r -i 's|^prefix=/usr|prefix=%{buildroot}/usr|' java/test/junit.sh
+%make_build LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
 popd
 
 #MPI builds
@@ -242,7 +241,7 @@ do
     --datarootdir=%{_libdir}/$mpi/share \
     --mandir=%{_libdir}/$mpi/share/man
   sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
-  make LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
+  %make_build LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
   module purge
   popd
 done
@@ -257,7 +256,7 @@ mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
-  make -C $mpi install DESTDIR=%{buildroot}
+  %make_install -C $mpi
   rm %{buildroot}/%{_libdir}/$mpi/lib/*.la
   #Fortran modules
   mkdir -p %{buildroot}${MPI_FORTRAN_MOD_DIR}
@@ -310,7 +309,6 @@ rm %{buildroot}%{_mandir}/man1/h5p[cf]c*.1
 mkdir -p %{buildroot}%{_libdir}/%{name}
 mv %{buildroot}%{_libdir}/libhdf5_java.so %{buildroot}%{_libdir}/%{name}/
 
-
 %check
 make -C build check
 #export HDF5_Make_Ignore=yes
@@ -327,9 +325,18 @@ do
   module purge
 done
 
+# I have no idea why those get installed. But it's easier to just
+# delete them, than to fight with the byzantine build system.
+# And yes, it's using /usr/lib not %_libdir.
+if [ %_libdir != /usr/lib ]; then
+   rm -vf \
+      %{buildroot}/usr/lib/*.jar \
+      %{buildroot}/usr/lib/*.la  \
+      %{buildroot}/usr/lib/*.lai \
+      %{buildroot}/usr/lib/libhdf5*
+fi
 
 %ldconfig_scriptlets
-
 
 %files
 %license COPYING
@@ -355,12 +362,12 @@ done
 %{_bindir}/h5watch
 %{_bindir}/mirror_server
 %{_bindir}/mirror_server_stop
-%{_libdir}/libhdf5.so.103*
-%{_libdir}/libhdf5_cpp.so.103*
-%{_libdir}/libhdf5_fortran.so.102*
-%{_libdir}/libhdf5hl_fortran.so.100*
-%{_libdir}/libhdf5_hl.so.100*
-%{_libdir}/libhdf5_hl_cpp.so.100*
+%{_libdir}/libhdf5.so.%{so_version}*
+%{_libdir}/libhdf5_cpp.so.%{so_version}*
+%{_libdir}/libhdf5_fortran.so.%{so_version}*
+%{_libdir}/libhdf5hl_fortran.so.%{so_version}*
+%{_libdir}/libhdf5_hl.so.%{so_version}*
+%{_libdir}/libhdf5_hl_cpp.so.%{so_version}*
 %{_mandir}/man1/gif2h5.1*
 %{_mandir}/man1/h52gif.1*
 %{_mandir}/man1/h5copy.1*
@@ -428,7 +435,7 @@ done
 %{_libdir}/mpich/bin/mirror_server
 %{_libdir}/mpich/bin/mirror_server_stop
 %{_libdir}/mpich/bin/ph5diff
-%{_libdir}/mpich/lib/*.so.10*
+%{_libdir}/mpich/lib/*.so.%{so_version}*
 
 %files mpich-devel
 %{_includedir}/mpich-%{_arch}
@@ -473,7 +480,7 @@ done
 %{_libdir}/openmpi/bin/mirror_server
 %{_libdir}/openmpi/bin/mirror_server_stop
 %{_libdir}/openmpi/bin/ph5diff
-%{_libdir}/openmpi/lib/*.so.10*
+%{_libdir}/openmpi/lib/*.so.%{so_version}*
 
 %files openmpi-devel
 %{_includedir}/openmpi-%{_arch}
@@ -492,6 +499,9 @@ done
 
 
 %changelog
+* Sat Nov 20 2021 Orion Poplawski <orion@nwra.com> - 1.12.1-1
+- Update to 1.12.1
+
 * Mon Aug 30 2021 Orion Poplawski <orion@nwra.com> - 1.10.7-2
 - Fix typo in h5fc (bz#1998879)
 
