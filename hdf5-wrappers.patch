@@ -71,9 +71,9 @@ diff -up hdf5-1.10.5/fortran/src/h5fc.in.wrappers hdf5-1.10.5/fortran/src/h5fc.i
    status=$?
  fi
  
-diff -up hdf5-1.10.5/tools/src/misc/h5cc.in.wrappers hdf5-1.10.5/tools/src/misc/h5cc.in
---- hdf5-1.10.5/tools/src/misc/h5cc.in.wrappers	2018-09-03 20:54:44.000000000 -0600
-+++ hdf5-1.10.5/tools/src/misc/h5cc.in	2020-01-26 19:13:58.079642156 -0700
+diff -up hdf5-1.10.5/bin//h5cc.in.wrappers hdf5-1.10.5/tools/src/misc/h5cc.in
+--- hdf5-1.10.5/bin/h5cc.in.wrappers	2018-09-03 20:54:44.000000000 -0600
++++ hdf5-1.10.5/bin/h5cc.in	2020-01-26 19:13:58.079642156 -0700
 @@ -89,10 +89,10 @@ CLINKERBASE="@CC@"
  # paths and libraries from AM_LDFLAGS, LDFLAGS, AM_LIBS or LIBS carried in 
  # from the hdf5 build. The order of the flags is intended to give precedence

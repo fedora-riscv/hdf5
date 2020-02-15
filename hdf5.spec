@@ -6,8 +6,8 @@
 # NOTE: Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.10.5
-Release: 6%{?dist}
+Version: 1.10.6
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -17,14 +17,10 @@ Source1: h5comp
 # For man pages
 Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.10.4+repack-1.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
-# Properly run MPI_Finalize() in t_pflush1
-Patch1: hdf5-mpi.patch
 # Fix some warnings
 Patch2: hdf5-warning.patch
 # Fix java build
 Patch3: hdf5-build.patch
-# Upstream fix for Java tests
-Patch4: https://jira.hdfgroup.org/secure/attachment/26110/fix-HDFFV-10745.patch
 # Remove Fedora build flags from h5cc/h5c++/h5fc
 # https://bugzilla.redhat.com/show_bug.cgi?id=1794625
 Patch5: hdf5-wrappers.patch
@@ -172,10 +168,8 @@ HDF5 parallel openmpi static libraries
 %prep
 %setup -q -a 2 -n %{name}-%{version}%{?snaprel}
 %patch0 -p1 -b .LD_LIBRARY_PATH
-#patch1 -p1 -b .mpi
 %patch2 -p1 -b .warning
 %patch3 -p1 -b .build
-%patch4 -p1 -b .jira
 %patch5 -p1 -b .wrappers
 
 # Replace jars with system versions
@@ -230,9 +224,6 @@ make LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
 popd
 
 #MPI builds
-export CC=mpicc
-export CXX=mpicxx
-export F9X=mpif90
 export LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
 for mpi in %{?mpi_list}
 do
@@ -242,6 +233,7 @@ do
   ln -s ../configure .
   %configure \
     %{configure_opts} \
+    CC=mpicc CXX=mpicxx F9X=mpif90 \
     FCFLAGS="$FCFLAGS -I$MPI_FORTRAN_MOD_DIR" \
     --enable-parallel \
     --exec-prefix=%{_libdir}/$mpi \
@@ -494,6 +486,9 @@ done
 
 
 %changelog
+* Thu Jun 25 2020 Orion Poplawski <orion@nwra.com> - 1.10.6-1
+- Update to 1.10.6
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.5-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
