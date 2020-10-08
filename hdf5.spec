@@ -352,6 +352,8 @@ done
 %{_bindir}/h5stat
 %{_bindir}/h5unjam
 %{_bindir}/h5watch
+%{_bindir}/mirror_server
+%{_bindir}/mirror_server_stop
 %{_libdir}/libhdf5.so.103*
 %{_libdir}/libhdf5_cpp.so.103*
 %{_libdir}/libhdf5_fortran.so.102*
@@ -422,6 +424,8 @@ done
 %{_libdir}/mpich/bin/h5stat
 %{_libdir}/mpich/bin/h5unjam
 %{_libdir}/mpich/bin/h5watch
+%{_libdir}/mpich/bin/mirror_server
+%{_libdir}/mpich/bin/mirror_server_stop
 %{_libdir}/mpich/bin/ph5diff
 %{_libdir}/mpich/lib/*.so.10*
 
@@ -465,6 +469,8 @@ done
 %{_libdir}/openmpi/bin/h5stat
 %{_libdir}/openmpi/bin/h5unjam
 %{_libdir}/openmpi/bin/h5watch
+%{_libdir}/openmpi/bin/mirror_server
+%{_libdir}/openmpi/bin/mirror_server_stop
 %{_libdir}/openmpi/bin/ph5diff
 %{_libdir}/openmpi/lib/*.so.10*
 
