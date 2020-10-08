@@ -6,8 +6,8 @@
 # NOTE: Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
-Version: 1.10.6
-Release: 7%{?dist}
+Version: 1.10.7
+Release: 1%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -15,7 +15,7 @@ URL: https://portal.hdfgroup.org/display/HDF5/HDF5
 Source0: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-%{version}/src/hdf5-%{version}.tar.bz2
 Source1: h5comp
 # For man pages
-Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.10.4+repack-1.debian.tar.xz
+Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.10.6+repack-2.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
 # Fix some warnings
 Patch2: hdf5-warning.patch
@@ -485,6 +485,9 @@ done
 
 
 %changelog
+* Mon Aug 09 2021 Orion Poplawski <orion@nwra.com> - 1.10.7-1
+- Update to 1.10.7
+
 * Thu Jul 29 2021 Antonio Trande <sagitter@fedoraproject.org> - 1.10.6-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 - Use bundled junit
