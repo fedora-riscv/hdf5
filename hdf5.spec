@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.10.6
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -45,18 +45,6 @@ BuildRequires: gcc, gcc-c++
 
 %global with_mpich 1
 %global with_openmpi 1
-%if 0%{?rhel}
-%ifarch ppc64
-# No mpich2 on ppc64 in EL
-%global with_mpich 0
-%endif
-%endif
-%if 0%{?fedora} < 26
-%ifarch s390 s390x
-# No openmpi on s390(x)
-%global with_openmpi 0
-%endif
-%endif
 
 %if %{with_mpich}
 %global mpi_list mpich
@@ -489,6 +477,10 @@ done
 
 
 %changelog
+* Wed Oct 14 2020 Orion Poplawski <orion@nwra.com> - 1.10.6-4
+- Drop MPI tests for now - hanging
+- Build openmpi for EL s390x again
+
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.6-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
