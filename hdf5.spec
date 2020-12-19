@@ -128,6 +128,7 @@ HDF5 parallel mpich static libraries
 %package openmpi
 Summary: HDF5 openmpi libraries
 BuildRequires: openmpi-devel
+BuildRequires: make
 
 %description openmpi
 HDF5 parallel openmpi libraries
