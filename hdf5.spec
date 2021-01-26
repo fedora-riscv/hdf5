@@ -7,7 +7,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.8.12
-Release: 11%{?dist}
+Release: 12%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 Group: System Environment/Libraries
@@ -228,7 +228,6 @@ autoreconf -f -i
 export CC=gcc
 export CXX=g++
 export F9X=gfortran
-export CFLAGS="${RPM_OPT_FLAGS/O2/O0}"
 mkdir build
 pushd build
 ln -s ../configure .
@@ -497,6 +496,9 @@ done
 
 
 %changelog
+* Tue Jan 26 2021 Orion Poplawski <orion@nwra.com> - 1.8.12-12
+- Drop compiling with -O0
+
 * Sun Apr 28 2019 Dave Love <loveshack@fedoraproject.org> - 1.8.12-11
 - Build an openmpi3 version on el7
 
