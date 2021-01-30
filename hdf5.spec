@@ -3,6 +3,8 @@
 # Patch version?
 %global snaprel %{nil}
 
+## WARNING: Wait for netcdf 4.8.0 !
+
 # NOTE: Try not to release new versions to released versions of Fedora
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
