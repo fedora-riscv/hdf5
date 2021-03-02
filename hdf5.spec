@@ -313,20 +313,20 @@ mv %{buildroot}%{_libdir}/libhdf5_java.so %{buildroot}%{_libdir}/%{name}/
 
 %check
 make -C build check
-export HDF5_Make_Ignore=yes
+#export HDF5_Make_Ignore=yes
 export OMPI_MCA_rmaps_base_oversubscribe=1
 # MPI Tests are hanging
-%if 0
+#if 0
 # t_cache_image appears to be hanging, others taking very long on s390x
-%ifnarch s390x
+#ifnarch s390x
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
   make -C $mpi check
   module purge
 done
-%endif
-%endif
+#endif
+#endif
 
 
 %ldconfig_scriptlets
