@@ -319,7 +319,7 @@ for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
 # i686 & s390x mpich - testphdf5: malloc.c:4189: _int_malloc: Assertion `(unsigned long) (size) >= (unsigned long) (nb)' failed.
-%ifarch %{ix86) s390x
+%ifarch %{ix86} s390x
   make -C $mpi check || :
 %else
   make -C $mpi check
