@@ -83,7 +83,7 @@ diff -up hdf5-1.10.7/fortran/src/h5fc.in.wrappers hdf5-1.10.7/fortran/src/h5fc.i
  F9XSUFFIXFLAG="@F9XSUFFIXFLAG@"
 -H5BLD_LDFLAGS="@AM_LDFLAGS@ @LDFLAGS@"
 -H5BLD_LIBS="@LIBS@"
-+H5BLD_LDFLAGS="
++H5BLD_LDFLAGS=
 +H5BLD_LIBS=
  
  FC="${HDF5_FC:-$FCBASE}"

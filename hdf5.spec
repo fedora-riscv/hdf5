@@ -9,7 +9,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.10.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -492,6 +492,9 @@ done
 
 
 %changelog
+* Mon Aug 30 2021 Orion Poplawski <orion@nwra.com> - 1.10.7-2
+- Fix typo in h5fc (bz#1998879)
+
 * Mon Aug 09 2021 Orion Poplawski <orion@nwra.com> - 1.10.7-1
 - Update to 1.10.7
 
