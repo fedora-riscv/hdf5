@@ -9,7 +9,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.12.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -504,6 +504,9 @@ fi
 
 
 %changelog
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.12.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
 * Sat Nov 20 2021 Orion Poplawski <orion@nwra.com> - 1.12.1-1
 - Update to 1.12.1
 
