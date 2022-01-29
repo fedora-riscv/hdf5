@@ -9,7 +9,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.12.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -197,7 +197,6 @@ sed -e 's|-O -finline-functions|-O3 -finline-functions|g' -i config/gnu-flags
 %global configure_opts \\\
   --disable-silent-rules \\\
   --enable-fortran \\\
-  --enable-fortran2003 \\\
   --enable-hl \\\
   --enable-shared \\\
   --with-szlib \\\
@@ -256,6 +255,8 @@ rm %{buildroot}%{_libdir}/*.la
 #Fortran modules
 mkdir -p %{buildroot}%{_fmoddir}
 mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}
+# Fix fortran module include dir https://bugzilla.redhat.com/show_bug.cgi?id=1971826
+sed -i -e 's,%{_includedir},%{_fmoddir},' %{buildroot}%{_bindir}/h5fc
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
@@ -264,6 +265,8 @@ do
   #Fortran modules
   mkdir -p %{buildroot}${MPI_FORTRAN_MOD_DIR}
   mv %{buildroot}%{_includedir}/${mpi}-%{_arch}/*.mod %{buildroot}${MPI_FORTRAN_MOD_DIR}/
+  # Fix fortran module include dir https://bugzilla.redhat.com/show_bug.cgi?id=1971826
+  sed -i -e "s,%{_includedir},${MPI_FORTRAN_MOD_DIR}," %{buildroot}%{_libdir}/$mpi/bin/h5pfc
   module purge
 done
 #Fixup example permissions
@@ -321,6 +324,8 @@ make -C build check
 %endif
 #export HDF5_Make_Ignore=yes
 export OMPI_MCA_rmaps_base_oversubscribe=1
+# openmpi 5+
+export PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
@@ -507,6 +512,9 @@ fi
 
 
 %changelog
+* Mon May  9 2022 Orion Poplawski <orion@nwra.com> - 1.12.1-7
+- Fix fortran module include dir in h5fc (bz#1971826)
+
 * Sun Feb 27 2022 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.12.1-6
 - Bump obsoleted jdfh5 version to be above F35
 
