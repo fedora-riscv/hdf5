@@ -9,7 +9,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.12.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -23,6 +23,9 @@ Source1: h5comp
 # For man pages
 Source2: http://ftp.us.debian.org/debian/pool/main/h/hdf5/hdf5_1.12.0+repack-1~exp2.debian.tar.xz
 Patch0: hdf5-LD_LIBRARY_PATH.patch
+# Fix fortran build with gcc 12
+# https://github.com/HDFGroup/hdf5/pull/1412
+Patch1: hdf5-gfortran12.patch
 # Fix java build
 Patch3: hdf5-build.patch
 # Remove Fedora build flags from h5cc/h5c++/h5fc
@@ -504,6 +507,9 @@ fi
 
 
 %changelog
+* Mon Feb 07 2022 Orion Poplawski <orion@nwra.com> - 1.12.1-4
+- Add patch to fix build with gfortran-12
+
 * Sat Feb 05 2022 Jiri Vanek <jvanek@redhat.com> - 1.12.1-3
 - Rebuilt for java-17-openjdk as system jdk
 
