@@ -9,7 +9,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.12.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -507,6 +507,9 @@ fi
 
 
 %changelog
+* Tue Feb 08 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 1.12.1-5
+- Rebuilt for java-17-openjdk as system jdk (again)
+
 * Mon Feb 07 2022 Orion Poplawski <orion@nwra.com> - 1.12.1-4
 - Add patch to fix build with gfortran-12
 
