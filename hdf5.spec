@@ -9,7 +9,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.12.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -84,7 +84,7 @@ HDF5 development headers and libraries.
 %package -n java-hdf5
 Summary: HDF5 java library
 Requires:  slf4j
-Obsoletes: jhdf5 < 3.3.1-2
+Obsoletes: jhdf5 < 3.3.2^
 
 %description -n java-hdf5
 HDF5 java library
@@ -507,6 +507,9 @@ fi
 
 
 %changelog
+* Sun Feb 27 2022 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.12.1-6
+- Bump obsoleted jdfh5 version to be above F35
+
 * Tue Feb 08 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 1.12.1-5
 - Rebuilt for java-17-openjdk as system jdk (again)
 
