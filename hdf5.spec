@@ -9,7 +9,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.12.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -216,7 +216,8 @@ ln -s ../configure .
 %configure \
   %{configure_opts} \
   --enable-cxx \
-  --enable-java
+  --enable-java \
+  --with-default-plugindir=%{_libdir}/hdf5/plugin
 sed -i -e 's| -shared | -Wl,--as-needed\0|g' libtool
 sed -r -i 's|^prefix=/usr|prefix=%{buildroot}/usr|' java/test/junit.sh
 %make_build LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
@@ -241,7 +242,8 @@ do
     --sbindir=%{_libdir}/$mpi/sbin \
     --includedir=%{_includedir}/$mpi-%{_arch} \
     --datarootdir=%{_libdir}/$mpi/share \
-    --mandir=%{_libdir}/$mpi/share/man
+    --mandir=%{_libdir}/$mpi/share/man \
+    --with-default-plugindir=%{_libdir}/$mpi/hdf5/plugin
   sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
   %make_build LDFLAGS="%{__global_ldflags} -fPIC -Wl,-z,now -Wl,--as-needed"
   module purge
@@ -252,21 +254,25 @@ done
 %install
 %make_install -C build
 rm %{buildroot}%{_libdir}/*.la
-#Fortran modules
+# Fortran modules
 mkdir -p %{buildroot}%{_fmoddir}
 mv %{buildroot}%{_includedir}/*.mod %{buildroot}%{_fmoddir}
 # Fix fortran module include dir https://bugzilla.redhat.com/show_bug.cgi?id=1971826
 sed -i -e 's,%{_includedir},%{_fmoddir},' %{buildroot}%{_bindir}/h5fc
+# Plugin directory
+mkdir -p %{buildroot}%{_libdir}/hdf5/plugin
 for mpi in %{?mpi_list}
 do
   module load mpi/$mpi-%{_arch}
   %make_install -C $mpi
   rm %{buildroot}/%{_libdir}/$mpi/lib/*.la
-  #Fortran modules
+  # Fortran modules
   mkdir -p %{buildroot}${MPI_FORTRAN_MOD_DIR}
   mv %{buildroot}%{_includedir}/${mpi}-%{_arch}/*.mod %{buildroot}${MPI_FORTRAN_MOD_DIR}/
   # Fix fortran module include dir https://bugzilla.redhat.com/show_bug.cgi?id=1971826
   sed -i -e "s,%{_includedir},${MPI_FORTRAN_MOD_DIR}," %{buildroot}%{_libdir}/$mpi/bin/h5pfc
+  # Plugin directory
+  mkdir -p %{buildroot}%{_libdir}/$mpi/hdf5/plugin
   module purge
 done
 #Fixup example permissions
@@ -375,6 +381,7 @@ fi
 %{_bindir}/h5watch
 %{_bindir}/mirror_server
 %{_bindir}/mirror_server_stop
+%{_libdir}/hdf5/
 %{_libdir}/libhdf5.so.%{so_version}*
 %{_libdir}/libhdf5_cpp.so.%{so_version}*
 %{_libdir}/libhdf5_fortran.so.%{so_version}*
@@ -448,6 +455,7 @@ fi
 %{_libdir}/mpich/bin/mirror_server
 %{_libdir}/mpich/bin/mirror_server_stop
 %{_libdir}/mpich/bin/ph5diff
+%{_libdir}/mpich/hdf5/
 %{_libdir}/mpich/lib/*.so.%{so_version}*
 
 %files mpich-devel
@@ -493,6 +501,7 @@ fi
 %{_libdir}/openmpi/bin/mirror_server
 %{_libdir}/openmpi/bin/mirror_server_stop
 %{_libdir}/openmpi/bin/ph5diff
+%{_libdir}/openmpi/hdf5/
 %{_libdir}/openmpi/lib/*.so.%{so_version}*
 
 %files openmpi-devel
@@ -512,6 +521,9 @@ fi
 
 
 %changelog
+* Sat Jun 25 2022 Orion Poplawski <orion@nwra.com> - 1.12.1-8
+- Define and create default plugin directory
+
 * Mon May  9 2022 Orion Poplawski <orion@nwra.com> - 1.12.1-7
 - Fix fortran module include dir in h5fc (bz#1971826)
 
