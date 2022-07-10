@@ -1,5 +1,12 @@
 %global macrosdir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
+# No more Java on i686
+%ifarch %{java_arches}
+%bcond_without java
+%else
+%bcond_with java
+%endif
+
 # Patch version?
 #global snaprel -beta
 
@@ -9,7 +16,7 @@
 # You need to recompile all users of HDF5 for each version change
 Name: hdf5
 Version: 1.12.1
-Release: 8%{?dist}
+Release: 9%{?dist}
 Summary: A general purpose library and file format for storing scientific data
 License: BSD
 URL: https://portal.hdfgroup.org/display/HDF5/HDF5
@@ -33,8 +40,12 @@ Patch3: hdf5-build.patch
 Patch5: hdf5-wrappers.patch
 
 BuildRequires: gcc-gfortran
+%if %{with java}
 BuildRequires: java-devel
 BuildRequires: javapackages-tools
+%else
+Obsoletes:     java-hdf5 < %{version}-%{release}
+%endif
 BuildRequires: hamcrest
 BuildRequires: junit
 BuildRequires: slf4j
@@ -81,6 +92,7 @@ Requires: gcc-gfortran%{?_isa}
 %description devel
 HDF5 development headers and libraries.
 
+%if %{with java}
 %package -n java-hdf5
 Summary: HDF5 java library
 Requires:  slf4j
@@ -88,6 +100,7 @@ Obsoletes: jhdf5 < 3.3.2^
 
 %description -n java-hdf5
 HDF5 java library
+%endif
 
 %package static
 Summary: HDF5 static libraries
@@ -165,10 +178,11 @@ HDF5 parallel openmpi static libraries
 %prep
 %autosetup -a 2 -n %{name}-%{version}%{?snaprel} -p1
 
+%if %{with java}
 # Replace jars with system versions
 # hamcrest-core is obsoleted in hamcrest-2.2
 # Junit tests are failing with junit-4.13.1
-%if 0%{?rhel} >= 9 || 0%{?fedora} > 34
+%if 0%{?rhel} >= 9 || 0%{?fedora}
 find . ! -name junit.jar -name "*.jar" -delete
 ln -s %{_javadir}/hamcrest/hamcrest.jar java/lib/hamcrest-core.jar
 %else
@@ -182,6 +196,7 @@ sed -i -e "s/JUnit version .*/JUnit version $junit_ver/" java/test/testfiles/JUn
 ln -s %{_javadir}/slf4j/api.jar java/lib/slf4j-api-1.7.25.jar
 ln -s %{_javadir}/slf4j/nop.jar java/lib/ext/slf4j-nop-1.7.25.jar
 ln -s %{_javadir}/slf4j/simple.jar java/lib/ext/slf4j-simple-1.7.25.jar
+%endif
 
 # Force shared by default for compiler wrappers (bug #1266645)
 sed -i -e '/^STATIC_AVAILABLE=/s/=.*/=no/' */*/h5[cf]*.in
@@ -216,7 +231,9 @@ ln -s ../configure .
 %configure \
   %{configure_opts} \
   --enable-cxx \
+%if %{with java}
   --enable-java \
+%endif
   --with-default-plugindir=%{_libdir}/hdf5/plugin
 sed -i -e 's| -shared | -Wl,--as-needed\0|g' libtool
 sed -r -i 's|^prefix=/usr|prefix=%{buildroot}/usr|' java/test/junit.sh
@@ -317,9 +334,11 @@ do
 done
 rm %{buildroot}%{_mandir}/man1/h5p[cf]c*.1
 
+%if %{with java}
 # Java
 mkdir -p %{buildroot}%{_libdir}/%{name}
 mv %{buildroot}%{_libdir}/libhdf5_java.so %{buildroot}%{_libdir}/%{name}/
+%endif
 
 %check
 %ifarch %{ix86} s390x
@@ -424,9 +443,11 @@ fi
 %files static
 %{_libdir}/*.a
 
+%if %{with java}
 %files -n java-hdf5
 %{_jnidir}/hdf5.jar
 %{_libdir}/%{name}/
+%endif
 
 %if %{with_mpich}
 %files mpich
@@ -522,6 +543,9 @@ fi
 
 
 %changelog
+* Sun Jul 10 2022 Orion Poplawski <orion@nwra.com> - 1.12.1-9
+- Drop java for i686 (bz#2104046)
+
 * Sat Jun 25 2022 Orion Poplawski <orion@nwra.com> - 1.12.1-8
 - Define and create default plugin directory
 
