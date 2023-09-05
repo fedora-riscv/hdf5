@@ -65,6 +65,7 @@ BuildRequires: libtool
 BuildRequires: openssh-clients
 BuildRequires: libaec-devel
 BuildRequires: gcc, gcc-c++
+BuildRequires: git-core
 
 %global with_mpich 1
 %global with_openmpi 1
@@ -180,7 +181,7 @@ HDF5 parallel openmpi static libraries
 
 
 %prep
-%autosetup -a 2 -n %{name}-%{version}%{?snaprel} -p1
+%autosetup -a 2 -n %{name}-%{version}%{?snaprel} -p1 -S git
 
 %if %{with java}
 # Replace jars with system versions
